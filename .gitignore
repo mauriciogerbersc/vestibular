@@ -2,8 +2,6 @@
 .idea
 src/.env
 src/.editorconfig
-mysql
-nginx
 src/node_modules
 storage/framework/cache/**
 storage/framework/sessions/**
