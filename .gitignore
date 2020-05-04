@@ -1,7 +1,11 @@
 .DS_Store
 .idea
-./src/vendor
-./src/.env
-./src/.editorconfig
-./mysql
-./nginx
+src/vendor
+src/.env
+src/.editorconfig
+mysql
+nginx
+src/node_modules
+storage/framework/cache/**
+storage/framework/sessions/**
+storage/framework/views/**
