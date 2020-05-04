@@ -25,11 +25,13 @@ services:
     tty: true
     ports:
       - "3306:3306"
+    volumes:
+        - ./mysql/dbdata:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: aerotd_vestibular
+      MYSQL_USER: vestibular
+      MYSQL_PASSWORD: r0x4l0t_1n_th3_d4rkn3ss
+      MYSQL_ROOT_PASSWORD: r0x4l0t_1n_th3_d4rkn3ss
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     networks:

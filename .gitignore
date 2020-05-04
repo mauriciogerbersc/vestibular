@@ -1,2 +1,7 @@
 .DS_Store
 .idea
+./src/vendor
+./src/.env
+./src/.editorconfig
+./mysql
+./nginx
