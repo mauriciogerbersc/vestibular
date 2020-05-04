@@ -1,0 +1,16 @@
+suites:
+  calends:
+    namespace: Danhunsaker
+    psr4_prefix: Danhunsaker
+    src_path: %paths.config%/src
+    spec_path: %paths.config%
+    spec_prefix: spec
+extensions:
+  - PhpSpec\Extension\CodeCoverageExtension
+code_coverage:
+  whitelist:
+    - src
+  format:
+    - clover
+  output:
+    clover: phpspec-coverage.xml
