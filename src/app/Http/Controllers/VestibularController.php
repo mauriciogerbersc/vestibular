@@ -92,9 +92,10 @@ class VestibularController extends Controller
             return redirect()->route('selecionar_tema');
         }
 
+     
         // Verifico se existe alguma redação anterior para que ele possa retomar, no caso de não ter enviado.
         $inscrito_id        = Auth::user()->inscrito_id;
-        $redacaoAnterior    = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)->orWhere('redacao_id', '=', $id)->first();
+        $redacaoAnterior    = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)->Where('redacao_id', '=', $id)->first();
 
         if(isset($redacaoAnterior)){
             if($redacaoAnterior->enviou_redacao == 1)

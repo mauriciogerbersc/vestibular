@@ -31,8 +31,8 @@
             <input type="text" id="tokenCard" name="tokenCard" />
             <input type="text" id="bandeiraCartao" />
             <input type="text" id="hashCard" name="hashCard" />
-            <input type="text" name="itemDescription1" value="Inscrição Vestibular AeroTD" />
-            <input type="text" name="itemAmount1" value="15.00" />
+            <input type="hidden" name="itemDescription1" value="Inscricao Vestibular AeroTD" />
+            <input type="hidden" name="itemAmount1" value="1.00" />
 
             <input type="hidden" name="curso_id" value="{{$curso->id}}" />
             <div class="row">
@@ -47,7 +47,7 @@
                                 <h6 class="my-0">Taxa de Inscrição</h6>
                                 <small class="text-muted">Taxa Inscrição para Vestibular</small>
                             </div>
-                            <span class="text-muted">R$ 20</span>
+                            <span class="text-muted">R$ 15</span>
                         </li>
 
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
@@ -340,10 +340,9 @@
 @section('scripts')
 
 <script src="{{asset('assets/js/jquery.mask.js')}}"></script>
-<script src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+<script src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
 <script type="text/javascript" charset="utf-8">
     gerarTokenPagamento();
-   
 
     function gerarTokenPagamento(){
         $.ajax({
@@ -389,20 +388,19 @@
         return df.promise();
     }
 
-
     
     $('#cc-number').on('keyup', function () {
        
-       //Receber o número do cart�o digitado pelo usu�rio
+       //Receber o número do cartão digitado pelo usuário
        var numCartao = $(this).val();
    
-       //Contar quantos números o usu�rio digitou
+       //Contar quantos números o usuário digitou
        var qntNumero = numCartao.length;
 
-       //Validar o cart�o quando o usu�rio digitar 6 digitos do cart�o
+       //Validar o cartão quando o usuário digitar 6 digitos do cartão
        if (qntNumero == 6) {
            
-           //Instanciar a API do PagSeguro para validar o cart�o
+           //Instanciar a API do PagSeguro para validar o cartão
            PagSeguroDirectPayment.getBrand({
                cardBin: numCartao,
                success: function (retorno) {
@@ -413,21 +411,21 @@
                },
                error: function (retorno) {
                    //Enviar para o index a mensagem de erro
-                   $('#msg').html("Cart�o inv�lido");
+                   $('#msg').html("Cartão inválido");
                }
            });
        }
    });
 
 
-
     function senderHashReady() {
 
-        PagSeguroDirectPayment.onSenderHashReady(function (response){
+        PagSeguroDirectPayment.onSenderHashReady(function (response){ 
             if(response.status == 'error'){
                 console.log(response.message);
                 return false;
             }
+            console.log(response);
             $("#hashCard").val(response.senderHash);
         });
 
@@ -439,7 +437,7 @@
         return df.promise();
     }
 
-    $(".cartao_numero").blur(function(){
+    $(".cpf").blur(function(){
         senderHashReady();
     });
 
