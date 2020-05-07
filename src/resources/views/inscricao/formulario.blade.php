@@ -28,9 +28,9 @@
         <!--<form method="POST" action="/inscricao/store"> -->
         <form name="formPagamento">
             @csrf
-            <input type="text" id="tokenCard" name="tokenCard" />
-            <input type="text" id="bandeiraCartao" />
-            <input type="text" id="hashCard" name="hashCard" />
+            <input type="hidden" id="tokenCard" name="tokenCard" />
+            <input type="hidden" id="bandeiraCartao" />
+            <input type="hidden" id="hashCard" name="hashCard" />
             <input type="hidden" name="itemDescription1" value="Inscricao Vestibular AeroTD" />
             <input type="hidden" name="itemAmount1" value="1.00" />
 

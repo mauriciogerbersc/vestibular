@@ -182,7 +182,7 @@ class InscricaoController extends Controller
                     // recupero link do boleto pra enviar pro email.
                     $link_boleto = $retornoPagamento['retorno']->paymentLink[0];
 
-                    $enviarEmail        = $enviarEmail->emailBoleto($request->firstName, "mauricio.gerber@gmail.com", $curso->curso, $link_boleto);
+                    $enviarEmail        = $enviarEmail->emailBoleto($request->firstName, $request->email, $curso->curso, $link_boleto);
                   
                     $retorno['success'] = true;
                     $retorno['message'] = "Cadastro Realizado com sucesso. Você receberá por email o link com boleto para pagamento.";
@@ -241,8 +241,17 @@ class InscricaoController extends Controller
                 $payment->billingAddressState           =  $request->uf;
                 $payment->billingAddressCountry         = 'BRA';
                 $retornoPagamento = $pagamentoPagSeguro->pagamentoCartao($payment);
-              
+                
                 if($retornoPagamento['success'] == 1){
+
+                    if(($retornoPagamento['retorno']->status[0] != 3) OR ($retornoPagamento['retorno']->status[0] != 4)){
+                        $retorno['success'] = false;
+                        $retorno['message'] = "Não foi possível concluir sua transação. Verifique os dados do seu cartão de crédito.";
+                        $retorno['classe']  = "alert-warning";
+        
+                        echo json_encode($retorno);
+                        return;
+                    }
 
                     // Salva dados do pagamento.
                     $pagamento = $pagamentoPagSeguro->savePayment($ultimoIdInscritoReference, $retornoPagamento['retorno']->code[0], $retornoPagamento['retorno']->status[0], 'cc');
@@ -273,6 +282,16 @@ class InscricaoController extends Controller
                         echo json_encode($retorno);
                         return;
                     }
+
+                    if($retornoPagamento['retorno']->status[0] == 4){
+                        $retorno['success'] = false;
+                        $retorno['message'] = "Seu pedido está em análise pela sua operadora de cartão de crédito.";
+                        $retorno['classe']  = "alert-info";
+        
+                        echo json_encode($retorno);
+                        return;
+                    }
+
                     // Recupero nome do curso para enviar no email.
                     $curso = Curso::find($request->curso_id);
 
@@ -283,7 +302,7 @@ class InscricaoController extends Controller
                     if ($criarUsuarioInscrito == true) {
                         /* Gero Hash para envio ao inscrito  */
                         $hash               = $criadorDeHash->criarHash($resultadoCadastro->id);
-                        $enviarEmail        = $enviarEmail->enviarEmailInscricao($resultadoCadastro->firstName, 'mauricio.gerber@gmail.com', $curso->curso, $hash->hash);
+                        $enviarEmail        = $enviarEmail->enviarEmailInscricao($resultadoCadastro->firstName, $resultadoCadastro->email, $curso->curso, $hash->hash);
 
                         /*Altero o status do inscrito para 1. o Valor 1 quer dizer que ele pagou e falta realizar a redação. */
                         $procura_inscrito = Inscrito::find($resultadoCadastro->id);
