@@ -67,4 +67,8 @@ Route::get('/email/inscricao', 'InscricaoController@emailInscricao');
 Route::get('/boleto', 'PagSeguroController@payment');
 Route::get('/pagseguro/credenciais', 'PagSeguroController@getCredentials')->name('credenciais');
 Route::get('/pagseguro/statusTransacao', 'PagSeguroController@verificarStatusTransacao');
+Route::get('/pagseguro/transacoesPorData', 'PagSeguroController@verificarTransacaoPorData');
 Route::post('/pagseguro/paymentMethod', 'PagSeguroController@paymentMethod')->name('payment');
+
+
+Route::get('/testaemail', 'PagSeguroController@email');

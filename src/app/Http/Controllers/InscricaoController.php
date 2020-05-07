@@ -30,7 +30,7 @@ class InscricaoController extends Controller
         return "Oi";
     }
 
-    /* M�todo que trata de enviar o email com confirma��o de inscri��o para o aluno */
+    /* Método que trata de enviar o email com confirma��o de inscri��o para o aluno */
     public function emailInscricao($user)
     {
         Mail::send(new \App\Mail\newLaravelTips($user));
