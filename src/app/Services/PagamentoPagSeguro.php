@@ -114,8 +114,8 @@ class PagamentoPagSeguro
             }
         
             $retorno = curl_exec($curl);
-           
-            $xml = simplexml_load_string($retorno);
+            print_r($retorno);exit;
+                $xml = simplexml_load_string($retorno);
            
             $infoRequisicao = curl_getinfo($curl);
 

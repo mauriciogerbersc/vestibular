@@ -30,6 +30,14 @@ class Helper
         $statusArray = array(0 => 'Aguardando Pagamento', 1 => 'Aguardando Redação', 2 => 'Aguardando Correção');
 
         return $statusArray[$status];
+    
+    }
+
+    public static function retornaBadgeStatusInscrito(int $status){
+
+        $statusArray = array(0 => 'badge-danger', 1 => 'badge-warning', 2 => 'badge-success');
+
+        return $statusArray[$status];
         
     }
 

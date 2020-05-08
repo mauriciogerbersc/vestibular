@@ -244,14 +244,7 @@ class InscricaoController extends Controller
                 
                 if($retornoPagamento['success'] == 1){
 
-                    if(($retornoPagamento['retorno']->status[0] != 3) OR ($retornoPagamento['retorno']->status[0] != 4)){
-                        $retorno['success'] = false;
-                        $retorno['message'] = "Não foi possível concluir sua transação. Verifique os dados do seu cartão de crédito.";
-                        $retorno['classe']  = "alert-warning";
-        
-                        echo json_encode($retorno);
-                        return;
-                    }
+                    
 
                     // Salva dados do pagamento.
                     $pagamento = $pagamentoPagSeguro->savePayment($ultimoIdInscritoReference, $retornoPagamento['retorno']->code[0], $retornoPagamento['retorno']->status[0], 'cc');
@@ -273,7 +266,7 @@ class InscricaoController extends Controller
                         $cadastroDeInscrito->curso_id   = $request->curso_id;
                         $cadastroDeInscrito->status     = 0;
                         $cadastroDeInscrito->phone      = $request->phone;
-                        $resultadoCadastro = $cadastrarInscrito->cadastrarInscrito($cadastroDeInscrito);
+                        $cadastrarInscrito->cadastrarInscrito($cadastroDeInscrito);
                     }else{
                         $retorno['success'] = false;
                         $retorno['message'] = "Não foi possível continuar com sua inscrição. Entre em contato com a instituição.";
@@ -283,38 +276,32 @@ class InscricaoController extends Controller
                         return;
                     }
 
-                    if($retornoPagamento['retorno']->status[0] == 4){
-                        $retorno['success'] = false;
-                        $retorno['message'] = "Seu pedido está em análise pela sua operadora de cartão de crédito.";
-                        $retorno['classe']  = "alert-info";
-        
-                        echo json_encode($retorno);
-                        return;
-                    }
+ 
+                    $retorno['success'] = true;
+                    $retorno['message'] = "Seu pedido está em análise junto a sua operadora de cartão de crédito. Você receberá pelo email informado o retorno da transação.";
+                    $retorno['classe']  = "alert-success";
+                    echo json_encode($retorno);
+                    return;
 
-                    // Recupero nome do curso para enviar no email.
+                    /* Recupero nome do curso para enviar no email.
                     $curso = Curso::find($request->curso_id);
 
-                    /* Crio um usuário na tabela de usuários para acesso futuro do candidato. */
+                     Crio um usuário na tabela de usuários para acesso futuro do candidato. 
                     $criarUsuarioInscrito   = $criadorDeUsuario->criarUsuario($resultadoCadastro->firstName, $resultadoCadastro->email, $resultadoCadastro->nDocumento, $resultadoCadastro->id);
                     
-                    /*Recupero curso que o aluno se inscreveu, para enviar por email  */
+                    /*Recupero curso que o aluno se inscreveu, para enviar por email  
                     if ($criarUsuarioInscrito == true) {
-                        /* Gero Hash para envio ao inscrito  */
+                        /* Gero Hash para envio ao inscrito  
                         $hash               = $criadorDeHash->criarHash($resultadoCadastro->id);
                         $enviarEmail        = $enviarEmail->enviarEmailInscricao($resultadoCadastro->firstName, $resultadoCadastro->email, $curso->curso, $hash->hash);
 
-                        /*Altero o status do inscrito para 1. o Valor 1 quer dizer que ele pagou e falta realizar a redação. */
+                        /*Altero o status do inscrito para 1. o Valor 1 quer dizer que ele pagou e falta realizar a redação. 
                         $procura_inscrito = Inscrito::find($resultadoCadastro->id);
                         $procura_inscrito->status = 1;
                         $procura_inscrito->save();
                     }
 
-                    $retorno['success'] = true;
-                    $retorno['message'] = "Cadastro Realizado com sucesso. Você receberá por email o link com as instruções para realização do vestibular.";
-                    $retorno['classe']  = "alert-success";
-                    echo json_encode($retorno);
-                    return;
+                   */
                     
                 }else {
                     $retorno['success'] = false;

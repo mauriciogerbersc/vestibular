@@ -1,4 +1,4 @@
-@extends('admin/layout/admin')
+@extends('admin/layout/admin', ["current" => "inscritos"]))
 
 @section('conteudo')
 
@@ -32,7 +32,7 @@
         <tbody>
         @foreach($inscritos as $inscrito)
             <tr>
-                <td>{!! Helper::retornaStatusInscrito($inscrito->status) !!}</td>
+                <td><span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status) !!}">{!! Helper::retornaStatusInscrito($inscrito->status) !!}</span></td>
                 <td><a href="admin/curso/{{$inscrito->curso->id}}/inscritos">{{$inscrito->curso->curso}}</a></td>
                 <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
                 <td>{{$inscrito->nDocumento}}</td>

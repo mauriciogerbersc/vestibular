@@ -17,7 +17,10 @@ class AdminController extends Controller
 
     public function index()
     {
-        return view('admin.dashboard.index');
+
+        $redacoesAlunos = RedacaoAluno::where('enviou_redacao', '=', 1)->get();
+        $inscritos = Inscrito::all();
+        return view('admin.dashboard.index', compact('redacoesAlunos', 'inscritos'));
     }
 
     public function redacaoInscritos()

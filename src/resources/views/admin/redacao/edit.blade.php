@@ -1,4 +1,4 @@
-@extends('admin/layout/admin')
+@extends('admin/layout/admin', ["current" => "temas"]))
 
 @section('conteudo')
 
