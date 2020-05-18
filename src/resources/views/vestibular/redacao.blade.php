@@ -77,7 +77,7 @@
 <script type="text/javascript" charset="utf-8">
     
 
-    var oneHour = new Date().getTime() + 6000 * 60 * 10;
+    var oneHour = new Date().getTime() + 6000 * 60 * 15;
     //var fiveSeconds = new Date().getTime() + 5000;
     $('.timer').countdown(oneHour)
         // removed the elapsed: true
