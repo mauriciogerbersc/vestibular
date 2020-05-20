@@ -38,7 +38,7 @@
 
         <div class="form-group col-md-12">
             <label for="descricaoDoTema">Descrição do Tema</label>
-            <textarea class="form-control" name="descricao"></textarea>
+            <textarea id="wysiwyg_ckeditor" class="form-control" name="descricao"></textarea>
         </div>
 
     </div>
@@ -47,4 +47,15 @@
 </form>
 <br />
 
+@endsection
+
+
+@section('scripts')
+
+    <!-- ckeditor -->
+    <script src="{{asset('assets/bower_components/ckeditor/ckeditor.js')}}"></script>
+    <script src="{{asset('assets/bower_components/ckeditor/adapters/jquery.js')}}"></script>
+
+    <!--  wysiwyg editors functions -->
+    <script src="{{asset('assets/js/forms_wysiwyg.min.js')}}"></script>
 @endsection
