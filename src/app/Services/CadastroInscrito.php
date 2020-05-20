@@ -22,6 +22,7 @@ class CadastroInscrito
             'numero'        => $inscrito->numero,
             'complemento'   => $inscrito->complemento,
             'curso_id'      => $inscrito->curso_id,
+            'historico'     => $inscrito->historico,
             'status'        => $inscrito->status,
             'phone'         => $inscrito->phone
         ]);

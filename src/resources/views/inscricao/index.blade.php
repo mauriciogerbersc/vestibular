@@ -14,7 +14,7 @@
             <div class="col-lg-4 col-md-6">
                 <div class="service-box-layout1">
                     <div class="item-img">
-                        <img src="files/{{$curso->imagem_curso}}" />
+                        <img src="/files/{{$curso->imagem_curso}}" />
                     </div>
                     <div class="item-content">
                         <h3 class="item-title">{{$curso->curso}}</h3>

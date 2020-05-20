@@ -38,6 +38,15 @@
                     <div class="heading-layout3 mg-b-0">
                         <h3 class="mg-b-8">Informações Adicionais</h3>
                     </div>
+
+                    <ul class="item-list">
+                        <li>
+                            <a href="https://{{$curso->link_curso}}" target="_blank" style="background-color:red;">
+                            <i class="fa fa-info" aria-hidden="true"></i>Mais Informações
+                            </a>
+                        </li>
+                    </ul>
+
                     <ul class="item-list">
                         <li><a href=""><i class="fa fa-graduation-cap" aria-hidden="true"></i><strong>{{$curso->tipo_curso}}</strong></a></li>
                     </ul>

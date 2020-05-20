@@ -23,7 +23,11 @@ Route::get('/admin/login', 'Auth\AdminLoginController@index')->name('admin.login
 Route::post('/admin/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
 Route::get('/inscricao/{curso}', 'InscricaoController@inscricao');
 Route::get('/inscricao/formulario/{slug}', 'InscricaoController@create');
-Route::post('/inscricao/store', 'InscricaoController@store')->name('inscricao_aluno');
+Route::post('/pagamento', 'InscricaoController@payment')->name('inscricaoPayment');
+Route::post('/checkCadastro', 'InscricaoController@checkCadastro')->name('temCadastro');
+
+
+Route::post('/inscricao/pagamento', 'InscricaoController@store')->name('inscricao_pagamento');
 Route::get('/hash', 'InscricaoController@generateHash');
 Route::get('/confirmacao', 'InscricaoController@confirmacao')->name('pagina_confirmacao');
 

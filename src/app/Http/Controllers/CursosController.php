@@ -127,12 +127,28 @@ class CursosController extends Controller
             $imagem_final = $request->old_image;
         }
 
+        if($request->hasFile('banner_curso')){
+            $imagemBanner = $request->file('banner_curso');
+
+            $name_banner              = $imagemBanner->getClientOriginalName();
+            $name_sem_extensao        = pathinfo($name_banner, PATHINFO_FILENAME);
+            $extension                = $imagemBanner->getClientOriginalExtension();
+            $fileNameToStoreBanner    = md5(uniqid()).'_'.time().'.'.$extension;
+            $imagemBanner->move(public_path().'/files/banner/', $fileNameToStoreBanner);
+
+            $banner_final = $fileNameToStoreBanner;
+        }else{
+            $banner_final = $request->old_banner;
+        }
+
 
         DB::beginTransaction();
             $curso = Curso::find($id);
             $curso->tipo_curso = $request->input('modalidade');
             $curso->curso = $request->input('curso');
             $curso->descricao = $request->input('descricao');
+            $curso->banner_curso = $banner_final;
+            $curso->link_curso = $request->input('link_curso');
             $curso->imagem_curso = $imagem_final;
             $curso->slug = $slug;
             $curso->save();

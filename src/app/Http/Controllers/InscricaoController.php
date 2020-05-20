@@ -22,7 +22,7 @@ class InscricaoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:admin')->except(['index', 'inscricao', 'create', 'store', 'confirmacao']);
+        $this->middleware('auth:admin')->except(['index', 'inscricao', 'create', 'store', 'confirmacao', 'payment', 'checkCadastro']);
     }
 
     public function confirmacao()
@@ -76,16 +76,166 @@ class InscricaoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, CadastroInscrito $cadastrarInscrito, CriadorDeHash $criadorDeHash, CriadorDeUsuario $criadorDeUsuario, EnvioDeEmail $enviarEmail, PagamentoPagSeguro $pagamentoPagSeguro)
+    public function store(Request $request, EnvioDeEmail $enviarEmail, PagamentoPagSeguro $pagamentoPagSeguro)
     {
+        
+        // Recupera dados do inscrito para finalizar pagametno
+        $dadosInscrito = Inscrito::find($request->inscrito_id);
 
+        // Definindo telefones para formato PagSeguro;
+        $telefone = preg_split("/\(|\)/", $dadosInscrito->phone);
+        $ddd = $telefone[1];
+        $phone = str_replace("-","",trim($telefone[2]));
    
-       $rules = [
+        if ($request->formaPagamento == 'b') {
+            $payment = new stdClass();
+            $payment->paymentMethod                = 'boleto';
+            $payment->itemDescription1             =  $request->itemDescription1;
+            $payment->itemAmount1                  =  $request->itemAmount1;
+            $payment->itemQuantity1                = '1';
+            $payment->reference                    =  $request->inscrito_id;
+            $payment->senderName                   =  $dadosInscrito->firstName . ' ' . $dadosInscrito->lastName;
+            $payment->senderCPF                    =  $dadosInscrito->nDocumento;
+            $payment->senderAreaCode               =  $ddd;
+            $payment->senderPhone                  =  $phone;
+            $payment->senderEmail                  =  $dadosInscrito->email;
+            $payment->senderHash                   =  $request->hashCard;
+            $payment->shippingAddressStreet        =  $dadosInscrito->endereco;
+            $payment->shippingAddressNumber        =  $dadosInscrito->numero;
+            $payment->shippingAddressComplement    =  $dadosInscrito->complemento;
+            $payment->shippingAddressDistrict      =  $dadosInscrito->bairro;
+            $payment->shippingAddressPostalCode    =  $dadosInscrito->cep;
+            $payment->shippingAddressCity          =  $dadosInscrito->cidade;
+            $payment->shippingAddressState         =  $dadosInscrito->uf;;
+            $payment->shippingAddressCountry       =  'BRA';
+            $payment->shippingType                 =  '3';
+            $payment->shippingCost                 =  '0.00';    
+            $payment->creditCardToken               = $request->tokenCard;
+            $payment->installmentQuantity           = '1';
+            $payment->installmentValue              = $request->itemAmount1;
+            $payment->noInterestInstallmentQuantity = '2';
+            $retornoPagamento = $pagamentoPagSeguro->pagamentoBoleto($payment);
+
+            if($retornoPagamento['success'] == 1){
+                
+                // Salva dados do pagamento.
+                $pagamentoPagSeguro->savePayment(
+                    $request->inscrito_id, 
+                    $retornoPagamento['retorno']->code[0], 
+                    $retornoPagamento['retorno']->status[0], 
+                    'b'
+                );
+              
+                // Recupero nome do curso para enviar no email.
+                $curso = Curso::find($request->curso_id);
+                // recupero link do boleto pra enviar pro email.
+                $link_boleto = $retornoPagamento['retorno']->paymentLink[0];
+
+                $enviarEmail        = $enviarEmail->emailBoleto($dadosInscrito->firstName, $dadosInscrito->email, $curso->curso, $link_boleto);
+                
+                $retorno['success'] = true;
+                $retorno['message'] = "Cadastro Realizado com sucesso. Você receberá por email o link com boleto para pagamento.";
+                $retorno['classe']  = "alert-success";
+
+
+                echo json_encode($retorno);
+                return;
+            }else{
+                $retorno['success'] = false;
+                $retorno['message'] = "Não foi possível continuar com sua inscrição. Entre em contato com a instituição.";
+                $retorno['classe']  = "alert-warning";
+
+                echo json_encode($retorno);
+                return;
+            }
+        }elseif($request->formaPagamento == 'cc'){
+            $payment = new stdClass();
+            $payment->paymentMethod                = 'creditCard';
+            $payment->itemDescription1             =  $request->itemDescription1;
+            $payment->itemAmount1                  =  $request->itemAmount1;
+            $payment->itemQuantity1                = '1';
+            $payment->reference                    =  $request->inscrito_id;
+            $payment->senderName                   =  $dadosInscrito->firstName . ' ' . $dadosInscrito->lastName;
+            $payment->senderCPF                    =  $dadosInscrito->nDocumento;
+            $payment->senderAreaCode               =  $ddd;
+            $payment->senderPhone                  =  $phone;
+            $payment->senderEmail                  =  $dadosInscrito->email;
+            $payment->senderHash                   =  $request->hashCard;
+            $payment->shippingAddressStreet        =  $dadosInscrito->endereco;
+            $payment->shippingAddressNumber        =  $dadosInscrito->numero;
+            $payment->shippingAddressComplement    =  $dadosInscrito->complemento;
+            $payment->shippingAddressDistrict      =  $dadosInscrito->bairro;
+            $payment->shippingAddressPostalCode    =  $dadosInscrito->cep;
+            $payment->shippingAddressCity          =  $dadosInscrito->cidade;
+            $payment->shippingAddressState         =  $dadosInscrito->uf;;
+            $payment->shippingAddressCountry       =  'BRA';
+            $payment->shippingType                 =  '3';
+            $payment->shippingCost                 =  '0.00';    
+            $payment->creditCardToken               = $request->tokenCard;
+            $payment->installmentQuantity           = '1';
+            $payment->installmentValue              = $request->itemAmount1;
+            $payment->itemDescription1             =  $request->itemDescription1;
+            $payment->noInterestInstallmentQuantity = '2';
+            $payment->creditCardHolderName          =  $request->cc_name;
+            $payment->creditCardHolderCPF           =  $request->cc_cpf;
+            $payment->creditCardHolderBirthDate     =  $request->cc_nascimento;
+            $payment->senderAreaCode                =  $ddd;
+            $payment->senderPhone                   =  $phone;
+            $payment->billingAddressStreet          =  $request->endereco_cobranca;
+            $payment->billingAddressNumber          =  $request->numero_cobranca;
+            $payment->billingAddressComplement      =  $request->complemento_cobranca;
+            $payment->billingAddressDistrict        =  $request->bairro_cobranca;
+            $payment->billingAddressPostalCode      =  $request->cep_cobranca;
+            $payment->billingAddressCity            =  $request->cidade_cobranca;
+            $payment->billingAddressState           =  $request->uf_cobranca;
+            $payment->billingAddressCountry         = 'BRA';
+            $retornoPagamento = $pagamentoPagSeguro->pagamentoCartao($payment);
+            
+            if($retornoPagamento['success'] == 1){
+                // Salva dados do pagamento.
+                $pagamentoPagSeguro->savePayment(
+                    $request->inscrito_id, 
+                    $retornoPagamento['retorno']->code[0], 
+                    $retornoPagamento['retorno']->status[0], 
+                    'cc'
+                );
+
+                $retorno['success'] = true;
+                $retorno['message'] = "Seu pedido está em análise junto a sua operadora de cartão de crédito. Você receberá pelo email informado o retorno da transação.";
+                $retorno['classe']  = "alert-success";
+                echo json_encode($retorno);
+                return;
+
+            } else {
+                $retorno['success'] = false;
+                $retorno['message'] = "Não foi possível continuar com sua inscrição. Entre em contato com a instituição.";
+                $retorno['classe']  = "alert-warning";
+
+                echo json_encode($retorno);
+                return;
+            }
+    
+
+        } 
+
+    }
+
+    public function payment(Request $request, CadastroInscrito $cadastrarInscrito){
+      
+        // Validações de formulário.
+        $rules = [
             'firstName' => 'required',
             'lastName' => 'required',
             'email' => 'required|unique:inscritos',
             'nDocumento'  => 'required',
             'phone' => 'required',
+            'historico_escolar'  => 'required|mimes:doc,docx,pdf,png,img|max:2048',
+            'cep' => 'required',
+            'bairro' => 'required',
+            'cidade' => 'required',
+            'uf' => 'required',
+            'endereco' => 'required',
+            'numero' => 'required'
         ];
 
         $messages = [
@@ -94,263 +244,73 @@ class InscricaoController extends Controller
             'email.required' => 'O campo Email é obrigatório',
             'email.unique'   => 'O email já está registrado na base de dados',
             'nDocumento.required' => 'O campo nº Documento é obrigatório',
-            'phone.required' => 'O campo telefone é obrigatório'
+            'phone.required' => 'O campo telefone é obrigatório',
+            'historico_escolar.required' => 'O campo histórico escolar é obrigatório',
+            'historico_escolar.mimes' => 'O arquvio enviado deve ter as seguintes extensões: doc, docx, pdf, png, img.',
+            'cep.required' => 'O campo CEP é obrigatório',
+            'bairro.required' => 'O campo bairro é obrigatório',
+            'cidade.required' => 'O campo cidade é obrigatório',
+            'uf.required' => 'O campo UF é obrigatório',
+            'endereco.required' => 'O campo endereço é obrigatório',
+            'numero.required' => 'O campo número é obrigatório'
+        ];
+
+        $validator = $request->validate($rules, $messages);
+        
+          // Realizo upload do histórico escolar
+          if($request->hasFile('historico_escolar')){
+            $historico = $request->file('historico_escolar');
+
+            $name                     = $historico->getClientOriginalName();
+            $name_sem_extensao        = pathinfo($name, PATHINFO_FILENAME);
+            $extension                = $historico->getClientOriginalExtension();
+            $fileNameToStore          = uniqid().'_'.time().'.'.$extension;
+            $historico->move(public_path().'/files/historicos/', $fileNameToStore);
+        }
+
+        // Cadastro o inscrito no banco de dados
+        $cadastroDeInscrito              = new stdClass();
+        $cadastroDeInscrito->firstName   = $request->firstName;
+        $cadastroDeInscrito->lastName    = $request->lastName;
+        $cadastroDeInscrito->nDocumento  = $request->nDocumento;
+        $cadastroDeInscrito->email       = $request->email;
+        $cadastroDeInscrito->cep         = $request->cep;
+        $cadastroDeInscrito->bairro      = $request->bairro;
+        $cadastroDeInscrito->cidade      = $request->cidade;
+        $cadastroDeInscrito->uf          = $request->uf;
+        $cadastroDeInscrito->endereco    = $request->endereco;
+        $cadastroDeInscrito->numero      = $request->numero;
+        $cadastroDeInscrito->complemento = $request->complemento;
+        $cadastroDeInscrito->historico   = $fileNameToStore;
+        $cadastroDeInscrito->curso_id    = $request->curso_id;
+        $cadastroDeInscrito->status      = 0;
+        $cadastroDeInscrito->phone       = $request->phone;
+        $inscrito                      = $cadastrarInscrito->cadastrarInscrito($cadastroDeInscrito);
+
+        // Recupera ID do inscrito.
+        $id_inscrito                     = $inscrito->id;
+
+        // Redirect para o pagamento
+        return view('inscricao.pagamento', compact('inscrito'));
+        
+    }
+  
+
+    public function checkCadastro(Request $request){
+         // Validações de formulário.
+         $rules = [
+            'cpfCadastrado' => 'required',
+        ];
+
+        $messages = [
+            'cpfCadastrado.required' => 'O Documento Inscrito é obrigatório.',
         ];
 
         $validator = $request->validate($rules, $messages);
 
-       
-        if(isset($validator['message'])){
-           
-            if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator->errors());
-            }
-        }else {
-
-            $telefone = preg_split("/\(|\)/", $request->phone);
-            $ddd = $telefone[1];
-            $phone = str_replace("-","",trim($telefone[2]));
-            
-   
-            $ultimoIdInscrito = Inscrito::max('id');
-            $ultimoIdInscritoReference = $ultimoIdInscrito+1;
-
-            if ($request->formaPagamento == 'b') {
-
-                $payment = new stdClass();
-                $payment->paymentMethod                = 'boleto';
-                $payment->itemDescription1             =  $request->itemDescription1;
-                $payment->itemAmount1                  =  $request->itemAmount1;
-                $payment->itemQuantity1                = '1';
-                $payment->reference                    =  $ultimoIdInscritoReference;
-                $payment->senderName                   =  $request->firstName . ' ' . $request->lastName;
-                $payment->senderCPF                    =  $request->nDocumento;
-                $payment->senderAreaCode               =  $ddd;
-                $payment->senderPhone                  =  $phone;
-                $payment->senderEmail                  =  $request->email;
-                $payment->senderHash                   =  $request->hashCard;
-                $payment->shippingAddressStreet        =  $request->endereco;
-                $payment->shippingAddressNumber        =  $request->numero;
-                $payment->shippingAddressComplement    =  $request->complemento;
-                $payment->shippingAddressDistrict      =  $request->bairro;
-                $payment->shippingAddressPostalCode    =  $request->cep;
-                $payment->shippingAddressCity          =  $request->cidade;
-                $payment->shippingAddressState         =  $request->uf;;
-                $payment->shippingAddressCountry       =  'BRA';
-                $payment->shippingType                 =  '3';
-                $payment->shippingCost                 =  '0.00';    
-                $payment->creditCardToken               = $request->tokenCard;
-                $payment->installmentQuantity           = '1';
-                $payment->installmentValue              = $request->itemAmount1;
-                $payment->noInterestInstallmentQuantity = '2';
-                $retornoPagamento = $pagamentoPagSeguro->pagamentoBoleto($payment);
-    
-                if($retornoPagamento['success'] == 1){
-                   
-                    // Salva dados do pagamento.
-                    $pagamento = $pagamentoPagSeguro->savePayment($ultimoIdInscritoReference, $retornoPagamento['retorno']->code[0], $retornoPagamento['retorno']->status[0], 'b');
-                  
-                    if($pagamento){
-                    // Insiro inscrito no banco de dados.
-                        $cadastroDeInscrito = new stdClass();
-                        $cadastroDeInscrito->firstName  = $request->firstName;
-                        $cadastroDeInscrito->lastName   = $request->lastName;
-                        $cadastroDeInscrito->nDocumento = $request->nDocumento;
-                        $cadastroDeInscrito->email      = $request->email;
-                        $cadastroDeInscrito->cep        = $request->cep;
-                        $cadastroDeInscrito->bairro     = $request->bairro;
-                        $cadastroDeInscrito->cidade     = $request->cidade;
-                        $cadastroDeInscrito->uf         = $request->uf;
-                        $cadastroDeInscrito->endereco   = $request->endereco;
-                        $cadastroDeInscrito->numero     = $request->numero;
-                        $cadastroDeInscrito->complemento = $request->complemento;
-                        $cadastroDeInscrito->curso_id   = $request->curso_id;
-                        $cadastroDeInscrito->status     = 0;
-                        $cadastroDeInscrito->phone      = $request->phone;
-                        $cadastrarInscrito->cadastrarInscrito($cadastroDeInscrito);
-
-                    }else{
-                        $retorno['success'] = false;
-                        $retorno['message'] = "Não foi possível continuar com sua inscrição. Entre em contato com a instituição.";
-                        $retorno['classe']  = "alert-warning";
-        
-                        echo json_encode($retorno);
-                        return;
-                    }
-                    // Recupero nome do curso para enviar no email.
-                    $curso = Curso::find($request->curso_id);
-                    // recupero link do boleto pra enviar pro email.
-                    $link_boleto = $retornoPagamento['retorno']->paymentLink[0];
-
-                    $enviarEmail        = $enviarEmail->emailBoleto($request->firstName, $request->email, $curso->curso, $link_boleto);
-                  
-                    $retorno['success'] = true;
-                    $retorno['message'] = "Cadastro Realizado com sucesso. Você receberá por email o link com boleto para pagamento.";
-                    $retorno['classe']  = "alert-success";
+        $inscrito = Inscrito::where('nDocumento', '=', $request->cpfCadastrado)->first();
 
 
-                    echo json_encode($retorno);
-                    return;
-                }else{
-                    $retorno['success'] = false;
-                    $retorno['message'] = "Não foi possível continuar com sua inscrição. Entre em contato com a instituição.";
-                    $retorno['classe']  = "alert-warning";
-
-                    echo json_encode($retorno);
-                    return;
-                }
-            }elseif($request->formaPagamento == 'cc'){
-                $payment = new stdClass();
-                $payment->paymentMethod                = 'creditCard';
-                $payment->itemDescription1             =  $request->itemDescription1;
-                $payment->itemAmount1                  =  $request->itemAmount1;
-                $payment->itemQuantity1                = '1';
-                $payment->reference                    =  $ultimoIdInscritoReference;
-                $payment->senderName                   =  $request->firstName . ' ' . $request->lastName;
-                $payment->senderCPF                    =  $request->nDocumento;
-                $payment->senderAreaCode               =  $ddd;
-                $payment->senderPhone                  =  $phone;
-                $payment->senderEmail                  =  $request->email;
-                $payment->senderHash                   =  $request->hashCard;
-                $payment->shippingAddressStreet        =  $request->endereco;
-                $payment->shippingAddressNumber        =  $request->numero;
-                $payment->shippingAddressComplement    =  $request->complemento;
-                $payment->shippingAddressDistrict      =  $request->bairro;
-                $payment->shippingAddressPostalCode    =  $request->cep;
-                $payment->shippingAddressCity          =  $request->cidade;
-                $payment->shippingAddressState         =  $request->uf;;
-                $payment->shippingAddressCountry       =  'BRA';
-                $payment->shippingType                 =  '3';
-                $payment->shippingCost                 =  '0.00';    
-                $payment->creditCardToken               = $request->tokenCard;
-                $payment->installmentQuantity           = '1';
-                $payment->installmentValue              = $request->itemAmount1;
-                $payment->itemDescription1             =  $request->itemDescription1;
-                $payment->noInterestInstallmentQuantity = '2';
-                $payment->creditCardHolderName          =  $request->cc_name;
-                $payment->creditCardHolderCPF           =  $request->cc_cpf;
-                $payment->creditCardHolderBirthDate     =  $request->cc_nascimento;
-                $payment->senderAreaCode                =  $ddd;
-                $payment->senderPhone                   =  $phone;
-                $payment->billingAddressStreet          =  $request->endereco;
-                $payment->billingAddressNumber          =  $request->numero;
-                $payment->billingAddressComplement      =  $request->complemento;
-                $payment->billingAddressDistrict        =  $request->bairro;
-                $payment->billingAddressPostalCode      =  $request->cep;
-                $payment->billingAddressCity            =  $request->cidade;
-                $payment->billingAddressState           =  $request->uf;
-                $payment->billingAddressCountry         = 'BRA';
-                $retornoPagamento = $pagamentoPagSeguro->pagamentoCartao($payment);
-                
-                if($retornoPagamento['success'] == 1){
-
-                    
-
-                    // Salva dados do pagamento.
-                    $pagamento = $pagamentoPagSeguro->savePayment($ultimoIdInscritoReference, $retornoPagamento['retorno']->code[0], $retornoPagamento['retorno']->status[0], 'cc');
-
-                    if($pagamento){
-                        // Insiro inscrito no banco de dados.
-                        $cadastroDeInscrito = new stdClass();
-                        $cadastroDeInscrito->firstName  = $request->firstName;
-                        $cadastroDeInscrito->lastName   = $request->lastName;
-                        $cadastroDeInscrito->nDocumento = $request->nDocumento;
-                        $cadastroDeInscrito->email      = $request->email;
-                        $cadastroDeInscrito->cep        = $request->cep;
-                        $cadastroDeInscrito->bairro     = $request->bairro;
-                        $cadastroDeInscrito->cidade     = $request->cidade;
-                        $cadastroDeInscrito->uf         = $request->uf;
-                        $cadastroDeInscrito->endereco   = $request->endereco;
-                        $cadastroDeInscrito->numero     = $request->numero;
-                        $cadastroDeInscrito->complemento = $request->complemento;
-                        $cadastroDeInscrito->curso_id   = $request->curso_id;
-                        $cadastroDeInscrito->status     = 0;
-                        $cadastroDeInscrito->phone      = $request->phone;
-                        $cadastrarInscrito->cadastrarInscrito($cadastroDeInscrito);
-                    }else{
-                        $retorno['success'] = false;
-                        $retorno['message'] = "Não foi possível continuar com sua inscrição. Entre em contato com a instituição.";
-                        $retorno['classe']  = "alert-warning";
-        
-                        echo json_encode($retorno);
-                        return;
-                    }
-
- 
-                    $retorno['success'] = true;
-                    $retorno['message'] = "Seu pedido está em análise junto a sua operadora de cartão de crédito. Você receberá pelo email informado o retorno da transação.";
-                    $retorno['classe']  = "alert-success";
-                    echo json_encode($retorno);
-                    return;
-
-                    /* Recupero nome do curso para enviar no email.
-                    $curso = Curso::find($request->curso_id);
-
-                     Crio um usuário na tabela de usuários para acesso futuro do candidato. 
-                    $criarUsuarioInscrito   = $criadorDeUsuario->criarUsuario($resultadoCadastro->firstName, $resultadoCadastro->email, $resultadoCadastro->nDocumento, $resultadoCadastro->id);
-                    
-                    /*Recupero curso que o aluno se inscreveu, para enviar por email  
-                    if ($criarUsuarioInscrito == true) {
-                        /* Gero Hash para envio ao inscrito  
-                        $hash               = $criadorDeHash->criarHash($resultadoCadastro->id);
-                        $enviarEmail        = $enviarEmail->enviarEmailInscricao($resultadoCadastro->firstName, $resultadoCadastro->email, $curso->curso, $hash->hash);
-
-                        /*Altero o status do inscrito para 1. o Valor 1 quer dizer que ele pagou e falta realizar a redação. 
-                        $procura_inscrito = Inscrito::find($resultadoCadastro->id);
-                        $procura_inscrito->status = 1;
-                        $procura_inscrito->save();
-                    }
-
-                   */
-                    
-                }else {
-                    $retorno['success'] = false;
-                    $retorno['message'] = "Não foi possível continuar com sua inscrição. Entre em contato com a instituição.";
-                    $retorno['classe']  = "alert-warning";
-
-                    echo json_encode($retorno);
-                    return;
-                }
-        
-
-            }
-        }
-        
-
-    }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return view('inscricao.pagamento', compact('inscrito'));
     }
 }

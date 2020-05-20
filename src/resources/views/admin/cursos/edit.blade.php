@@ -33,11 +33,29 @@
         </div>
 
         <div class="form-group col-md-4">
-            <label for="imgCurso">Imagem do Curso</label>
+            <label for="curso">URL do Curso (sem HTTP://)</label>
+            <input type="text" class="form-control" id="link_curso" name="link_curso" value="{{$curso->link_curso}}">
+        </div>
+
+    </div>
+
+    <div class="form-row">
+
+        <div class="form-group col-md-6">
+            <label for="imgCurso">Banner do Curso (Página Interna)</label>
+            <div class="custom-file">
+                <input type="text" name="old_banner" value="{{$curso->banner_curso}}" />
+                <input type="file" class="custom-file-input" id="customFile" name="banner_curso">
+                <label class="custom-file-label" for="customFile">Escolha o Arquivo</label>
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="imgCurso">Imagem do Curso (Miniatura)</label>
             <div class="custom-file">
                 <input type="text" name="old_image" value="{{$curso->imagem_curso}}" />
-                <input type="file" class="custom-file-input" id="customFile" name="curso_imagem">
-                <label class="custom-file-label" for="customFile">Escolha o Arquivo</label>
+                <input type="file" class="custom-file-input" id="customFileBanner" name="curso_imagem">
+                <label class="custom-file-label" for="customFileBanner">Escolha o Arquivo</label>
             </div>
         </div>
 

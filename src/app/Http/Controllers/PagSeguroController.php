@@ -29,15 +29,18 @@ class PagSeguroController extends Controller
 
 
     public function verificarTransacaoPorData(PagamentoPagSeguro $pagamentoPagSeguro){
-        $inicialDate    =  date("Y-m-d", strtotime('-1 day'))."T00:00";
-        $finalDate      =  date("Y-m-d")."T00:00";
+    
+        $inicialDate    =  date("Y-m-d", strtotime('-15 day'))."T00:00";
+ 
+        $finalDate      =  date("Y-m-d")."T13:00";
+   
         $page           =  1;
         $maxPageResults =  10;
 
 
         $retorno = $pagamentoPagSeguro->verificarTransacaoPorData($inicialDate, $finalDate, $page, $maxPageResults);
-        print_r($retorno);
-        exit;
+        
+ 
         if($retorno['success'] == 1){
             foreach($retorno['retorno']->transactions as $transaction){
                 foreach($transaction as $trans){
@@ -55,11 +58,13 @@ class PagSeguroController extends Controller
 
         $payment = Payment::where('codigo', '=', $codigo)->get();
         $arrToCheck = array();
-
+     
         foreach($payment as $key=>$val){
             $arrToCheck[$val['codigo']] = $val['status_transacao'];
+         
             foreach($arrToCheck as $code=>$status){
                 if($code==$codigo){
+                   
                     if($status!=$status_transacao){
                         DB::beginTransaction();
                         $statusUpdate = Payment::where("codigo", "=", $code)->first();
