@@ -110,12 +110,27 @@ class RedacaoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {   
+
+        if($request->hasFile('tema_imagem')){
+            $imagem = $request->file('tema_imagem');
+
+            $name                     = $imagem->getClientOriginalName();
+            $name_sem_extensao        = pathinfo($name, PATHINFO_FILENAME);
+            $extension                = $imagem->getClientOriginalExtension();
+            $fileNameToStore          = uniqid().'_'.time().'.'.$extension;
+            $imagem->move(public_path().'/files/', $fileNameToStore);
+            $imagem                   = $fileNameToStore;
+        }else{
+            $imagem                   = $request->old_imagem;
+        }
+
         DB::beginTransaction();
-        $redacao = Redacao::find($id);
-        $redacao->titulo_redacao = $request->input('titulo');
-        $redacao->descricao_redacao = $request->input('descricao');
-        $redacao->save();
+            $redacao = Redacao::find($id);
+            $redacao->titulo_redacao    = $request->input('titulo');
+            $redacao->descricao_redacao = $request->input('descricao');
+            $redacao->tema_imagem       = $fileNameToStore;
+            $redacao->save();
         DB::commit();
 
 

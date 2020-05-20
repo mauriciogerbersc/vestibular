@@ -37,11 +37,12 @@ class VestibularController extends Controller
 
     public function check(Request $request)
     {
+    
         $hash = $request->input('hash');
        
         $hashids             = new Hashids('this is my salt', 20, 'abcdefgh123456789');
         $hashQuebrada        = $hashids->decode($hash);
-       
+        
         if(empty($hashQuebrada)){
             $request->session()->flash('mensagem', "Há algo errado com seu link de acesso. Entre em contato com a instituição.");
             $request->session()->flash('alert_tipo', "alert-danger");

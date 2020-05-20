@@ -27,7 +27,7 @@
         <div class="row row-inside">
             <div class="col-lg-12 col-12">
                 <h3>{{$redacaoTema->titulo_redacao}}</h3>
-                <p>{{$redacaoTema->descricao_redacao}}</p>
+                <p>{!!$redacaoTema->descricao_redacao!!}</p>
             </div>
         </div>
     </div>

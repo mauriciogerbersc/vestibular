@@ -19,9 +19,18 @@
 
     <div class="form-row">
         
-        <div class="form-group col-md-12">
+        <div class="form-group col-md-8">
             <label for="titulo">Título</label>
             <input type="text" class="form-control" id="titulo" value="{{$redacao->titulo_redacao}}" name="titulo">
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="imgCurso">Imagem do Tema</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="tema_imagem" name="tema_imagem">
+                <input type="text" name="old_imagem" value="{{$redacao->tema_imagem}}" />
+                <label class="custom-file-label" for="tema_imagem">Escolha o Arquivo</label>
+            </div>
         </div>
 
     </div>
