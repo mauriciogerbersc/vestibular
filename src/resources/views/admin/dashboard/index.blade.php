@@ -12,7 +12,6 @@
     </ol>
 </nav>
 
-
     <div class="row">
       
         <div class="col-md-6 order-md-6 mb-6">

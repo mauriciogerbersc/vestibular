@@ -33,7 +33,7 @@
         @foreach($inscritos as $inscrito)
             <tr>
                 <td><span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status) !!}">{!! Helper::retornaStatusInscrito($inscrito->status) !!}</span></td>
-                <td><a href="admin/curso/{{$inscrito->curso->id}}/inscritos">{{$inscrito->curso->curso}}</a></td>
+                <td><a href="curso/{{$inscrito->curso->id}}/inscritos">{{$inscrito->curso->curso}}</a></td>
                 <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
                 <td>{{$inscrito->nDocumento}}</td>
                 <td>{{$inscrito->email}}</td>

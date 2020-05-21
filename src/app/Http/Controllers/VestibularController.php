@@ -28,7 +28,7 @@ class VestibularController extends Controller
      */
     public function index(Request $request)
     {
-        
+     
         $hash               = $request->query('hash');
         $mensagem           = $request->session()->get('mensagem');
         $alert_tipo         = $request->session()->get('alert_tipo');
@@ -37,7 +37,7 @@ class VestibularController extends Controller
 
     public function check(Request $request)
     {
-    
+        
         $hash = $request->input('hash');
        
         $hashids             = new Hashids('this is my salt', 20, 'abcdefgh123456789');
@@ -80,7 +80,12 @@ class VestibularController extends Controller
     public function tema()
     {
         $temas = Redacao::where('status','=',1)->get();
-        return view('vestibular.tema', compact('temas'));
+
+        $inscrito_id        = Auth::user()->inscrito_id;
+        $inscrito_nome      = Auth::user()->name;
+        $redacaoAnterior    = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)->Where('enviou_redacao', '=', 1)->first();
+
+        return view('vestibular.tema', compact('temas','redacaoAnterior','inscrito_nome'));
     }
 
 
@@ -96,7 +101,8 @@ class VestibularController extends Controller
      
         // Verifico se existe alguma redação anterior para que ele possa retomar, no caso de não ter enviado.
         $inscrito_id        = Auth::user()->inscrito_id;
-        $redacaoAnterior    = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)->Where('redacao_id', '=', $id)->first();
+       
+        $redacaoAnterior    = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)->Where('enviou_redacao', '=', 1)->first();
 
         if(isset($redacaoAnterior)){
             if($redacaoAnterior->enviou_redacao == 1)
