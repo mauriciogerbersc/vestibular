@@ -28,6 +28,7 @@ class EnvioDeEmail
     }
 
     public function enviaEmailTeste(string $paraEmail, string $conteudo){
+      
         $user = new stdClass();
         $user->titulo = "teste";
         $user->name = "Mauricio teste";

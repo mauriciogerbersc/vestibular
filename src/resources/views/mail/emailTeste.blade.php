@@ -1,5 +1,6 @@
 @component('mail::message')
 
-{{$user->conteudo}}
+conteudo curso
+{{$conteudo}}
 
 @endcomponent

@@ -32,7 +32,7 @@ class PagSeguroController extends Controller
  
         $inicialDate    =  date("Y-m-d", strtotime('-10 day'))."T00:00";
  
-        $finalDate      =  date("Y-m-d")."T13:00";
+        $finalDate      =  date("Y-m-d")."T19:00";
    
         $page           =  1;
         $maxPageResults =  40;
@@ -44,16 +44,17 @@ class PagSeguroController extends Controller
         if($retorno['success'] == 1){
             foreach($retorno['retorno']->transactions as $transaction){
                 foreach($transaction as $trans){
-                   $conteudo .= $this->checkIfChangeStatus($trans->code, $trans->status, $trans->reference);
+                   $conteudo = $this->checkIfChangeStatus($trans->code, $trans->status, $trans->reference);
                 }
             }
-
-            $conteudo = $retorno;
-        }else{
-            $conteudo .= "nada pra fazer por hoje {$inicialDate} :)\n\n";
         }
-
-        $enviarEmail->enviaEmailTeste("mauricio@aerotd.com.br", $conteudo);
+        
+        if($conteudo != ""){
+            $conteudo = $conteudo;
+            $enviarEmail->enviaEmailTeste("mauricio@aerotd.com.br", $conteudo);
+        }
+     
+     
 
     }
 
