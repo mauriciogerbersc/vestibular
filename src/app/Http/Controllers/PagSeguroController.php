@@ -28,9 +28,11 @@ class PagSeguroController extends Controller
     }
 
 
-    public function verificarTransacaoPorData(PagamentoPagSeguro $pagamentoPagSeguro){
-    
-        $inicialDate    =  date("Y-m-d", strtotime('-15 day'))."T00:00";
+    public function verificarTransacaoPorData(PagamentoPagSeguro $pagamentoPagSeguro, EnvioDeEmail $enviarEmail){
+        
+        $enviarEmail->enviaEmailTeste("mauricio@aerotd.com.br");
+        exit;
+        $inicialDate    =  date("Y-m-d", strtotime('-10 day'))."T00:00";
  
         $finalDate      =  date("Y-m-d")."T13:00";
    

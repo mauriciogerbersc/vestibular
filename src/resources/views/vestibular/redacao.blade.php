@@ -48,7 +48,7 @@
                         <div id="contador">
                             Linhas:
                             <span class="atual">0</span> /
-                            <span class="limite">15</span>
+                            <span class="limite">25</span>
                         </div>
                         <span class="d-flex"><strong class="timer"></strong></span>
                     </li>
@@ -59,7 +59,7 @@
                     <input type="hidden" name="tema_id" value="{{$redacaoTema->id}}" />
                     <input type="hidden" name="enviou_redacao" value="0" />
                     <div class="form-group">
-                        <textarea class="form-control" id="redacao" name="redacao" onkeyup="limitTextarea(this,15,105)" cols="20" rows="15">@if(isset($redacaoAnterior->redacao_aluno)) {{$redacaoAnterior->redacao_aluno}} @endif </textarea>
+                        <textarea class="form-control" id="redacao" name="redacao" onkeyup="limitTextarea(this,25,105)" cols="20" rows="15">@if(isset($redacaoAnterior->redacao_aluno)) {{$redacaoAnterior->redacao_aluno}} @endif </textarea>
                     </div>
 
                     <button class="btn btn-primary btn-lg btn-block" type="submit" id="enviarFormulario">Enviar Redação</button>

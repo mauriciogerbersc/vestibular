@@ -17,21 +17,22 @@
         <div class="row">
            
                 @foreach($temas as $tema)
-                    <div class="col-lg-4 col-md-6">
-                        <div class="tema-redacao mb-10">
-                            <div class="tema-readacao-head">
-
-                                <div class="tema-redacao-thumb">
-                                    <img src="/files/{{$tema->tema_imagem}}" alt="{{$tema->titulo_redacao}}">
+             
+                    <div class="col-lg-4 col-md-6 ">
+                        <a href="/vestibular/redacao/prova/{{$tema->id}}">
+                        <div class="service-box-layout1">
+                            <div class="item-img">
+                                    <img src="/files/{{$tema->tema_imagem}}" alt="{{$tema->titulo_redacao}}" style="height: 160px !important;">
                                 </div>
 
-                                <div class="uc-game-head-title">
-                                    <h4><a href="/vestibular/redacao/prova/{{$tema->id}}">{{$tema->titulo_redacao}}</a></h4>
+                                <div class="item-content">
+                                    <h3 class="item-title" style="text-align: left">{{$tema->titulo_redacao}}</h3>
                                 </div>
 
                             </div>
-                        </div>
+                        </a>
                     </div>
+               
                 @endforeach
             
         </div>

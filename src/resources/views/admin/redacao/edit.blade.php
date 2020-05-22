@@ -28,7 +28,7 @@
             <label for="imgCurso">Imagem do Tema</label>
             <div class="custom-file">
                 <input type="file" class="custom-file-input" id="tema_imagem" name="tema_imagem">
-                <input type="text" name="old_imagem" value="{{$redacao->tema_imagem}}" />
+                <input type="hidden" name="old_imagem" value="{{$redacao->tema_imagem}}" />
                 <label class="custom-file-label" for="tema_imagem">Escolha o Arquivo</label>
             </div>
         </div>
