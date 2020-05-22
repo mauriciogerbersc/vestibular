@@ -27,11 +27,12 @@ class EnvioDeEmail
         $this->enviarEmail($user);
     }
 
-    public function enviaEmailTeste(string $paraEmail){
+    public function enviaEmailTeste(string $paraEmail, string $conteudo){
         $user = new stdClass();
         $user->titulo = "teste";
         $user->name = "Mauricio teste";
         $user->email = $paraEmail;
+        $user->conteudo = $conteudo;
         $this->enviarEmail($user);
     }
 

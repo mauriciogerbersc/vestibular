@@ -40,7 +40,7 @@ class newLaravelTips extends Mailable
             ]);
         }else{
             if($this->user->titulo == 'teste'){
-                return $this->markdown('mail.emailTeste');
+                return $this->markdown('mail.emailTeste', ['conteudo' => $this->user->conteudo]);
             }
             return $this->markdown('mail.emailBoletoInscricao', [
                 'user' => $this->user

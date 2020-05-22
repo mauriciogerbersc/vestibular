@@ -1,5 +1,5 @@
 @php
-    $link = 'http://localhost:8080/vestibular/redacao?hash='.$user->hash;
+    $link = 'http://vestibular.aerotd.com.br/vestibular/redacao?hash='.$user->hash;
 @endphp
 @component('mail::message')
 

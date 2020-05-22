@@ -1,5 +1,5 @@
 @component('mail::message')
 
-email teste
+{{$user->conteudo}}
 
 @endcomponent
