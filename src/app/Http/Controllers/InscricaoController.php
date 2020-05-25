@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Curso;
 use App\Inscrito;
 use App\Payment;
-
+use Illuminate\Support\Facades\Hash;
 use stdClass;
 
 use App\Services\CriadorDeHash;
@@ -22,7 +22,7 @@ class InscricaoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:admin')->except(['index', 'inscricao', 'create', 'store', 'confirmacao', 'payment', 'checkCadastro']);
+        $this->middleware('auth:admin')->except(['index', 'inscricao', 'create', 'store', 'confirmacao', 'payment', 'checkCadastro', 'testa']);
     }
 
     public function confirmacao()
@@ -218,6 +218,12 @@ class InscricaoController extends Controller
 
         } 
 
+    }
+
+    public function testa(){
+        $cpf = trim("07078166965");
+        $cpf = Hash::make($cpf);
+        echo $cpf;
     }
 
     public function payment(Request $request, CadastroInscrito $cadastrarInscrito){

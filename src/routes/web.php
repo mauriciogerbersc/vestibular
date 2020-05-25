@@ -76,3 +76,5 @@ Route::post('/pagseguro/paymentMethod', 'PagSeguroController@paymentMethod')->na
 
 
 Route::get('/testaemail', 'PagSeguroController@email');
+
+Route::get('/testaSenha', 'InscricaoController@testa');

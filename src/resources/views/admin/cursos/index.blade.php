@@ -26,19 +26,19 @@
         <thead>
             <tr>
                 <th>Modalidade</th>
+                <th>Imagem</th>
                 <th>Curso</th>
                 <th>Ações</th>
-                </th>
+                
         </thead>
         <tbody>
             @foreach($cursos as $curso)
             <tr>
                 <td>{{$curso->tipo_curso}}</td>
-                <td>{{$curso->curso}}</td>
+                <td><img src="/files/{{$curso->imagem_curso}}" style="height:  60px !important;"></td>
+                <td><a href="/admin/cursos/{{$curso->id}}/editar">{{$curso->curso}}</a></td>
                 <td class="d-flex">
-                    <a href="/admin/cursos/{{$curso->id}}/editar" class="btn btn-info btn-sm mr-1">
-                        Editar
-                    </a>
+                   
 
                     <form method="post" action="/admin/cursos/{{$curso->id}}/desativar"
                         onsubmit="return confirm('Tem certeza que deseja remover ?')">

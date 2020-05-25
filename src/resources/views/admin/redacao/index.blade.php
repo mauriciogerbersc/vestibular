@@ -19,29 +19,35 @@
 
 @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
 
-<ul class="list-group">
-    @foreach($redacoes as $redacao)
-    <li class="list-group-item d-flex justify-content-between align-items-center">
 
-        <span>{{$redacao->titulo_redacao}}</span>
 
-        <span class="d-flex">
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Título da Redação</th>
+                <th>Imagem</th>
+                <th>Ações</th>
+            </th>
+        </thead>
+        <tbody>
+            @foreach($redacoes as $redacao)
+            <tr>
+                <td><a href="/admin/redacao-temas/{{$redacao->id}}/editar">{{$redacao->titulo_redacao}}</a></td>
+                <td><img src="/files/{{$redacao->tema_imagem}}" style="height:  60px !important;"></td>
+                <td class="d-flex">
+               
+                    <form method="post" action="/admin/redacao-temas/{{$redacao->id}}/desativar" onsubmit="return confirm('Tem certeza que deseja remover ?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger btn-sm">Desativar</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
 
-            <a href="/admin/redacao-temas/{{$redacao->id}}/editar" class="btn btn-info btn-sm mr-1">
-                Editar
-            </a>
+    </table>
+</div>
 
-            <form method="post" action="/admin/redacao-temas/{{$redacao->id}}/desativar"
-                onsubmit="return confirm('Tem certeza que deseja remover ?')">
-                @csrf
-                @method('DELETE')
-                <button class="btn btn-danger btn-sm">
-                    Desativar
-                </button>
-            </form>
-
-        </span>
-    </li>
-    @endforeach
-</ul>
 @endsection
