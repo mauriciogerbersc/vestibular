@@ -32,7 +32,7 @@
             <input type="hidden" id="bandeiraCartao" />
             <input type="hidden" id="hashCard" name="hashCard" />
             <input type="hidden" name="itemDescription1" value="Inscricao Vestibular AeroTD" />
-            <input type="hidden" name="itemAmount1" value="2.00" />
+            <input type="hidden" name="itemAmount1" value="20.00" />
             <input type="hidden" name="inscrito_id" value="{{$inscrito->id}}" />
             <input type="hidden" name="curso_id" value="{{$inscrito->curso_id}}" />
             
