@@ -29,17 +29,21 @@ class PagSeguroController extends Controller
 
 
     public function verificarTransacaoPorData(PagamentoPagSeguro $pagamentoPagSeguro, EnvioDeEmail $enviarEmail){
- 
-        $inicialDate    =  date("Y-m-d", strtotime('-10 day'))."T00:00";
- 
-        $finalDate      =  date("Y-m-d")."T19:00";
-   
+        // Forçar timezone SP/BR
+        date_default_timezone_set('America/Sao_Paulo');
+
+
+        $inicialDate    =  date("Y-m-d")."T00:00";
+        $hour_minute          =  date("H:m");
+      
+        $finalDate      =  date("Y-m-d")."T{$hour_minute}";
+      
         $page           =  1;
         $maxPageResults =  40;
 
        
         $retorno = $pagamentoPagSeguro->verificarTransacaoPorData($inicialDate, $finalDate, $page, $maxPageResults);
-        
+       
         $conteudo = "";
         if($retorno['success'] == 1){
             foreach($retorno['retorno']->transactions as $transaction){
@@ -62,7 +66,7 @@ class PagSeguroController extends Controller
     public function checkIfChangeStatus($codigo, $status_transacao, $reference){
     
         $payment = Payment::where('codigo', '=', $codigo)->get();
-      
+       
         $arrToCheck = array();
         
         $string = "";

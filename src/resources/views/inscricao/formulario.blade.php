@@ -179,8 +179,9 @@
                                     </ul>
                                 </div>
                                     @endif
-                                    
+                            
                                 <button class="btn btn-primary btn-lg btn-block" type="submit" id="enviarFormulario">Continue para Pagamento</button>
+                                <small style="color:red;font-style:italic;">* Para efetuar a sua INSCRIÇÃO PARA VESTIBULAR será cobrada uma taxa de <strong>R$ 20,00</strong></small>
                         </div>
                     </div>
                 </form>
