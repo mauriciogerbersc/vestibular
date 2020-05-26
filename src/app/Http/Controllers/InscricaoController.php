@@ -115,7 +115,7 @@ class InscricaoController extends Controller
             $payment->installmentValue              = $request->itemAmount1;
             $payment->noInterestInstallmentQuantity = '2';
             $retornoPagamento = $pagamentoPagSeguro->pagamentoBoleto($payment);
-
+           // print_r($retornoPagamento);exit;
             if($retornoPagamento['success'] == 1){
                 
                 // Salva dados do pagamento.

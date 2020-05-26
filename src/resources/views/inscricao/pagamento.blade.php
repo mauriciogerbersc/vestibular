@@ -306,7 +306,7 @@
     }
 
     $(".cpf").blur(function(){
-        senderHashReady();
+        
     });
 
     $(".cvv").blur(function(){
@@ -379,6 +379,9 @@
         });
 
         $("input[type='radio']").click(function(){
+
+            senderHashReady();
+            
             var forma_pagamento = $("input[name='formaPagamento']:checked").val();
             if(forma_pagamento=='b'){
                 $("#cartao_credito").css('display', 'none');
