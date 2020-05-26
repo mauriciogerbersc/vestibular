@@ -13,7 +13,7 @@ class Inscrito extends Migration
      */
     public function up()
     {
-        Schema::create('inscritoo', function (Blueprint $table) {
+        Schema::create('inscrito', function (Blueprint $table) {
             $table->id();
             $table->string('firstName');
             $table->string('lastName');
@@ -42,7 +42,7 @@ class Inscrito extends Migration
      */
     public function down()
     {
-        Schema::table('inscritos', function (Blueprint $table) {
+        Schema::table('inscrito', function (Blueprint $table) {
             //
         });
     }
