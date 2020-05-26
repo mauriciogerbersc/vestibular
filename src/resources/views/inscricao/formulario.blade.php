@@ -24,6 +24,8 @@
 <section class="single-wrap-layout">
 
     <div class="container">
+
+       
         <div class="row">
             <div class="col-md-3 order-md-2 mb-4">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -44,8 +46,16 @@
                             <br><button class="btn btn-primary btn-block" type="submit" id="enviarFormulario">Acessar</button>
                         </form>
                     </li>
+                    @if(session('mensagem'))
+                        <div class="alert alert-danger">
+                            <ul>
+                                <li>{{ session('mensagem') }}</li>
+                            </ul>
+                        </div>    
+                    @endif
                     
                 </ul>
+               
             </div>
 
             <div class="col-md-9 order-md-1">
@@ -170,15 +180,15 @@
                                 
                                     
                                 @if (count($errors) > 0)
-                                <div class="alert alert-danger">
-                                    <strong>Ops!</strong> Alguns campos não foram preenchidos corretamente.<br><br>
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                    @endif
+                                    <div class="alert alert-danger">
+                                        <strong>Ops!</strong> Alguns campos não foram preenchidos corretamente.<br><br>
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
                             
                                 <button class="btn btn-primary btn-lg btn-block" type="submit" id="enviarFormulario">Continue para Pagamento</button>
                                 <small style="color:red;font-style:italic;">* Para efetuar a sua INSCRIÇÃO PARA VESTIBULAR será cobrada uma taxa de <strong>R$ 20,00</strong></small>
