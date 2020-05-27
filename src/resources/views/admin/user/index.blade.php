@@ -19,7 +19,6 @@
 
 @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
 
-<div class="table-responsive">
     <table class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
@@ -45,17 +44,16 @@
         @endforeach
         </tbody>
     </table>
-</div>
-
+    
 @endsection
 
 @section('scripts')
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
-<script>
-$(document).ready(function() {
-    $('.table').DataTable();
-} );
+    <script>
+    $(document).ready(function() {
+        $('.table').DataTable();
+    } );
 </script>
 @endsection

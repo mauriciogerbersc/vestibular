@@ -16,7 +16,7 @@
 
 @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
 
-<div class="table-responsive">
+
     <table class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
@@ -82,7 +82,7 @@
         @endforeach
         </tbody>
     </table>
-</div>
+
 
 @endsection
 
