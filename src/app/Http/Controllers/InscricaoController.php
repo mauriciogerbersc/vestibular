@@ -232,7 +232,7 @@ class InscricaoController extends Controller
         $rules = [
             'firstName' => 'required',
             'lastName' => 'required',
-            'email' => 'required|unique:inscrito',
+            'email' => 'required|unique:inscritos',
             'nDocumento'  => 'required',
             'phone' => 'required',
             'historico_escolar'  => 'required|mimes:doc,docx,pdf,png,img|max:30048',
