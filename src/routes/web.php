@@ -47,6 +47,13 @@ Route::delete('/admin/redacao-temas/{id}/desativar', 'RedacaoController@destroy'
 Route::get('/admin/redacao-temas-criar', 'RedacaoController@create')->name('criar_tema')->middleware('autenticadorAdmin');
 Route::post('/admin/redacao-temas-criar', 'RedacaoController@store')->middleware('autenticadorAdmin');
 
+Route::get('/admin/usuarios/create', 'AdminController@userCreate')->middleware('autenticadorAdmin')->name('novo_usuario');
+Route::post('/admin/usuarios/create', 'AdminController@userStore')->middleware('autenticadorAdmin');
+Route::get('/admin/usuarios', 'AdminController@userList')->middleware('autenticadorAdmin')->name('lista_usuarios');
+Route::get('/admin/usuarios/{id}/edit', 'AdminController@userEdit')->middleware('autenticadorAdmin');
+Route::post('/admin/usuarios/{id}/edit', 'AdminController@userUpdate')->middleware('autenticadorAdmin');
+
+
 
 
 Route::get('/admin/redacoes', 'AdminController@redacaoInscritos')->middleware('autenticadorAdmin');

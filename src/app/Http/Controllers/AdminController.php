@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\RedacaoAluno;
 use App\Redacao;
 use App\Inscrito;
+use App\User;
+use App\Admin;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -22,6 +26,108 @@ class AdminController extends Controller
         $inscritos = Inscrito::all();
         return view('admin.dashboard.index', compact('redacoesAlunos', 'inscritos'));
     }
+
+
+
+
+
+    public function userList(Request $request){
+
+        $mensagem   = $request->session()->get('mensagem');
+        $alert_tipo = $request->session()->get('alert_tipo');
+       
+
+        $admins = Admin::all();
+        return view('admin.user.index', compact('admins','mensagem','alert_tipo'));
+    }
+
+    public function userEdit(Request $request, $id){
+
+        $user = Admin::find($id);
+
+        if(!$user){
+            $request->session()->flash('mensagem', "Usuário não encontrado.");
+            $request->session()->flash('alert_tipo', "alert-danger");
+        
+            return redirect()->route('lista_usuarios');
+        }
+        
+        return view('admin.user.edit', compact('user'));
+    }
+
+    public function userUpdate(Request $request, $id){
+
+        $user = Admin::find($id);
+
+        if(!$user){
+            $request->session()->flash('mensagem', "Usuário não encontrado.");
+            $request->session()->flash('alert_tipo', "alert-danger");
+        
+            return redirect()->route('lista_usuarios');
+        }
+
+
+        $password = trim($request->input('old_password'));
+
+        if($request->input('password') != ''){
+            $novaSenha = trim($request->password);
+            $password = Hash::make($novaSenha);
+            if($password != $request->input('old_password')){
+                $password = $password;
+            }
+        }
+
+        DB::beginTransaction();
+            $user->name     = $request->input('name');
+            $user->email    = $request->input('email');
+            $user->password = $password;
+            $user->save();
+        DB::commit();
+
+        $request->session()->flash('mensagem', "O usuário <strong>{$user->name}</strong> foi editado com sucesso.");
+        $request->session()->flash('alert_tipo', "alert-success");
+
+        return redirect()->route('lista_usuarios');
+    }
+
+    public function userCreate(){
+        return view('admin.user.create');
+    }
+
+    public function userStore(Request $request){
+
+        $rules = [
+            'name' => 'required',
+            'email' => 'required|unique:admins',
+            'password' => 'required'
+        ];
+
+        $messages = [
+            'name.required' => 'O campo nome é obrigatório',
+            'email.required' => 'O campo Email é obrigatório',
+            'email.unique'   => 'O email já está registrado na base de dados',
+            'password.required' => 'O campo senha é obrigatório'
+        ];
+
+        $validator = $request->validate($rules, $messages);
+
+        $password = Hash::make($request->password);
+        DB::beginTransaction();
+            $user = Admin::create([
+                'name'      => $request->name,
+                'email'     => $request->email,
+                'password'  => $password
+            ]);
+        DB::commit();
+
+        $request->session()->flash('mensagem', "Usuário <strong>{$user->name}</strong> criado com sucesso.");
+        $request->session()->flash('alert_tipo', "alert-success");
+
+        return redirect()->route('lista_usuarios');
+    }
+
+
+
 
     public function redacaoInscritos()
     {

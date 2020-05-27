@@ -318,10 +318,7 @@ class InscricaoController extends Controller
         $inscrito = Inscrito::where('nDocumento', '=', $request->cpfCadastrado)->first();
         if(!$inscrito){
             $request->session()->flash('mensagem', "Seu CPF não foi encontrado na base dados.");
-         
-    
             return redirect()->back();
-    
            // return redirect()->back()->withErrors(['error' => 'Seu CPF não foi encontrado na base dados.']);   
         }
 

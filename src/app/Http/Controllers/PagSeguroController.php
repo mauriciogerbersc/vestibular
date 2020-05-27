@@ -33,11 +33,12 @@ class PagSeguroController extends Controller
         date_default_timezone_set('America/Sao_Paulo');
 
 
-        $inicialDate    =  date("Y-m-d")."T00:00";
+        $inicialDate    =       date("Y-m-d")."T00:00";
+        $inicialDate    = "2020-05-26T12:00";
         $hour_minute          =  date("H:m");
-      
-        $finalDate      =  date("Y-m-d")."T{$hour_minute}";
-      
+        $hour_minute           = "21:30";
+        #$finalDate      =  date("Y-m-d")."T{$hour_minute}";
+        $finalDate      = "2020-05-26T21:30";
         $page           =  1;
         $maxPageResults =  40;
 

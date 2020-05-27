@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inscrito extends Model
 {   
-    protected $table = 'inscrito';
+    protected $table = 'inscritos';
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 

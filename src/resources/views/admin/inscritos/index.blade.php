@@ -21,6 +21,7 @@
         <thead>
             <tr>
                 <th>Situação</th>
+                <th>Pagamento</th>
                 <th>Inscrito</th>
                 <th>Curso</th>
                
@@ -33,8 +34,26 @@
         <tbody>
         @foreach($inscritos as $inscrito)
             <tr>
-                <td><span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status) !!}">{!! Helper::retornaStatusInscrito($inscrito->status) !!}</span></td>
+                <td>
+                    <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status) !!}">
+                    {!! Helper::retornaStatusInscrito($inscrito->status) !!}</span>
+                   
                 
+                </td>
+                <td>
+                    @php 
+                        $transacao = Helper::tentouPagar($inscrito->id);
+                    @endphp
+                    @if($transacao)
+                        @if($transacao['status_transacao'] == 3)
+                            <span class="badge badge-pill badge-success">Pagamento Efetuado  <strong>({{$transacao['modalidade']}}) </strong></span>
+                        @else
+                            <span class="badge badge-pill badge-primary">Aguardando Baixa  <strong>({{$transacao['modalidade']}}) </strong></span>
+                        @endif
+                   @else
+                        <span class="badge badge-pill badge-dark">Não realizou pagamento.</span>
+                    @endif
+                </td>
                 <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
                 <td><a href="cursos/{{$inscrito->curso->id}}/editar">{{$inscrito->curso->curso}}</a></td>
                

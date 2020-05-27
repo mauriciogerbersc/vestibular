@@ -49,8 +49,6 @@ class CursosController extends Controller
      */
     public function store(Request $request)
     {       
-
- 
         $slug = Helper::createSlug($request->curso);
        
         if($request->hasFile('curso_imagem')){

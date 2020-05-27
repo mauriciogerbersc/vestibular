@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Helpers;
-
+use App\Payment;
 class Helper
 {
     public static function createSlug($string)
@@ -39,6 +39,14 @@ class Helper
 
         return $statusArray[$status];
         
+    }
+
+
+    public static function tentouPagar(int $id){
+        $reference = Payment::where('reference', '=', $id)->orderBy('created_at', 'desc')->first();
+     
+        if($reference)
+            return array('status_transacao' => $reference['status_transacao'], 'modalidade' => $reference['tipo_transacao']);
     }
 
 }
