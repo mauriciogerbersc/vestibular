@@ -121,6 +121,9 @@
                                             
                                             <input type="file" class="custom-file-input @error('historico_escolar') is-invalid @enderror" id="historico_escolar" name="historico_escolar">
                                             <label class="custom-file-label" for="customFile">Escolha o Arquivo</label>
+
+                                            <small style="color:red;font-style:italic;">* Limite para upload de <strong>2MB</strong></small>
+                    
                                         </div>
                                     </div>
                                 </div>
@@ -204,11 +207,25 @@
 
 
 @section('scripts')
+<script>
 
+var upload = document.getElementById("historico_escolar");
+upload.addEventListener("change", function(e) {
+    var size = upload.files[0].size;
+    if(size > 2048576) { //2MB         
+        alert('O tamanho limite do anexo deve ser de até 2MB'); //Acima do limite
+        upload.value = ""; //Limpa o campo   
+    } 
+    e.preventDefault();
+});
+
+</script>
 <script src="{{asset('assets/js/jquery.mask.js')}}"></script>
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function(){
- 
+        
+
+
         $(".cpf").mask("99999999999");
         $('.cep').mask('99999-999');
         $('.nascimento').mask('99/99/9999');
