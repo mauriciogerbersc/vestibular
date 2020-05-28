@@ -31,8 +31,8 @@
                             <label for="password" class="col-md-4 col-form-label text-md-right">CPF</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password"
-                                    class="form-control @error('password') is-invalid @enderror" name="password"
+                                <input id="password" type="text"
+                                    class="form-control cpf @error('password') is-invalid @enderror" name="password"
                                     required autocomplete="current-password">
 
                                 @error('password')
@@ -59,4 +59,14 @@
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+<script src="{{asset('assets/js/jquery.mask.js')}}"></script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function(){
+        
+        $(".cpf").mask("99999999999");
+
+    });
+</script>
 @endsection
