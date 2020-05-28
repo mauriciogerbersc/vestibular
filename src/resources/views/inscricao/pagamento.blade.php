@@ -27,18 +27,12 @@
     <div class="container">
         <!--<form method="POST" action="/inscricao/store"> -->
         <form name="formPagamento" method="POST" action="{{route('inscricao_pagamento')}}">
+
+        
             @csrf
-            <input type="hidden" id="tokenCard" name="tokenCard" />
-            <input type="hidden" id="bandeiraCartao" />
-            <input type="hidden" id="hashCard" name="hashCard" />
-            <input type="hidden" name="itemDescription1" value="Inscricao Vestibular AeroTD" />
-            <input type="hidden" name="itemAmount1" value="20.00" />
-            <input type="hidden" name="inscrito_id" value="{{$inscrito->id}}" />
-            <input type="hidden" name="curso_id" value="{{$inscrito->curso_id}}" />
-            
+
             <div class="row">
-                
-                <div class="col-md-4 order-md-2 mb-4">
+                <div class="col-md-12">
                     <h4 class="d-flex justify-content-between align-items-center mb-3">Detalhes do Pagamento</h4>
                     <ul class="list-group mb-3">
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
@@ -66,12 +60,26 @@
                           <span>Total (R$)</span>
                           <strong>R$ 20,00</strong>
                         </li>
-                      </ul>
+                      </ul> 
                 </div>
+            </div>
+            <input type="hidden" id="tokenCard" name="tokenCard" />
+            <input type="hidden" id="bandeiraCartao" />
+            <input type="hidden" id="hashCard" name="hashCard" />
+            <input type="hidden" name="itemDescription1" value="Inscricao Vestibular AeroTD" />
+            <input type="hidden" name="itemAmount1" value="20.00" />
+            <input type="hidden" name="inscrito_id" value="{{$inscrito->id}}" />
+            <input type="hidden" name="curso_id" value="{{$inscrito->curso_id}}" />
+            
+            <div class="row">
+                
            
-                <div class="col-md-8 order-md-1">
+                <div class="col-md-12 order-md-1">
                     <!--  Dados para pagamento -->
                     <div id="cartao_credito">
+
+                        <hr class="mb-4">
+
                         <h4 class="mb-3">Dados de Pagamento</h4>
 
                         <div class="row">
@@ -210,6 +218,8 @@
 <script src="{{asset('assets/js/jquery.mask.js')}}"></script>
 <script src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
 <script type="text/javascript" charset="utf-8">
+
+    $("#enviarFormulario").hide();
     gerarTokenPagamento();
 
     function gerarTokenPagamento(){
@@ -217,9 +227,13 @@
             url: "{{ route('credenciais') }}",
             type: "GET",
             dataType: 'json',
+            beforeSend: function(){
+                $("#loader").show();
+            },
             success: function(response){    
                 PagSeguroDirectPayment.setSessionId(response.id);
             }, complete: function (response){
+                $("#loader").hide();
                 console.log(PagSeguroDirectPayment);
             }
         });
@@ -237,13 +251,18 @@
             cvv:             $("#cc-cvv").val(), // CVV do cart�o
             expirationMonth: mes, // M�s da expira��o do cart�o
             expirationYear:  ano, // Ano da expira��o do cart�o, � necess�rio os 4 dígitos.
+            beforeSend: function(){
+                $("#loader").show();
+            },
             success: function(response) {
+                $("#loader").hide();
                 $("#tokenCard").val(response.card.token);
             },
             error: function(response) {
                 console.log('erro ' + response)
             },
             complete: function(response) {
+                $("#loader").hide();
                 $("#tokenCard").val(response.card.token);
             }
         });
@@ -305,9 +324,6 @@
         return df.promise();
     }
 
-    $(".cpf").blur(function(){
-        
-    });
 
     $(".cvv").blur(function(){
         getTokenCard();
@@ -390,6 +406,8 @@
                 $("#cartao_credito").css('display', '');
                 $(".pagamento_cartao").attr('required', 'pagamento_cartao');
             }
+
+            $("#enviarFormulario").show();
         });
         
          

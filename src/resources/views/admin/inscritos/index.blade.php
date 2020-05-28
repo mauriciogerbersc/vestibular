@@ -37,8 +37,6 @@
                 <td>
                     <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status) !!}">
                     {!! Helper::retornaStatusInscrito($inscrito->status) !!}</span>
-                   
-                
                 </td>
                 <td>
                     @php 
