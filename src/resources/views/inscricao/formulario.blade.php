@@ -225,6 +225,11 @@ upload.addEventListener("change", function(e) {
     $(document).ready(function(){
         
 
+        $(document).on('change', '#historico_escolar', function (event) {
+            $(this).next('.custom-file-label').html(event.target.files[0].name);
+        });
+
+
 
         $(".cpf").mask("99999999999");
         $('.cep').mask('99999-999');
