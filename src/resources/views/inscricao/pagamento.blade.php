@@ -276,7 +276,7 @@
     }
 
     
-    $('#cc-number').on('keyup', function () {
+    $('#cc-number').on('keyup touchend', function () {
        
        //Receber o número do cartão digitado pelo usuário
        var numCartao = $(this).val();
@@ -325,11 +325,11 @@
     }
 
 
-    $(".cvv").blur(function(){
+    $(".cvv").on('blur touchend', function(){
         getTokenCard();
     });
 
-    $("#enviarFormulario").one('click', function() {
+    $("#enviarFormulario").one('click touchstart', function() {
         doPayment(); 
     });
 
@@ -394,11 +394,12 @@
 
         });
 
-        $("input[type='radio']").click(function(){
+        $("input[type='radio']").on('click touchstart', function(){
 
             senderHashReady();
             
             var forma_pagamento = $("input[name='formaPagamento']:checked").val();
+            //alert(forma_pagamento);
             if(forma_pagamento=='b'){
                 $("#cartao_credito").css('display', 'none');
                 $(".pagamento_cartao").removeAttr('required');
