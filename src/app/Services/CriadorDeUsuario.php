@@ -12,7 +12,7 @@ class CriadorDeUsuario
     {
 
         $cpf = trim($cpf);
-        $cpf = Hash::make($cpf);
+        $cpf = bcrypt($cpf);
         DB::beginTransaction();
             $user = User::create(['name' => $name, 'email' => $email, 'password' => $cpf, 'inscrito_id' => $id]);
         DB::commit();
