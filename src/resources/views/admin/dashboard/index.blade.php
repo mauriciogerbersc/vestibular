@@ -15,10 +15,11 @@
     <div class="row">
       
         <div class="col-md-6 order-md-6 mb-6">
-            <h3 class="display-4">Inscrições</h3>
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                  <thead>
+            <h4 class="display-5">Inscritos que não realizaram redação</h3>
+           
+              <table class="table table-striped table-bordered" style="width:100%">
+                <thead>
+             
                     <tr>
                       <th>#</th>
                       <th>Status</th>
@@ -32,7 +33,8 @@
                     <tr>
                         <td>{{ ++$key }}</td>
                         <td><span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status) !!}">{!! Helper::retornaStatusInscrito($inscrito->status) !!}</span></td>
-                        <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
+                        <td><a href="{{ route('visualizar_inscrito', $inscrito->id) }}">{{$inscrito->firstName}} {{$inscrito->lastName}}</a></td>
+                         
                         <td><a href="admin/curso/{{$inscrito->curso->id}}/inscritos">{{$inscrito->curso->curso}}</a></td>
                         <td class="d-flex">
                             <a href="/admin/inscrito/{{$inscrito->id}}" class="btn btn-info btn-sm mr-1">
@@ -44,14 +46,16 @@
                 @endforeach
                   </tbody>
                 </table>
-            </div>
+            
         </div>
 
         <div class="col-md-6 order-md-6 mb-6">
-            <h3 class="display-4">Redações realizadas</h3>
-            <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
+          <h4 class="display-5">Redações realizadas</h3>
+            
+              <table class="table table-striped table-bordered" style="width:100%">
+                <thead>
+             
+                    <tr>
                           <tr>
                             <th>#</th>
                             <th>Nome</th>
@@ -67,15 +71,27 @@
                             <td><a href="{{ route('visualizar_redacao', $redacaoAluno->redacao_id) }}">{{$redacaoAluno->redacao->titulo_redacao}}</a></td>
                             <td class="d-flex">
                                 <a href="{{ route('force_download', $redacaoAluno->id) }}" class="btn btn-info btn-sm mr-1">
-                                    Baixar TXT
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+                                  TXT
                                 </a>
                             </td>
                           </tr>
                           @endforeach
                         </tbody>
                     </table>
-            </div>
+           
         </div>
     </div>
 
+@endsection
+
+@section('scripts')
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('.table').DataTable();
+} );
+</script>
 @endsection
