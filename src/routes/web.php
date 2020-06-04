@@ -54,11 +54,11 @@ Route::get('/admin/usuarios/{id}/edit', 'AdminController@userEdit')->middleware(
 Route::post('/admin/usuarios/{id}/edit', 'AdminController@userUpdate')->middleware('autenticadorAdmin');
 
 
-
+Route::get('/baixar-arquivo/{arquivo}', 'FileDownloadController@down');
 
 Route::get('/admin/redacoes', 'AdminController@redacaoInscritos')->middleware('autenticadorAdmin');
 Route::get('/admin/redacoes/download/{id}', 'AdminController@redacaoDownload')->name('force_download')->middleware('autenticadorAdmin');
-Route::get('/admin/inscritos', 'AdminController@listarInscritos')->middleware('autenticadorAdmin');
+Route::get('/admin/inscritos', 'AdminController@listarInscritos')->name('lista_inscritos')->middleware('autenticadorAdmin');
 Route::get('/admin/inscrito/{id}', 'AdminController@show')->name('visualizar_inscrito')->middleware('autenticadorAdmin');
 
 /* Rotas Vestibular privadas*/
@@ -85,3 +85,5 @@ Route::post('/pagseguro/paymentMethod', 'PagSeguroController@paymentMethod')->na
 Route::get('/testaemail', 'PagSeguroController@email');
 
 Route::get('/testaSenha', 'InscricaoController@testa');
+
+Route::post('/saveTime', 'VestibularController@saveTime')->name('save_time')->middleware('autenticadorAluno');

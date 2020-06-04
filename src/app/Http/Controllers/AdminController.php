@@ -153,10 +153,13 @@ class AdminController extends Controller
 
 
     
-    public function listarInscritos()
+    public function listarInscritos(Request $request)
     {
-        $inscritos = Inscrito::all();
-        return view('admin.inscritos.index', compact('inscritos'));
+        $inscritos = Inscrito::where('firstName', '!=', 'mauricio')->where('lastName', '!=', 'gerber')->get();
+
+        $mensagem   = $request->session()->get('mensagem');
+        $alert_tipo = $request->session()->get('alert_tipo');
+        return view('admin.inscritos.index', compact('inscritos', 'mensagem', 'alert_tipo'));
     }
 
 
