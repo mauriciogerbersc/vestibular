@@ -17,7 +17,7 @@
 @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
 
 
-    <table class="table table-striped table-bordered" style="width:100%">
+    <table class="table table-striped table-bordered table-responsive" style="width:100%">
         <thead>
             <tr>
                 <th>Situação</th>
@@ -42,15 +42,20 @@
                     @php 
                         $transacao = Helper::tentouPagar($inscrito->id);
                     @endphp
-                    @if($transacao)
-                        @if($transacao['status_transacao'] == 3)
-                            <span class="badge badge-pill badge-success">Pagamento Efetuado  <strong>({{$transacao['modalidade']}}) </strong></span>
-                        @else
-                            <span class="badge badge-pill badge-primary">Aguardando Baixa  <strong>({{$transacao['modalidade']}}) </strong></span>
-                        @endif
-                   @else
+
+
+                    @if(empty($transacao))
                         <span class="badge badge-pill badge-dark">Não realizou pagamento.</span>
+                    @else
+                        @if($transacao == 3)
+                            <span class="badge badge-pill badge-success">Pagamento Efetuado</span>
+                        @else
+                            <span class="badge badge-pill badge-primary">Aguardando Baixa</span>
+                        @endif
+                          
                     @endif
+                   
+               
                 </td>
                 <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
                 <td><a href="cursos/{{$inscrito->curso->id}}/editar">{{$inscrito->curso->curso}}</a></td>

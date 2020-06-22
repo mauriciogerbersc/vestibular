@@ -43,10 +43,21 @@ class Helper
 
 
     public static function tentouPagar(int $id){
-        $reference = Payment::where('reference', '=', $id)->orderBy('created_at', 'desc')->first();
-     
-        if($reference)
-            return array('status_transacao' => $reference['status_transacao'], 'modalidade' => $reference['tipo_transacao']);
+        
+        $reference = Payment::where('reference', '=', $id)
+
+                            ->orderBy('status_transacao', 'desc')->get();
+        
+        foreach($reference as $key => $val){
+            if($val['status_transacao'] == 3){
+                return 3;
+                break;
+            }else{
+                return 1;
+                break;
+            }
+        }
+          
     }
 
 }
