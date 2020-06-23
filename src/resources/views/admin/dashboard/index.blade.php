@@ -32,7 +32,7 @@
                     @foreach($inscritos as $key=>$inscrito)
                     <tr>
                         <td>{{ ++$key }}</td>
-                        <td><span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status) !!}">{!! Helper::retornaStatusInscrito($inscrito->status) !!}</span></td>
+                        <td><span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status, $inscrito->id) !!}">{!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}</span></td>
                         <td><a href="{{ route('visualizar_inscrito', $inscrito->id) }}">{{$inscrito->firstName}} {{$inscrito->lastName}}</a></td>
                          
                         <td><a href="admin/curso/{{$inscrito->curso->id}}/inscritos">{{$inscrito->curso->curso}}</a></td>
