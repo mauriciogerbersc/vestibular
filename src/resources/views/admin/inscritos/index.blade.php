@@ -34,7 +34,7 @@
         <tr>
             <!-- -->
             <td>
-                <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status,$inscrito->id) !!} " id="{{$inscrito->id}}">
+                <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status,$inscrito->id) !!} corrigido_{{$inscrito->id}}">
                     {!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}</span>
             </td>
             <td>
@@ -75,7 +75,7 @@
                         @if($inscrito->corrigido)
                         <span class="btn btn-success btn-sm correcao not-active">Corrigido!</span>
                         @else 
-                        <button type="button" class="btn btn-dark btn-sm correcao" id="{{$inscrito->id}}" onclick="confirmarCorrecao({{$inscrito->id}});">Corrigido?</button>
+                        <button type="button" class="btn btn-dark btn-sm correcao corrigido_{{$inscrito->id}}" onclick="confirmarCorrecao({{$inscrito->id}});">Corrigido?</button>
                         @endif
                     @else 
                         <span class="btn btn-dark btn-sm mb-1 not-active" alt="Redação ainda não corrigida" title="Redação ainda não corrigida">Corrigido?</span>
@@ -118,7 +118,7 @@
             success: function(response){    
                 console.log(response);
                 if(response){
-                    $("#"+inscrito_id).text("Corrigido!").removeClass('btn-dark').addClass('not-active');
+                    $(".corrigido_"+inscrito_id).text("Corrigido!").removeClass('btn-dark').addClass('not-active').addClass('btn-success');
                 }else{
                     alert("O aluno ainda não realizou a redação.");
                 }

@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Helpers;
+
 use App\Payment;
+use App\RedacaoAluno;
+
 class Helper
 {
     public static function createSlug($string)
@@ -25,39 +28,59 @@ class Helper
         return strtolower(strtr($string, $table));
     }
 
-    public static function retornaStatusInscrito(int $status){
+    public static function retornaStatusInscrito(int $status, int $inscrito_id)
+    {
 
-        $statusArray = array(0 => 'Aguardando Pagamento', 1 => 'Aguardando Redação', 2 => 'Aguardando Correção');
+
+        $redacao = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)
+            ->where('corrigido', 1)
+            ->count();
+        if ($redacao > 0) {
+            $status = 4;
+        }
+
+        $statusArray = array(
+            0 => 'Aguardando Pagamento',
+            1 => 'Aguardando Redação',
+            2 => 'Aguardando Correção',
+            4 => 'Redação Corrigida'
+        );
 
         return $statusArray[$status];
-    
     }
 
-    public static function retornaBadgeStatusInscrito(int $status){
+    public static function retornaBadgeStatusInscrito(int $status, int $inscrito_id)
+    {
 
-        $statusArray = array(0 => 'badge-danger', 1 => 'badge-warning', 2 => 'badge-success');
+
+        $redacao = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)
+            ->where('corrigido', 1)
+            ->count();
+        if ($redacao > 0) {
+            $status = 4;
+        }
+
+        $statusArray = array(0 => 'badge-danger', 1 => 'badge-warning', 2 => 'badge-success', 4 => 'badge-info');
 
         return $statusArray[$status];
-        
     }
 
 
-    public static function tentouPagar(int $id){
-        
+    public static function tentouPagar(int $id)
+    {
+
         $reference = Payment::where('reference', '=', $id)
 
-                            ->orderBy('status_transacao', 'desc')->get();
-        
-        foreach($reference as $key => $val){
-            if($val['status_transacao'] == 3){
+            ->orderBy('status_transacao', 'desc')->get();
+
+        foreach ($reference as $key => $val) {
+            if ($val['status_transacao'] == 3) {
                 return 3;
                 break;
-            }else{
+            } else {
                 return 1;
                 break;
             }
         }
-          
     }
-
 }
