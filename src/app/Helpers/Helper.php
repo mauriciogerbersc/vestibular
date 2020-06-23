@@ -49,9 +49,39 @@ class Helper
         return $statusArray[$status];
     }
 
+
+    public static function retornaTipoTransacao(string $tipo){
+       
+        $statusArray = array(
+            'b' => 'Boleto',
+            'cc' => 'Cartão de Crédito'
+        );
+
+        return $statusArray[$tipo];
+    }
+
+
+    public static function formatDate($date){
+        return date('d/m/Y H:i', strtotime($date));
+    }
+
+    public static function retornaStatusTransacao(int $status){
+
+        $statusArray = array(
+            1 => 'Aguardando pagamento',
+            2 => 'Em análise',
+            3 => 'Paga',
+            4=> 'Disponível',
+            5=> 'Em disputa',
+            6=> 'Devolvida',
+            7=> 'Cancelada'
+        );
+
+        return $statusArray[$status];
+    }
+
     public static function retornaBadgeStatusInscrito(int $status, int $inscrito_id)
     {
-
 
         $redacao = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)
             ->where('corrigido', 1)

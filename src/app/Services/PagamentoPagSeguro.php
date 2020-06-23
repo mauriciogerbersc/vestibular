@@ -243,6 +243,7 @@ class PagamentoPagSeguro
             $payment = Payment::create(['reference' => $referencia, 'codigo' => $codigo, 'status_transacao' => $status, 'tipo_transacao' => $tipo_transacao]);
         DB::commit();
         return $payment;
-
     }
+
+    
 }

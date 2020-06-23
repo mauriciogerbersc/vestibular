@@ -8,6 +8,7 @@ use App\Redacao;
 use App\Inscrito;
 use App\User;
 use App\Admin;
+use App\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -187,7 +188,11 @@ class AdminController extends Controller
     public function show($id)
     {
         $inscrito = Inscrito::find($id);
-        return view('admin.inscritos.inscrito', compact('inscrito'));
+
+        $payments = Payment::where('reference', '=', $id)
+                            ->orderBy('updated_at', 'desc')
+                            ->get();
+        return view('admin.inscritos.inscrito', compact('inscrito','payments'));
     }
     
 }
