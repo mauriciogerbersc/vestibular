@@ -23,7 +23,10 @@ class AdminController extends Controller
     {
 
         $redacoesAlunos = RedacaoAluno::where('enviou_redacao', '=', 1)->get();
-        $inscritos      = Inscrito::where('status', '<>', 2)->get();
+        $inscritos      = Inscrito::where('firstName', '!=', 'mauricio')
+                                ->where('lastName', '!=', 'gerber')
+                                ->where('status', '<>', 2)
+                             ->get();
         return view('admin.dashboard.index', compact('redacoesAlunos', 'inscritos'));
     }
 
