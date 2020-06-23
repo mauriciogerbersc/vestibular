@@ -151,11 +151,22 @@ class AdminController extends Controller
                 ]);
     }
 
+    public function correcaoRedacao($inscrito_id){
 
+        $redacao = RedacaoAluno::where('inscrito_id', '=',$inscrito_id)->first();
+        $redacao->corrigido = 1;
+        $redacao->update();
+
+        return $redacao;
+    }
     
     public function listarInscritos(Request $request)
     {
-        $inscritos = Inscrito::where('firstName', '!=', 'mauricio')->where('lastName', '!=', 'gerber')->get();
+        $inscritos = Inscrito::where('firstName', '!=', 'mauricio')
+                            ->where('lastName', '!=', 'gerber')
+                            ->leftJoin('redacao_alunos', 'redacao_alunos.inscrito_id', '=', 'inscritos.id')
+                            ->select('inscritos.*', 'redacao_alunos.corrigido')
+                            ->get();
 
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');

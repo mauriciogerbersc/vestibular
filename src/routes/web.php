@@ -58,7 +58,8 @@ Route::get('/baixar-arquivo/{arquivo}', 'FileDownloadController@down');
 
 Route::get('/admin/redacoes', 'AdminController@redacaoInscritos')->middleware('autenticadorAdmin');
 Route::get('/admin/redacoes/download/{id}', 'AdminController@redacaoDownload')->name('force_download')->middleware('autenticadorAdmin');
-Route::get('/admin/inscritos', 'AdminController@listarInscritos')->name('lista_inscritos')->middleware('autenticadorAdmin');
+Route::get('/admin/redacoes/{inscrito_id}/corrigida', 'AdminController@correcaoRedacao')->middleware('autenticadorAdmin');
+ Route::get('/admin/inscritos', 'AdminController@listarInscritos')->name('lista_inscritos')->middleware('autenticadorAdmin');
 Route::get('/admin/inscrito/{id}', 'AdminController@show')->name('visualizar_inscrito')->middleware('autenticadorAdmin');
 
 /* Rotas Vestibular privadas*/

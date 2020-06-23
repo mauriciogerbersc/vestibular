@@ -17,75 +17,78 @@
 @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
 
 
-    <table class="table table-striped table-bordered table-responsive" style="width:100%">
-        <thead>
-            <tr>
-                <th>Situação</th>
-                <th>Pagamento</th>
-                <th>Inscrito</th>
-                <th>Curso</th>
-               
-                <th>Documento</th>
-                <th>Email</th>
-                <th>Telefone</th>
-                <th>Ações</th>
+<table class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>Situação</th>
+            <th>Pagamento</th>
+            <th>Inscrito</th>
+            <th>Curso</th>
+            <th>Documento</th>
+            <th>Contato</th>
+            <th>Ações</th>
             </th>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         @foreach($inscritos as $inscrito)
-            <tr>
-                <td>
-                    <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status) !!}">
-                    {!! Helper::retornaStatusInscrito($inscrito->status) !!}</span>
-                </td>
-                <td>
-                    @php 
-                        $transacao = Helper::tentouPagar($inscrito->id);
-                    @endphp
+        <tr>
+            <!-- -->
+            <td>
+                <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status,$inscrito->id) !!} " id="{{$inscrito->id}}">
+                    {!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}</span>
+            </td>
+            <td>
+                @php
+                $transacao = Helper::tentouPagar($inscrito->id);
+                @endphp
 
+                @if(empty($transacao))
+                <span class="badge badge-pill badge-dark">Não realizou pagamento.</span>
+                @else
+                @if($transacao == 3)
+                <span class="badge badge-pill badge-success">Pagamento Efetuado</span>
+                @else
+                <span class="badge badge-pill badge-primary">Aguardando Baixa</span>
+                @endif
 
-                    @if(empty($transacao))
-                        <span class="badge badge-pill badge-dark">Não realizou pagamento.</span>
-                    @else
-                        @if($transacao == 3)
-                            <span class="badge badge-pill badge-success">Pagamento Efetuado</span>
-                        @else
-                            <span class="badge badge-pill badge-primary">Aguardando Baixa</span>
-                        @endif
-                          
-                    @endif
-                   
-               
-                </td>
-                <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
-                <td><a href="cursos/{{$inscrito->curso->id}}/editar">{{$inscrito->curso->curso}}</a></td>
-               
-                <td>{{$inscrito->nDocumento}}</td>
-                <td>{{$inscrito->email}}</td>
-                <td>{{$inscrito->phone}}</td>
-                <td class="d-flex">
+                @endif
+            </td>
+            <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
+            <td><a href="cursos/{{$inscrito->curso->id}}/editar">{{$inscrito->curso->curso}}</a></td>
 
-                    <a href="/admin/inscrito/{{$inscrito->id}}" class="btn btn-info btn-sm mr-1">
-                        Visualizar
-                    </a>
-                    
+            <td>{{$inscrito->nDocumento}}</td>
+            <td>{{$inscrito->email}}
+                <br>{{$inscrito->phone}}</td>
+            <td class="d-flex">
+
+                <div class="btn-group-vertical">
+                    <a href="/admin/inscrito/{{$inscrito->id}}" class="btn btn-primary btn-sm mb-1">Visualizar</a>
                     @if($inscrito->historico!='')
-                    <a href="/baixar-arquivo/{{$inscrito->historico}}" target="_blank" class="btn btn-success btn-sm mr-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
-                        Histórico 
+                    <a href="/baixar-arquivo/{{$inscrito->historico}}" target="_blank" class="btn btn-secondary mb-1">
+                        Histórico
                     </a>
-                    @else 
-                        <span class="btn btn-danger btn-sm mr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                            Histórico</span>
+                    @else
+                    <span class="btn btn-danger btn-sm mb-1 not-active" alt="Não foi enviado histórico escolar" title="Não foi enviado histórico escolar">Histórico</span>
                     @endif
-
-                </td>
-            </tr>
+                    
+                    @if($inscrito->status == 2)
+                        @if($inscrito->corrigido)
+                        <span class="btn btn-success btn-sm correcao not-active">Corrigido!</span>
+                        @else 
+                        <button type="button" class="btn btn-dark btn-sm correcao" id="{{$inscrito->id}}" onclick="confirmarCorrecao({{$inscrito->id}});">Corrigido?</button>
+                        @endif
+                    @else 
+                        <span class="btn btn-dark btn-sm mb-1 not-active" alt="Redação ainda não corrigida" title="Redação ainda não corrigida">Corrigido?</span>
+                    @endif
+                </div>
+            </td>
+        </tr>
         @endforeach
-        </tbody>
-    </table>
-
+    </tbody>
+</table>
+<div id="dialog" title="Confirmation Required">
+    Are you sure about this?
+</div>
 
 @endsection
 
@@ -95,8 +98,40 @@
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('.table').DataTable();
-} );
+    function confirmarCorrecao(inscrito_id) {
+        var id = inscrito_id;
+        var r = confirm("Confirma correção da prova?");
+        if (r == true) {
+            txt = "Confirmada correção da redação.";
+        } else {
+            txt = "Ok. Ação cancelada.";
+        }
+        
+        var url_correcao = '/admin/redacoes/'+inscrito_id+'/corrigida';
+        $.ajax({
+            url: url_correcao,
+            type: "GET",
+            dataType: 'json',
+            beforeSend: function(){
+                $("#loader").show();
+            },
+            success: function(response){    
+                console.log(response);
+                if(response){
+                    $("#"+inscrito_id).text("Corrigido!").removeClass('btn-dark').addClass('not-active');
+                }else{
+                    alert("O aluno ainda não realizou a redação.");
+                }
+            }, error: function(){
+                alert("O aluno ainda não realizou a redação.");
+            }
+        });
+
+        console.log(txt + " inscrito_id " + id);
+    }
+
+    $(document).ready(function() {
+        $('.table').DataTable();
+    });
 </script>
 @endsection

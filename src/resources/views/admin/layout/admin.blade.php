@@ -12,6 +12,14 @@
   <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" crossorigin="anonymous">
   <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous">
   <link href="{{asset('assets/css/admin.css')}}" rel="stylesheet">
+  <style>
+    .not-active { 
+            pointer-events: none; 
+            cursor: default; 
+            text-decoration: none; 
+            color: black; 
+        } 
+  </style>
 </head>
 
 <body>
