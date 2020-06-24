@@ -2,96 +2,135 @@
 
 @section('conteudo')
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Dashboard</h1>
-</div>
+<div class="content content-fixed">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+    <div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+            <li class="breadcrumb-item"><a href="/admin">Painel de Controle</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Análise Geral</li>
+          </ol>
+        </nav>
+        <h4 class="mg-b-0 tx-spacing--1">Painel de Controle</h4>
+      </div>
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">Dashboard</li>
-    </ol>
-</nav>
-
-    <div class="row">
-      
-        <div class="col-md-6 order-md-6 mb-6">
-            <h4 class="display-5">Inscritos que não realizaram redação</h3>
-           
-              <table class="table table-striped table-bordered" style="width:100%">
-                <thead>
-             
-                    <tr>
-                      <th>#</th>
-                      <th>Status</th>
-                      <th>Nome</th>
-                      <th>Curso Escolhido</th>
-                      <th>Visualizar</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($inscritos as $key=>$inscrito)
-                    <tr>
-                        <td>{{ ++$key }}</td>
-                        <td><span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status, $inscrito->id) !!}">{!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}</span></td>
-                        <td><a href="{{ route('visualizar_inscrito', $inscrito->id) }}">{{$inscrito->firstName}} {{$inscrito->lastName}}</a></td>
-                         
-                        <td><a href="admin/curso/{{$inscrito->curso->id}}/inscritos">{{$inscrito->curso->curso}}</a></td>
-                        <td class="d-flex">
-                            <a href="/admin/inscrito/{{$inscrito->id}}" class="btn btn-info btn-sm mr-1">
-                                Visualizar
-                            </a>
-
-                        </td>
-                    </tr>
-                @endforeach
-                  </tbody>
-                </table>
-            
-        </div>
-
-        <div class="col-md-6 order-md-6 mb-6">
-          <h4 class="display-5">Redações realizadas</h3>
-            
-              <table class="table table-striped table-bordered" style="width:100%">
-                <thead>
-             
-                    <tr>
-                          <tr>
-                            <th>#</th>
-                            <th>Nome</th>
-                            <th>Tema Escolhido</th>
-                            <th>Visualizar</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($redacoesAlunos as $key=> $redacaoAluno)
-                          <tr>
-                            <td>{{ ++$key }}</td>
-                            <td><a href="{{ route('visualizar_inscrito', $redacaoAluno->inscrito_id) }}">{{$redacaoAluno->inscrito->firstName}} {{$redacaoAluno->inscrito->lastName}}</a></td>
-                            <td><a href="{{ route('visualizar_redacao', $redacaoAluno->redacao_id) }}">{{$redacaoAluno->redacao->titulo_redacao}}</a></td>
-                            <td class="d-flex">
-                                <a href="{{ route('force_download', $redacaoAluno->id) }}" class="btn btn-info btn-sm mr-1">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
-                                  TXT
-                                </a>
-                            </td>
-                          </tr>
-                          @endforeach
-                        </tbody>
-                    </table>
-           
-        </div>
     </div>
+
+    <div class="row row-xs">
+
+      <div class="col-lg-8 col-xl-9">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="lh-5 mg-b-0">Inscritos que não realizaram redação</h6>
+          </div><!-- card-header -->
+          <div class="card-body pd-y-15 pd-x-10">
+            <div class="table-responsive">
+              <table class="table table-borderless table-sm tx-13 tx-nowrap mg-b-0">
+                <thead>
+                  <tr class="tx-10 tx-spacing-1 tx-color-03 tx-uppercase">
+                    <th class="wd-5p">#</th>
+                    <th>Nome</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                </thead>
+                <tbody>
+                  @foreach($inscritos as $key=>$inscrito)
+                  <tr>
+
+                    <td class="align-middle text-center">
+                      <a href="{{ route('visualizar_inscrito', $inscrito->id) }}"><i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i></a>
+                    </td>
+                    <td class="align-middle tx-uppercase">
+                      {{$inscrito->firstName}} {{$inscrito->lastName}}
+                    </td>
+                    <td class="align-middle">
+                      <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status,$inscrito->id) !!}">
+                        {!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}
+                      </span>
+                    </td>
+
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4 col-xl-3 mg-t-10 mg-lg-t-0">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mg-b-0">Inscrições por Curso</h6>
+          </div><!-- card-header -->
+          <div class="card-body pd-lg-25">
+            <div class="chart-seven"><canvas id="chartDonut"></canvas></div>
+          </div><!-- card-body -->
+          <div class="card-footer pd-20">
+            <div class="row inscricoesCursos">
+
+
+
+            </div><!-- row -->
+          </div><!-- card-footer -->
+        </div><!-- card -->
+      </div>
+
+      <div class="col-lg-8 mg-t-10">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="lh-5 mg-b-0">Redações realizadas</h6>
+          </div><!-- card-header -->
+          <div class="card-body pd-y-15 pd-x-10">
+            <div class="table-responsive">
+
+              <table class="table table-borderless table-sm tx-13 tx-nowrap mg-b-0">
+                <thead>
+                  <tr class="tx-10 tx-spacing-1 tx-color-03 tx-uppercase">
+                    <th class="wd-5p">Link</th>
+                    <th>Nome</th>
+                    <th>Tema Escolhido</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($redacoesAlunos as $key=> $redacaoAluno)
+                  <tr>
+
+                    <td class="align-middle text-center">
+                      <a href="{{ route('force_download', $redacaoAluno->id) }}"><i data-feather="download" class="wd-12 ht-12 stroke-wd-3"></i></a>
+                    </td>
+
+                    <td class="align-middle tx-uppercase">
+                      <a href="{{ route('visualizar_inscrito', $redacaoAluno->inscrito_id) }}">
+                        {{$redacaoAluno->inscrito->firstName}} {{$redacaoAluno->inscrito->lastName}}</a>
+                    </td>
+
+                    <td class="align-middle">
+                      {{$redacaoAluno->redacao->titulo_redacao}}
+                    </td>
+
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 @endsection
 
 @section('scripts')
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-
+<script src="{{asset('assets/lib/chart.js/Chart.bundle.min.js')}}"></script>
+<script src="{{asset('assets/js/scripts.js')}}"></script>
 <script>
-$(document).ready(function() {
-    $('.table').DataTable();
-} );
+  $(document).ready(function() {
+    //$('.table').DataTable();
+  });
 </script>
 @endsection

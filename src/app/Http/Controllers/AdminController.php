@@ -8,6 +8,7 @@ use App\Redacao;
 use App\Inscrito;
 use App\User;
 use App\Admin;
+use App\Curso;
 use App\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,70 +23,76 @@ class AdminController extends Controller
 
     public function index()
     {
+        $redacoesAlunos = RedacaoAluno::where('enviou_redacao', '=', 1)
+            ->orderBy('created_at', 'asc')
+            ->take(10)
+            ->get();
 
-        $redacoesAlunos = RedacaoAluno::where('enviou_redacao', '=', 1)->get();
         $inscritos      = Inscrito::where('firstName', '!=', 'mauricio')
-                                ->where('lastName', '!=', 'gerber')
-                                ->where('status', '<>', 2)
-                             ->get();
+            ->where('lastName', '!=', 'gerber')
+            ->where('status', '<>', 2)
+            ->orderBy('created_at', 'asc')
+            ->take(10)
+            ->get();
+            
         return view('admin.dashboard.index', compact('redacoesAlunos', 'inscritos'));
     }
 
 
-
-
-
-    public function userList(Request $request){
+    public function userList(Request $request)
+    {
 
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
-       
+
 
         $admins = Admin::all();
-        return view('admin.user.index', compact('admins','mensagem','alert_tipo'));
+        return view('admin.user.index', compact('admins', 'mensagem', 'alert_tipo'));
     }
 
-    public function userEdit(Request $request, $id){
+    public function userEdit(Request $request, $id)
+    {
 
         $user = Admin::find($id);
 
-        if(!$user){
+        if (!$user) {
             $request->session()->flash('mensagem', "Usuário não encontrado.");
             $request->session()->flash('alert_tipo', "alert-danger");
-        
+
             return redirect()->route('lista_usuarios');
         }
-        
+
         return view('admin.user.edit', compact('user'));
     }
 
-    public function userUpdate(Request $request, $id){
+    public function userUpdate(Request $request, $id)
+    {
 
         $user = Admin::find($id);
 
-        if(!$user){
+        if (!$user) {
             $request->session()->flash('mensagem', "Usuário não encontrado.");
             $request->session()->flash('alert_tipo', "alert-danger");
-        
+
             return redirect()->route('lista_usuarios');
         }
 
 
         $password = trim($request->input('old_password'));
 
-        if($request->input('password') != ''){
+        if ($request->input('password') != '') {
             $novaSenha = trim($request->password);
             $password = Hash::make($novaSenha);
-            if($password != $request->input('old_password')){
+            if ($password != $request->input('old_password')) {
                 $password = $password;
             }
         }
 
         DB::beginTransaction();
-            $user->name     = $request->input('name');
-            $user->email    = $request->input('email');
-            $user->password = $password;
-            $user->save();
+        $user->name     = $request->input('name');
+        $user->email    = $request->input('email');
+        $user->password = $password;
+        $user->save();
         DB::commit();
 
         $request->session()->flash('mensagem', "O usuário <strong>{$user->name}</strong> foi editado com sucesso.");
@@ -94,11 +101,13 @@ class AdminController extends Controller
         return redirect()->route('lista_usuarios');
     }
 
-    public function userCreate(){
+    public function userCreate()
+    {
         return view('admin.user.create');
     }
 
-    public function userStore(Request $request){
+    public function userStore(Request $request)
+    {
 
         $rules = [
             'name' => 'required',
@@ -117,11 +126,11 @@ class AdminController extends Controller
 
         $password = Hash::make($request->password);
         DB::beginTransaction();
-            $user = Admin::create([
-                'name'      => $request->name,
-                'email'     => $request->email,
-                'password'  => $password
-            ]);
+        $user = Admin::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => $password
+        ]);
         DB::commit();
 
         $request->session()->flash('mensagem', "Usuário <strong>{$user->name}</strong> criado com sucesso.");
@@ -146,31 +155,32 @@ class AdminController extends Controller
 
         $titulo = $redacaoAluno->inscrito->firstName . ' ' . $redacaoAluno->inscrito->lastName;
         $titulo = str_replace(" ", "_", $titulo);
-        
+
         return response($redacaoAluno->redacao_aluno)
-                ->withHeaders([
-                    'Content-Type' => 'text/plain',
-                    'Cache-Control' => 'no-store, no-cache',
-                    'Content-Disposition' => 'attachment; filename='.$titulo.'.txt',
-                ]);
+            ->withHeaders([
+                'Content-Type' => 'text/plain',
+                'Cache-Control' => 'no-store, no-cache',
+                'Content-Disposition' => 'attachment; filename=' . $titulo . '.txt',
+            ]);
     }
 
-    public function correcaoRedacao($inscrito_id){
+    public function correcaoRedacao($inscrito_id)
+    {
 
-        $redacao = RedacaoAluno::where('inscrito_id', '=',$inscrito_id)->first();
+        $redacao = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)->first();
         $redacao->corrigido = 1;
         $redacao->update();
 
         return $redacao;
     }
-    
+
     public function listarInscritos(Request $request)
     {
         $inscritos = Inscrito::where('firstName', '!=', 'mauricio')
-                            ->where('lastName', '!=', 'gerber')
-                            ->leftJoin('redacao_alunos', 'redacao_alunos.inscrito_id', '=', 'inscritos.id')
-                            ->select('inscritos.*', 'redacao_alunos.corrigido')
-                            ->get();
+            ->where('lastName', '!=', 'gerber')
+            ->leftJoin('redacao_alunos', 'redacao_alunos.inscrito_id', '=', 'inscritos.id')
+            ->select('inscritos.*', 'redacao_alunos.corrigido')
+            ->get();
 
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
@@ -178,7 +188,7 @@ class AdminController extends Controller
     }
 
 
-    
+
     /**
      * Display the specified resource.
      *
@@ -190,9 +200,27 @@ class AdminController extends Controller
         $inscrito = Inscrito::find($id);
 
         $payments = Payment::where('reference', '=', $id)
-                            ->orderBy('updated_at', 'desc')
-                            ->get();
-        return view('admin.inscritos.inscrito', compact('inscrito','payments'));
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        return view('admin.inscritos.inscrito', compact('inscrito', 'payments'));
     }
-    
+
+
+    public function inscritoXcurso(){
+
+
+        $relacao = Curso::where('status', '=', 1)
+                        ->withCount(['inscritos'])
+                        ->get();
+
+        foreach($relacao as $val){
+            $relacaoRetorno[] = array(
+                    'curso' => $val['abreviacao'], 
+                    'total' => $val['inscritos_count'],
+                    'color' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            );
+        }
+
+        return response()->json($relacaoRetorno, 201);
+    }
 }

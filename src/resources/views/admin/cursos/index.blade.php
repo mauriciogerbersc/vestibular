@@ -1,67 +1,89 @@
+@section('css')
+<link href="{{asset('assets/lib/datatables.net-dt/css/jquery.dataTables.min.css')}}" rel="stylesheet">
+<link href="{{asset('assets/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css')}}" rel="stylesheet">
+@endsection
+
 @extends('admin/layout/admin', ["current" => "cursos"]))
 
 @section('conteudo')
 
-
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Cursos</h1>
+<div class="content content-fixed bd-b">
+    <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+        <div class="d-sm-flex align-items-center justify-content-between">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+                        <li class="breadcrumb-item"><a href="/admin">Painel de Controle</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Cursos Criados</li>
+                    </ol>
+                </nav>
+                <h4 class="mg-b-0 tx-spacing--1">Cursos Criados</h4>
+            </div>
+        </div>
+    </div>
 </div>
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Cursos</li>
-    </ol>
-</nav>
-
-<a href="{{ route('criar_curso') }}" class="btn btn-dark mb-2">Criar Curso</a> <br />
+<div class="content">
+    <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
 
 
-@include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
+        @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
+        <div data-label="Example" class="df-example demo-table">
+            <table id="example1" class="table">
+                <thead>
+                    <tr>
+                        <th class="wd-15p">Modalidade</th>
 
-    <table class="table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th>Modalidade</th>
-                <th>Imagem</th>
-                <th>Curso</th>
-                <th>Ações</th>
-                
-        </thead>
-        <tbody>
-            @foreach($cursos as $curso)
-            <tr>
-                <td>{{$curso->tipo_curso}}</td>
-                <td><img src="/files/{{$curso->imagem_curso}}" style="height:  60px !important;"></td>
-                <td><a href="/admin/cursos/{{$curso->id}}/editar">{{$curso->curso}}</a></td>
-                <td class="d-flex">
-                   
-
-                    <form method="post" action="/admin/cursos/{{$curso->id}}/desativar"
-                        onsubmit="return confirm('Tem certeza que deseja remover ?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-danger btn-sm">
-                            Desativar
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-
-    </table>
+                        <th class="wd-65p">Curso</th>
+                        <th class="wd-10p">Imagem</th>
+                        <th class="wd-10p">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($cursos as $curso)
+                    <tr>
+                        <td>{{$curso->tipo_curso}}</td>
 
 
+                        <td><a href="/admin/cursos/{{$curso->id}}/editar">{{$curso->curso}}</a></td>
+                        <td><img src="/files/{{$curso->imagem_curso}}" style="height:  60px !important;"></td>
+                        <td class="d-flex">
+                            <form method="post" action="/admin/cursos/{{$curso->id}}/desativar" onsubmit="return confirm('Tem certeza que deseja remover ?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-danger btn-sm">
+                                    Desativar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="{{asset('assets/lib/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{asset('assets/lib/datatables.net-dt/js/dataTables.dataTables.min.js')}}"></script>
+<script src="{{asset('assets/lib/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
+<script src="{{asset('assets/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js')}}"></script>
 
 <script>
-$(document).ready(function() {
-    $('.table').DataTable();
-} );
+    $(function() {
+        'use strict'
+        $('.table').DataTable({
+            responsive: true,
+            language: {
+                searchPlaceholder: 'Search...',
+                sSearch: '',
+                lengthMenu: '_MENU_ items/page',
+            }
+        });
+    });
 </script>
 @endsection

@@ -88,3 +88,8 @@ Route::get('/testaemail', 'PagSeguroController@email');
 Route::get('/testaSenha', 'InscricaoController@testa');
 
 Route::post('/saveTime', 'VestibularController@saveTime')->name('save_time')->middleware('autenticadorAluno');
+
+
+
+/**  rest time **/
+Route::get('/admin/inscritoxcurso', 'AdminController@inscritoXcurso')->name('chartInscritosCursos');

@@ -2,55 +2,75 @@
 
 @section('conteudo')
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Temas</h1>
+<div class="content content-fixed bd-b">
+    <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+        <div class="d-sm-flex align-items-center justify-content-between">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+                        <li class="breadcrumb-item"><a href="/admin">Painel de Controle</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Redações Alunos</li>
+                    </ol>
+                </nav>
+                <h4 class="mg-b-0 tx-spacing--1">Redações Alunos</h4>
+            </div>
+        </div>
     </div>
+</div>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Redações de Alunos</li>
-        </ol>
-    </nav>
+@include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
+<div class="content">
+    <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+        <div data-label="Example" class="df-example demo-table">
+            <table id="example1" class="table">
+                <thead>
+                    <tr>
+                        <th class="wd-48p">Inscrito</th>
+                        <th class="wd-45p">Tema Escolhido</th>
+                        <th class="wd-7p">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($redacoesAlunos as $redacaoAluno)
+                    <tr>
+                        <td class="align-middle tx-uppercase"><a href="{{ route('visualizar_inscrito', $redacaoAluno->inscrito_id) }}">{{$redacaoAluno->inscrito->firstName}} {{$redacaoAluno->inscrito->lastName}}</a></td>
+                        <td><a href="{{ route('visualizar_redacao', $redacaoAluno->redacao_id) }}">{{$redacaoAluno->redacao->titulo_redacao}}</a></td>
+                        <td class="align-middle text-center">
+                            <a href="{{ route('force_download', $redacaoAluno->id) }}"><i data-feather="download" class="wd-12 ht-12 stroke-wd-3"></i></a>
+                        </td>
 
-    @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
-
-    <table class="table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th>Inscrito</th>
-                <th>Tema Escolhido</th>
-                <th>Ações</th>
-            </th>
-        </thead>
-        <tbody>
-            @forelse($redacoesAlunos as $redacaoAluno)
-                <tr>
-                    <td><a href="{{ route('visualizar_inscrito', $redacaoAluno->inscrito_id) }}">{{$redacaoAluno->inscrito->firstName}} {{$redacaoAluno->inscrito->lastName}}</a></td>
-                    <td><a href="{{ route('visualizar_redacao', $redacaoAluno->redacao_id) }}">{{$redacaoAluno->redacao->titulo_redacao}}</a></td>
-                    <td class="d-flex">
-                        <a href="{{ route('force_download', $redacaoAluno->id) }}" class="btn btn-info btn-sm mr-1">
-                            Baixar TXT
-                        </a>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="3">Nenhuma redação enviada.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="3">Nenhuma redação enviada.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 @endsection
 
 @section('scripts')
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
-    <script>
-    $(document).ready(function() {
-        $('.table').DataTable();
-    } );
-    </script>
+<script src="{{asset('assets/lib/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{asset('assets/lib/datatables.net-dt/js/dataTables.dataTables.min.js')}}"></script>
+<script src="{{asset('assets/lib/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
+<script src="{{asset('assets/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js')}}"></script>
+
+<script>
+    $(function() {
+        'use strict'
+        $('.table').DataTable({
+            responsive: true,
+            language: {
+                searchPlaceholder: 'Search...',
+                sSearch: '',
+                lengthMenu: '_MENU_ items/page',
+            }
+        });
+    });
+</script>
 @endsection

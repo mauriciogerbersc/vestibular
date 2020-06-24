@@ -9,52 +9,38 @@
   <meta name="generator" content="Jekyll v3.8.6">
   <title>AEROTD Faculdade de Tecnologia - Inscrição Vestibular</title>
   <!-- Bootstrap core CSS -->
-  <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" crossorigin="anonymous">
-  <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous">
-  <link href="{{asset('assets/css/admin.css')}}" rel="stylesheet">
+
+  <!-- vendor css -->
+  <link href="{{asset('assets/lib/@fortawesome/fontawesome-free/css/all.min.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/lib/ionicons/css/ionicons.min.css')}}" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{asset('assets/css/dashforge.css')}}">
+  <link rel="stylesheet" href="{{asset('assets/css/dashforge.dashboard.css')}}">
+  @yield('css')
   <style>
-    .not-active { 
-            pointer-events: none; 
-            cursor: default; 
-            text-decoration: none; 
-            color: black; 
-        } 
+    .not-active {
+      pointer-events: none;
+      cursor: default;
+      text-decoration: none;
+      color: black;
+    }
   </style>
 </head>
 
-<body>
-  <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">AeroTD</a>
-    <ul class="navbar-nav px-3">
-      <li class="nav-item text-nowrap">
-        
-        <a class="dropdown-item" style="color:lightblue; font-weight:bold;" href="{{ route('logout') }}"
-        onclick="event.preventDefault();
-                      document.getElementById('logout-form').submit();">
-         {{ __('Logout') }}
-     </a>
+<body class="page-profile">
 
-      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-          @csrf
-      </form>
-      </li>
-    </ul>
-  </nav>
+  @component('admin.layout.component_navbar', [ "current" => $current ?? '' ]) @endcomponent
 
-  <div class="container-fluid">
-    <div class="row">
-      
-      @component('admin.layout.component_navbar', [ "current" => $current ?? '' ]) @endcomponent
-
-      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-        @yield('conteudo')
-      </main>
-    </div>
-  </div>
+  @yield('conteudo')
 
 
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{asset('assets/lib/jquery/jquery.min.js')}}"></script>
+  <script src="{{asset('assets/lib/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{asset('assets/lib/feather-icons/feather.min.js')}}"></script>
+  <script src="{{asset('assets/lib/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
+
+  <script src="{{asset('assets/js/dashforge.js')}}"></script>
+
   @yield('scripts')
 
 </body>

@@ -1,58 +1,75 @@
-<div class="col-md-2 d-none d-md-block bg-light sidebar">
-    <div class="sidebar-sticky">
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a @if($current=="dashboard" ) class="nav-link active" @else class="nav-link" @endif href="/admin">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="feather feather-home">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-            Dashboard <span class="sr-only">(current)</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a @if($current=="cursos" ) class="nav-link active" @else class="nav-link" @endif href="/admin/cursos">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="feather feather-file">
-              <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-              <polyline points="13 2 13 9 20 9"></polyline>
-            </svg>
-            Cursos
-          </a>
-        </li>
-        <li class="nav-item">
-          <a @if($current=="temas" ) class="nav-link active" @else class="nav-link"  @endif href="/admin/redacao-temas">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-            Temas para Redação
-          </a>
-        </li>
+<header class="navbar navbar-header navbar-header-fixed">
+  <a href="/admin" id="mainMenuOpen" class="burger-menu"><i data-feather="menu"></i></a>
+  <div class="navbar-brand">
+    <a href="/admin" class="df-logo">AeroTD</a>
+  </div><!-- navbar-brand -->
+  <div id="navbarMenu" class="navbar-menu-wrapper">
+    <div class="navbar-menu-header">
+      <a href="/admin" class="df-logo">AeroTD</a>
+      <a id="mainMenuClose" href=""><i data-feather="x"></i></a>
+    </div><!-- navbar-menu-header -->
+    <ul class="nav navbar-menu">
 
-        <li class="nav-item">
-          <a @if($current=="redacoes" ) class="nav-link active" @else class="nav-link" @endif href="/admin/redacoes">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-archive"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-            Redações de Alunos
-          </a>
-        </li>
+      <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Menu Navegação</li>
+      <li class='nav-item @if($current=="dashboard")active @endif'><a href="/admin" class="nav-link">Página Inicial</a></li>
+      <li class='nav-item with-sub  @if($current=="cursos")active @endif'>
+        <a href="" class="nav-link"><i data-feather="package"></i> Cursos</a>
+        <ul class="navbar-menu-sub">
+          <li class="nav-sub-item"><a href="/admin/cursos" class="nav-sub-link"><i data-feather="calendar"></i>Listar Cursos</a></li>
+          <li class="nav-sub-item"><a href="{{ route('criar_curso') }}" class="nav-sub-link"><i data-feather="message-square"></i>Criar Curso</a></li>
+        </ul>
+      </li>
+      <li class='nav-item with-sub  @if($current=="temas")active @endif'>
+        <a href="" class="nav-link"><i data-feather="package"></i> Temas</a>
+        <ul class="navbar-menu-sub">
+          <li class="nav-sub-item"><a href="/admin/redacao-temas" class="nav-sub-link"><i data-feather="calendar"></i>Listar Temas</a></li>
+          <li class="nav-sub-item"><a href="{{ route('criar_tema') }}" class="nav-sub-link"><i data-feather="message-square"></i>Criar Tema</a></li>
+        </ul>
+      </li>
+      <li class='nav-item @if($current=="redacoes")active @endif'><a href="/admin/redacoes" class="nav-link"> Redações Alunos</a></li>
+      <li class='nav-item @if($current=="inscritos")active @endif'><a href="/admin/inscritos" class="nav-link"> Inscrições</a></li>
+      <li class='nav-item @if($current=="users")active @endif'><a href="/admin/usuarios" class="nav-link"> Usuários do Sistema</a></li>
+      <!--<li class="nav-item with-sub active">
+        <a href="" class="nav-link"><i data-feather="pie-chart"></i> Dashboard</a>
+        <ul class="navbar-menu-sub">
+          <li class="nav-sub-item"><a href="dashboard-one.html" class="nav-sub-link"><i data-feather="bar-chart-2"></i>Sales Monitoring</a></li>
+          <li class="nav-sub-item"><a href="dashboard-two.html" class="nav-sub-link"><i data-feather="bar-chart-2"></i>Website Analytics</a></li>
+          <li class="nav-sub-item"><a href="dashboard-three.html" class="nav-sub-link"><i data-feather="bar-chart-2"></i>Cryptocurrency</a></li>
+          <li class="nav-sub-item"><a href="dashboard-four.html" class="nav-sub-link"><i data-feather="bar-chart-2"></i>Helpdesk Management</a></li>
+        </ul>
+      </li>
+      -->
+    </ul>
+  </div><!-- navbar-menu-wrapper -->
+  <div class="navbar-right">
 
-        <li class="nav-item">
-          <a @if($current=="inscritos" ) class="nav-link active" @else class="nav-link" @endif href="/admin/inscritos">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-            Alunos Inscritos
-          </a>
-        </li>
+    <div class="dropdown dropdown-profile">
+      <a href="" class="dropdown-link" data-toggle="dropdown" data-display="static">
+        <div class="avatar avatar-sm">
+          <img src="https://via.placeholder.com/500" class="rounded-circle" alt="">
+        </div>
+      </a><!-- dropdown-link -->
+      <div class="dropdown-menu dropdown-menu-right tx-13">
+        <div class="avatar avatar-lg mg-b-15"><img src="https://via.placeholder.com/500" class="rounded-circle" alt=""></div>
+        <h6 class="tx-semibold mg-b-5">Katherine Pechon</h6>
+        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                      document.getElementById('logout-form').submit();">
+          {{ __('Sair do Sistema') }}
+        </a>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+          @csrf
+        </form>
 
 
-        <li class="nav-item">
-          <a @if($current=="users" ) class="nav-link active" @else class="nav-link" @endif href="/admin/usuarios">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-            Usuários do Sistema
-          </a>
-        </li>
-
-      </ul>
-
-    </div>
-  </div>
+      </div><!-- dropdown-menu -->
+    </div><!-- dropdown -->
+  </div><!-- navbar-right -->
+  <div class="navbar-search">
+    <div class="navbar-search-header">
+      <input type="search" class="form-control" placeholder="Type and hit enter to search...">
+      <button class="btn"><i data-feather="search"></i></button>
+      <a id="navbarSearchClose" href="" class="link-03 mg-l-5 mg-lg-l-10"><i data-feather="x"></i></a>
+    </div><!-- navbar-search-header -->
+  </div><!-- navbar-search -->
+</header><!-- navbar -->
