@@ -78,7 +78,7 @@
         </div><!-- card -->
       </div>
 
-      <div class="col-lg-8 mg-t-10">
+      <div class="col-lg-12 mg-t-10">
         <div class="card">
           <div class="card-header">
             <h6 class="lh-5 mg-b-0">Redações realizadas</h6>

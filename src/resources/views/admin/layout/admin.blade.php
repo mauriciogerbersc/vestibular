@@ -38,7 +38,7 @@
   <script src="{{asset('assets/lib/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
   <script src="{{asset('assets/lib/feather-icons/feather.min.js')}}"></script>
   <script src="{{asset('assets/lib/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
-
+  <script src="{{asset('assets/lib/jqueryui/jquery-ui.min.js')}}"></script>
   <script src="{{asset('assets/js/dashforge.js')}}"></script>
 
   @yield('scripts')
