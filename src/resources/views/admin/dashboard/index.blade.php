@@ -19,10 +19,10 @@
 
     <div class="row row-xs">
 
-      <div class="col-lg-8 col-xl-9">
+      <div class="col-lg-4 col-xl-5">
         <div class="card">
           <div class="card-header">
-            <h6 class="lh-5 mg-b-0">Inscritos que não realizaram redação</h6>
+            <h6 class="lh-5 mg-b-0">Pagou e não realizou redação</h6>
           </div><!-- card-header -->
           <div class="card-body pd-y-15 pd-x-10">
             <div class="table-responsive">
@@ -31,12 +31,50 @@
                   <tr class="tx-10 tx-spacing-1 tx-color-03 tx-uppercase">
                     <th class="wd-5p">#</th>
                     <th>Nome</th>
-                    <th>Status</th>
+              
                   </tr>
                 </thead>
                 </thead>
                 <tbody>
-                  @foreach($inscritos as $key=>$inscrito)
+                  @foreach($inscritosSemRedacao as $key=>$inscrito)
+                  <tr>
+
+                    <td class="align-middle text-center">
+                      <a href="{{ route('visualizar_inscrito', $inscrito->id) }}"><i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i></a>
+                    </td>
+                    <td class="align-middle tx-uppercase">
+                      {{$inscrito->firstName}} {{$inscrito->lastName}}
+                    </td>
+                  
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      
+      <div class="col-lg-4 col-xl-4">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="lh-5 mg-b-0">Aguardando Correção</h6>
+          </div><!-- card-header -->
+          <div class="card-body pd-y-15 pd-x-10">
+            <div class="table-responsive">
+              <table class="table table-borderless table-sm tx-13 tx-nowrap mg-b-0">
+                <thead>
+                  <tr class="tx-10 tx-spacing-1 tx-color-03 tx-uppercase">
+                    <th class="wd-5p">#</th>
+                    <th>Nome</th>
+                    <th>Redação</th>
+                  </tr>
+                </thead>
+                </thead>
+                <tbody>
+                  @foreach($aguardandoCorrecao as $key=>$inscrito)
                   <tr>
 
                     <td class="align-middle text-center">
@@ -46,11 +84,10 @@
                       {{$inscrito->firstName}} {{$inscrito->lastName}}
                     </td>
                     <td class="align-middle">
-                      <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status,$inscrito->id) !!}">
-                        {!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}
-                      </span>
+                    <a href="{{ route('force_download', $inscrito->id) }}"><i data-feather="download" class="wd-12 ht-12 stroke-wd-3"></i></a>
+                   
                     </td>
-
+                  
                   </tr>
                   @endforeach
                 </tbody>
@@ -59,6 +96,8 @@
           </div>
         </div>
       </div>
+
+
 
       <div class="col-md-6 col-lg-4 col-xl-3 mg-t-10 mg-lg-t-0">
         <div class="card">
@@ -78,11 +117,12 @@
         </div><!-- card -->
       </div>
 
+      <!--
       <div class="col-lg-12 mg-t-10">
         <div class="card">
           <div class="card-header">
             <h6 class="lh-5 mg-b-0">Redações realizadas</h6>
-          </div><!-- card-header -->
+          </div>
           <div class="card-body pd-y-15 pd-x-10">
             <div class="table-responsive">
 
@@ -118,7 +158,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
     </div>
   </div>
 </div>

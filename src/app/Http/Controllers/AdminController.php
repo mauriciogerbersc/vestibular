@@ -28,14 +28,22 @@ class AdminController extends Controller
             ->take(10)
             ->get();
 
-        $inscritos      = Inscrito::where('firstName', '!=', 'mauricio')
+        $inscritosSemRedacao      = Inscrito::where('firstName', '!=', 'mauricio')
             ->where('lastName', '!=', 'gerber')
-            ->where('status', '<>', 2)
+            ->where('status', '=', 1)
             ->orderBy('created_at', 'asc')
             ->take(10)
             ->get();
             
-        return view('admin.dashboard.index', compact('redacoesAlunos', 'inscritos'));
+        $aguardandoCorrecao      = Inscrito::where('firstName', '!=', 'mauricio')
+            ->join('redacao_alunos as re', 're.inscrito_id', '=', 'inscritos.id')
+            ->where('lastName', '!=', 'gerber')
+            ->where('status', '=', 2)
+            ->where('re.corrigido', 0)
+            ->orderBy('inscritos.created_at', 'asc')
+            ->take(10)
+            ->get();
+        return view('admin.dashboard.index', compact('redacoesAlunos', 'inscritosSemRedacao', 'aguardandoCorrecao'));
     }
 
 
