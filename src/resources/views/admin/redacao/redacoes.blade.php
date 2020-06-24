@@ -26,33 +26,35 @@
 @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
 <div class="content">
     <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
-        <div data-label="Example" class="df-example demo-table">
-            <table id="example1" class="table">
-                <thead>
-                    <tr>
-                        <th class="wd-48p">Inscrito</th>
-                        <th class="wd-45p">Tema Escolhido</th>
-                        <th class="wd-7p">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($redacoesAlunos as $redacaoAluno)
-                    <tr>
-                        <td class="align-middle tx-uppercase"><a href="{{ route('visualizar_inscrito', $redacaoAluno->inscrito_id) }}">{{$redacaoAluno->inscrito->firstName}} {{$redacaoAluno->inscrito->lastName}}</a></td>
-                        <td><a href="{{ route('visualizar_redacao', $redacaoAluno->redacao_id) }}">{{$redacaoAluno->redacao->titulo_redacao}}</a></td>
-                        <td class="align-middle text-center">
-                            <a href="{{ route('force_download', $redacaoAluno->id) }}"><i data-feather="download" class="wd-12 ht-12 stroke-wd-3"></i></a>
-                        </td>
 
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="3">Nenhuma redação enviada.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+        <table id="example1" class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th class="wd-48p">Inscrito</th>
+                    <th class="wd-45p">Tema Escolhido</th>
+                    <th class="wd-7p">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($redacoesAlunos as $key=>$redacaoAluno)
+                <tr>
+                    <td>{{$key+1}}</td>
+                    <td class="align-middle tx-uppercase"><a href="{{ route('visualizar_inscrito', $redacaoAluno->inscrito_id) }}">{{$redacaoAluno->inscrito->firstName}} {{$redacaoAluno->inscrito->lastName}}</a></td>
+                    <td><a href="{{ route('visualizar_redacao', $redacaoAluno->redacao_id) }}">{{$redacaoAluno->redacao->titulo_redacao}}</a></td>
+                    <td class="align-middle text-center">
+                        <a href="{{ route('force_download', $redacaoAluno->id) }}"><i data-feather="download" class="wd-12 ht-12 stroke-wd-3"></i></a>
+                    </td>
+
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4">Nenhuma redação enviada.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+
     </div>
 </div>
 

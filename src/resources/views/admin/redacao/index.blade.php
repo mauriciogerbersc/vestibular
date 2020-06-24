@@ -32,14 +32,16 @@
             <table id="example1" class="table">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th class="wd-60p">Título da Redação</th>
                         <th class="wd-15p">Imagem</th>
                         <th class="wd-15p">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($redacoes as $redacao)
-                    <tr>
+                    @foreach($redacoes as $key=>$redacao)
+                    <tr>    
+                        <td>{{$key+1}}</td>
                         <td><a href="/admin/redacao-temas/{{$redacao->id}}/editar">{{$redacao->titulo_redacao}}</a></td>
                         <td><img src="/files/{{$redacao->tema_imagem}}" style="height:  60px !important;"></td>
                         <td class="d-flex">

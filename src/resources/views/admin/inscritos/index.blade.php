@@ -23,77 +23,78 @@
 <div class="content">
     <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
 
-        <div data-label="Example" class="df-example demo-table">
-            <table id="example1" class="table">
-                <thead>
-                    <tr>
-                        <th>Situação</th>
-                        <th>Pagamento</th>
-                        <th>Inscrito</th>
-                        <th>Curso</th>
-                        <th>Documento</th>
-                        <th>Contato</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($inscritos as $inscrito)
-                    <tr>
-                        <!-- -->
-                        <td>
-                            <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status,$inscrito->id) !!} corrigido_{{$inscrito->id}}">
-                                {!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}</span>
-                        </td>
-                        <td>
-                            @php
-                            $transacao = Helper::tentouPagar($inscrito->id);
-                            @endphp
 
-                            @if(empty($transacao))
-                            <span class="badge badge-pill badge-dark">Não realizou pagamento.</span>
+        <table id="example1" class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Situação</th>
+                    <th>Pagamento</th>
+                    <th>Inscrito</th>
+                    <th>Curso</th>
+                    <th>Documento</th>
+                    <th>Contato</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($inscritos as $key=>$inscrito)
+                <tr>
+                    <td>{{$key+1}}</td>
+                    <td>
+                        <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status,$inscrito->id) !!} corrigido_{{$inscrito->id}}">
+                            {!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}</span>
+                    </td>
+                    <td>
+                        @php
+                        $transacao = Helper::tentouPagar($inscrito->id);
+                        @endphp
+
+                        @if(empty($transacao))
+                        <span class="badge badge-pill badge-dark">Não realizou pagamento.</span>
+                        @else
+                        @if($transacao == 3)
+                        <span class="badge badge-pill badge-success">Pagamento Efetuado</span>
+                        @else
+                        <span class="badge badge-pill badge-primary">Aguardando Baixa</span>
+                        @endif
+
+                        @endif
+                    </td>
+                    <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
+                    <td><a href="cursos/{{$inscrito->curso->id}}/editar">{{$inscrito->curso->curso}}</a></td>
+
+                    <td>{{$inscrito->nDocumento}}</td>
+                    <td>{{$inscrito->email}}
+                        <br>{{$inscrito->phone}}</td>
+                    <td class="d-flex">
+
+                        <div class="btn-group-vertical">
+                            <a href="/admin/inscrito/{{$inscrito->id}}" class="btn btn-primary btn-sm mb-1">Visualizar</a>
+                            @if($inscrito->historico!='')
+                            <a href="/baixar-arquivo/{{$inscrito->historico}}" target="_blank" class="btn btn-secondary mb-1">
+                                Histórico
+                            </a>
                             @else
-                            @if($transacao == 3)
-                            <span class="badge badge-pill badge-success">Pagamento Efetuado</span>
-                            @else
-                            <span class="badge badge-pill badge-primary">Aguardando Baixa</span>
+                            <span class="btn btn-danger btn-sm mb-1 not-active" alt="Não foi enviado histórico escolar" title="Não foi enviado histórico escolar">Histórico</span>
                             @endif
 
+                            @if($inscrito->status == 2)
+                            @if($inscrito->corrigido)
+                            <span class="btn btn-success btn-sm correcao not-active">Corrigido!</span>
+                            @else
+                            <button type="button" class="btn btn-dark btn-sm correcao corrigido_{{$inscrito->id}}" onclick="confirmarCorrecao({{$inscrito->id}});">Corrigido?</button>
                             @endif
-                        </td>
-                        <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
-                        <td><a href="cursos/{{$inscrito->curso->id}}/editar">{{$inscrito->curso->curso}}</a></td>
+                            @else
+                            <span class="btn btn-dark btn-sm mb-1 not-active" alt="Redação ainda não corrigida" title="Redação ainda não corrigida">Corrigido?</span>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
 
-                        <td>{{$inscrito->nDocumento}}</td>
-                        <td>{{$inscrito->email}}
-                            <br>{{$inscrito->phone}}</td>
-                        <td class="d-flex">
-
-                            <div class="btn-group-vertical">
-                                <a href="/admin/inscrito/{{$inscrito->id}}" class="btn btn-primary btn-sm mb-1">Visualizar</a>
-                                @if($inscrito->historico!='')
-                                <a href="/baixar-arquivo/{{$inscrito->historico}}" target="_blank" class="btn btn-secondary mb-1">
-                                    Histórico
-                                </a>
-                                @else
-                                <span class="btn btn-danger btn-sm mb-1 not-active" alt="Não foi enviado histórico escolar" title="Não foi enviado histórico escolar">Histórico</span>
-                                @endif
-
-                                @if($inscrito->status == 2)
-                                @if($inscrito->corrigido)
-                                <span class="btn btn-success btn-sm correcao not-active">Corrigido!</span>
-                                @else
-                                <button type="button" class="btn btn-dark btn-sm correcao corrigido_{{$inscrito->id}}" onclick="confirmarCorrecao({{$inscrito->id}});">Corrigido?</button>
-                                @endif
-                                @else
-                                <span class="btn btn-dark btn-sm mb-1 not-active" alt="Redação ainda não corrigida" title="Redação ainda não corrigida">Corrigido?</span>
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
     </div>
 </div>
 
