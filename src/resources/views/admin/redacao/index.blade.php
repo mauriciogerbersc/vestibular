@@ -1,4 +1,9 @@
-@extends('admin/layout/admin', ["current" => "temas"]))
+@extends('admin/layout/admin', ["current" => "temas"])
+
+@section('css')
+<link href="{{asset('assets/lib/datatables.net-dt/css/jquery.dataTables.min.css')}}" rel="stylesheet">
+<link href="{{asset('assets/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css')}}" rel="stylesheet">
+@endsection
 
 @section('conteudo')
 

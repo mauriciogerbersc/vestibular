@@ -1,9 +1,9 @@
+@extends('admin/layout/admin', ["current" => "cursos"])
+
 @section('css')
 <link href="{{asset('assets/lib/datatables.net-dt/css/jquery.dataTables.min.css')}}" rel="stylesheet">
 <link href="{{asset('assets/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css')}}" rel="stylesheet">
 @endsection
-
-@extends('admin/layout/admin', ["current" => "cursos"]))
 
 @section('conteudo')
 
@@ -28,12 +28,11 @@
 
 
         @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
-        <div data-label="Example" class="df-example demo-table">
+        
             <table id="example1" class="table">
                 <thead>
                     <tr>
                         <th class="wd-15p">Modalidade</th>
-
                         <th class="wd-65p">Curso</th>
                         <th class="wd-10p">Imagem</th>
                         <th class="wd-10p">Ações</th>
@@ -61,7 +60,7 @@
                 </tbody>
 
             </table>
-        </div>
+        
     </div>
 </div>
 @endsection

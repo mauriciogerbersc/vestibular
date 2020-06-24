@@ -14,9 +14,11 @@
   <link href="{{asset('assets/lib/@fortawesome/fontawesome-free/css/all.min.css')}}" rel="stylesheet">
   <link href="{{asset('assets/lib/ionicons/css/ionicons.min.css')}}" rel="stylesheet">
 
+  @yield('css')
+
   <link rel="stylesheet" href="{{asset('assets/css/dashforge.css')}}">
   <link rel="stylesheet" href="{{asset('assets/css/dashforge.dashboard.css')}}">
-  @yield('css')
+ 
   <style>
     .not-active {
       pointer-events: none;
@@ -39,6 +41,7 @@
   <script src="{{asset('assets/lib/feather-icons/feather.min.js')}}"></script>
   <script src="{{asset('assets/lib/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
   <script src="{{asset('assets/lib/jqueryui/jquery-ui.min.js')}}"></script>
+  
   <script src="{{asset('assets/js/dashforge.js')}}"></script>
 
   @yield('scripts')

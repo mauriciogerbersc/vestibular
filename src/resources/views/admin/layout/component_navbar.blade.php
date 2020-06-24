@@ -29,16 +29,6 @@
       <li class='nav-item @if($current=="redacoes")active @endif'><a href="/admin/redacoes" class="nav-link"> Redações Alunos</a></li>
       <li class='nav-item @if($current=="inscritos")active @endif'><a href="/admin/inscritos" class="nav-link"> Inscrições</a></li>
       <li class='nav-item @if($current=="users")active @endif'><a href="/admin/usuarios" class="nav-link"> Usuários do Sistema</a></li>
-      <!--<li class="nav-item with-sub active">
-        <a href="" class="nav-link"><i data-feather="pie-chart"></i> Dashboard</a>
-        <ul class="navbar-menu-sub">
-          <li class="nav-sub-item"><a href="dashboard-one.html" class="nav-sub-link"><i data-feather="bar-chart-2"></i>Sales Monitoring</a></li>
-          <li class="nav-sub-item"><a href="dashboard-two.html" class="nav-sub-link"><i data-feather="bar-chart-2"></i>Website Analytics</a></li>
-          <li class="nav-sub-item"><a href="dashboard-three.html" class="nav-sub-link"><i data-feather="bar-chart-2"></i>Cryptocurrency</a></li>
-          <li class="nav-sub-item"><a href="dashboard-four.html" class="nav-sub-link"><i data-feather="bar-chart-2"></i>Helpdesk Management</a></li>
-        </ul>
-      </li>
-      -->
     </ul>
   </div><!-- navbar-menu-wrapper -->
   <div class="navbar-right">
@@ -65,11 +55,5 @@
       </div><!-- dropdown-menu -->
     </div><!-- dropdown -->
   </div><!-- navbar-right -->
-  <div class="navbar-search">
-    <div class="navbar-search-header">
-      <input type="search" class="form-control" placeholder="Type and hit enter to search...">
-      <button class="btn"><i data-feather="search"></i></button>
-      <a id="navbarSearchClose" href="" class="link-03 mg-l-5 mg-lg-l-10"><i data-feather="x"></i></a>
-    </div><!-- navbar-search-header -->
-  </div><!-- navbar-search -->
+
 </header><!-- navbar -->
