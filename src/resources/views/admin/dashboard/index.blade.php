@@ -31,9 +31,8 @@
                   <tr class="tx-10 tx-spacing-1 tx-color-03 tx-uppercase">
                     <th class="wd-5p">#</th>
                     <th>Nome</th>
-              
+                    <th>Curso Escolhido</th>
                   </tr>
-                </thead>
                 </thead>
                 <tbody>
                   @foreach($inscritosSemRedacao as $key=>$inscrito)
@@ -45,7 +44,7 @@
                     <td class="align-middle tx-uppercase">
                       {{$inscrito->firstName}} {{$inscrito->lastName}}
                     </td>
-                  
+                    <td>{{$inscrito->curso->abreviacao}}</td>
                   </tr>
                   @endforeach
                 </tbody>
@@ -56,7 +55,7 @@
       </div>
 
 
-      
+
       <div class="col-lg-4 col-xl-4">
         <div class="card">
           <div class="card-header">
@@ -84,10 +83,10 @@
                       {{$inscrito->firstName}} {{$inscrito->lastName}}
                     </td>
                     <td class="align-middle">
-                    <a href="{{ route('force_download', $inscrito->id) }}"><i data-feather="download" class="wd-12 ht-12 stroke-wd-3"></i></a>
-                   
+                      <a href="{{ route('force_download', $inscrito->id) }}"><i data-feather="download" class="wd-12 ht-12 stroke-wd-3"></i></a>
+
                     </td>
-                  
+
                   </tr>
                   @endforeach
                 </tbody>
