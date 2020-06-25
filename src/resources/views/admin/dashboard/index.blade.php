@@ -31,7 +31,7 @@
                   <tr class="tx-10 tx-spacing-1 tx-color-03 tx-uppercase">
                     <th class="wd-5p">#</th>
                     <th>Nome</th>
-                    <th>Curso Escolhido</th>
+                    <th class="text-center">Curso Escolhido</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -44,7 +44,7 @@
                     <td class="align-middle tx-uppercase">
                       {{$inscrito->firstName}} {{$inscrito->lastName}}
                     </td>
-                    <td>{{$inscrito->curso->abreviacao}}</td>
+                    <td class="align-middle text-center">{{$inscrito->curso->abreviacao}}</td>
                   </tr>
                   @endforeach
                 </tbody>
