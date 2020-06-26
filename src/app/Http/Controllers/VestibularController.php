@@ -60,12 +60,20 @@ class VestibularController extends Controller
             return redirect()->back();
         }
 
-        if(!Auth::attempt($request->only(['email', 'password']))){
+    
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password
+        ];
+
+        $authOK = Auth::attempt($credentials);
+
+        if(!$authOK){
             
             $request->session()->flash('mensagem', "E-mail/CPF incorretos.");
             $request->session()->flash('alert_tipo', "alert-danger");
     
-            return redirect()->back();
+            return redirect()->back()->withInputs($request->only('email', 'remember'));
         }
 
         return redirect()->route('selecionar_tema');
