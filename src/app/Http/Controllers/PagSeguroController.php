@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 use App\Services\PagamentoPagSeguro;
 use App\Services\EnvioDeEmail;
 use App\Payment;
+use App\Hash;
 use App\Services\CriadorDeHash;
 use App\Services\CriadorDeUsuario;
 use Illuminate\Support\Facades\DB;
+use Hashids\Hashids;
+
 
 class PagSeguroController extends Controller
 {
@@ -45,7 +48,7 @@ class PagSeguroController extends Controller
 
        
         $retorno = $pagamentoPagSeguro->verificarTransacaoPorData($inicialDate, $finalDate, $page, $maxPageResults);
-        //print_r($retorno);exit;die;
+  
         $conteudo = "";
         if($retorno['success'] == 1){
             foreach($retorno['retorno']->transactions as $transaction){
@@ -72,12 +75,15 @@ class PagSeguroController extends Controller
         $arrToCheck = array();
         
         $string = "";
+        
         foreach($payment as $key=>$val){
             $arrToCheck[$val['codigo']] = $val['status_transacao'];
          
             foreach($arrToCheck as $code=>$status){
+             
                 if($code==$codigo){
-                   
+                
+                    
                     if($status!=$status_transacao){
                         DB::beginTransaction();
                         $statusUpdate = Payment::where("codigo", "=", $code)->first();
@@ -86,28 +92,42 @@ class PagSeguroController extends Controller
                         $string   .= "<strong>Salvou o status da transação {$code}, como {$status_transacao}</strong> \n\n";
                         
                         if($status_transacao==3){
-                            $inscrito = Inscrito::where('id', '=', $reference)->first();
+
+                            if(!empty(!ctype_digit(strval($reference)))){
+                                $hash       = Hash::where('hash', '=', $reference)->first();
+                                if($hash){
+                                   $reference = $hash->inscrito_id;
+                                }
+                            }
+
+                            $inscrito               = Inscrito::where('id', '=', $reference)->first();
                             $criadorDeUsuario       = new CriadorDeUsuario();
                             $criarUsuarioInscrito   = $criadorDeUsuario->criarUsuario($inscrito->firstName, $inscrito->email, $inscrito->nDocumento, $inscrito->id);
-                            $string .= "Criou o usuário para o candidato {$inscrito->firstName}\n\n";
+                            $string                 .= "Criou o usuário para o candidato {$inscrito->firstName}\n\n";
+
                             /*Recupero curso que o aluno se inscreveu, para enviar por email  */
+
                             if ($criarUsuarioInscrito == true) {
                                 /* Gero Hash para envio ao inscrito  */
-                                $criadorDeHash      = new CriadorDeHash();
-                                $hash               = $criadorDeHash->criarHash($inscrito->id);
-                                $string .= "Criou  a hash {$hash->hash} para o candidato {$inscrito->firstName}\n\n";
+                                if(!empty(!ctype_digit(strval($reference)))){
+                                    $hash       = $reference;
+                                }else{
+                                    $criadorDeHash      = new CriadorDeHash();
+                                    $hax                = $criadorDeHash->criarHash($inscrito->id);
+                                    $hash               = $hax->hash;
+                                }
 
+                                $string             .= "Criou  a hash {$hash} para o candidato {$inscrito->firstName}\n\n";
                                 $curso              = Curso::find($inscrito->curso_id);
-
                                 $enviarEmail        = new EnvioDeEmail();
-                                $enviarEmail        = $enviarEmail->enviarEmailInscricao($inscrito->firstName, $inscrito->email, $curso->curso, $hash->hash);
-                                $string .= "Enviando email para o candidato {$inscrito->firstName}\n\n";
+                                $enviarEmail        = $enviarEmail->enviarEmailInscricao($inscrito->firstName, $inscrito->email, $curso->curso, $hash);
+                                $string             .= "Enviando email para o candidato {$inscrito->firstName}\n\n";
                                 /*Altero o status do inscrito para 1. o Valor 1 quer dizer que ele pagou e falta realizar a redação. */
                                 $procura_inscrito = Inscrito::find($inscrito->id);
                                 $procura_inscrito->status = 1;
                                 $procura_inscrito->save();
 
-                                $string .= "Altero o status para que no administrador saiba que falta apenas fazer a redação <hr>.\n\n";
+                                $string             .= "Altero o status para que no administrador saiba que falta apenas fazer a redação <hr>.\n\n";
                             }
                         }
                         DB::commit();
@@ -117,7 +137,9 @@ class PagSeguroController extends Controller
             }
         }
 
-        return $string;
+   
+
+        #return $string;
         
     }
 

@@ -18,11 +18,11 @@ class PagamentoPagSeguro
 
     public function __construct()
     {
-        $this->url              = "https://ws.pagseguro.uol.com.br/v2/";
-        $this->url_sandbox      = "https://ws.sandbox.pagseguro.uol.com.br/v2/";
-        $this->email            = "financeiro.seminario@aerotd.com.br";
-        $this->token_sandbox    = "C5DEA9B3A39D4B6681EF520A4096E5EB";
-        $this->token            = "2BFE26E711B04FD5A01A10563B37D3A9";
+        $this->url              = $_ENV['URL'];
+        $this->url_sandbox      = $_ENV['URL_SANDBOX'];
+        $this->email            = $_ENV['EMAIL'];
+        $this->token_sandbox    = $_ENV['TOKEN_SANDBOX'];
+        $this->token            = $_ENV['TOKEN'];
     }
 
     public function conectaPagSeguro(){
@@ -114,7 +114,7 @@ class PagamentoPagSeguro
             }
         
             $retorno = curl_exec($curl);
-        
+          
             $xml = simplexml_load_string($retorno);
            
             $infoRequisicao = curl_getinfo($curl);

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Curso;
 use App\Inscrito;
 use App\Payment;
+use App\Hash as HashGenerate;
 use Illuminate\Support\Facades\Hash;
 use stdClass;
 
@@ -86,14 +87,25 @@ class InscricaoController extends Controller
         $telefone = preg_split("/\(|\)/", $dadosInscrito->phone);
         $ddd = $telefone[1];
         $phone = str_replace("-","",trim($telefone[2]));
-   
+        
+
+        $procuraHash = HashGenerate::where('inscrito_id', '=', $request->inscrito_id)->first();
+        if($procuraHash){
+            $hashInscrito       = $procuraHash->hash;
+        }else{
+            $criadorDeHash      = new CriadorDeHash();
+            $hash               = $criadorDeHash->criarHash($request->inscrito_id);
+            $hashInscrito       = $hash->hash;       
+        }
+     
+      
         if ($request->formaPagamento == 'b') {
             $payment = new stdClass();
             $payment->paymentMethod                = 'boleto';
             $payment->itemDescription1             =  $request->itemDescription1;
             $payment->itemAmount1                  =  $request->itemAmount1;
             $payment->itemQuantity1                = '1';
-            $payment->reference                    =  $request->inscrito_id;
+            $payment->reference                    =  $hashInscrito;
             $payment->senderName                   =  $dadosInscrito->firstName . ' ' . $dadosInscrito->lastName;
             $payment->senderCPF                    =  $dadosInscrito->nDocumento;
             $payment->senderAreaCode               =  $ddd;
@@ -154,7 +166,7 @@ class InscricaoController extends Controller
             $payment->itemDescription1             =  $request->itemDescription1;
             $payment->itemAmount1                  =  $request->itemAmount1;
             $payment->itemQuantity1                = '1';
-            $payment->reference                    =  $request->inscrito_id;
+            $payment->reference                    =  $hashInscrito;
             $payment->senderName                   =  $dadosInscrito->firstName . ' ' . $dadosInscrito->lastName;
             $payment->senderCPF                    =  $dadosInscrito->nDocumento;
             $payment->senderAreaCode               =  $ddd;
@@ -221,7 +233,7 @@ class InscricaoController extends Controller
     }
 
     public function testa(){
-        $cpf = trim("05958703501");
+        $cpf = trim("00905869052");
         $cpf = Hash::make($cpf);
         echo $cpf;
     }
