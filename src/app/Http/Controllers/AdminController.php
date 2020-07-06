@@ -296,11 +296,9 @@ class AdminController extends Controller
 
     public function inscritoXcurso()
     {
-
-
         $relacao = Curso::where('status', '=', 1)
-            ->withCount(['inscritos'])
-            ->get();
+                        ->withCount(['inscritos'])
+                        ->get();
 
         foreach ($relacao as $val) {
             $relacaoRetorno[] = array(
@@ -312,4 +310,47 @@ class AdminController extends Controller
 
         return response()->json($relacaoRetorno, 201);
     }
+
+
+    public function countCandidatos($status){
+        $inscritos = Inscrito::where('status', '=', $status)->count();
+
+        return $inscritos;
+    }
+
+    public function situacoesCandidatos()
+    {
+    
+        $statusCandidato = StatusCandidato::select('status_int','status')->get();
+
+        foreach($statusCandidato as $val)
+        {
+            $retorno[] = array(
+                'status' => $val->status, 
+                'total' => $this->countCandidatos($val->status_int),
+                'color' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            ); 
+        }
+
+
+        return response()->json($retorno, 201);
+    }
+
+    public function inscricoesPorMeses(){
+        $inscritos = Inscrito::selectRaw('year(created_at) year, monthname(created_at) month, count(*) data')
+                ->groupBy('year', 'month')
+                ->orderBy('month', 'desc')
+                ->get();
+
+        foreach($inscritos as $ins){
+            $retorno[] = array(
+                'mes' => Helper::mes($ins['month']),
+                'total' => $ins['data'],
+                'color' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            );
+        }
+        return response()->json($retorno, 201);
+    }
+
+    
 }

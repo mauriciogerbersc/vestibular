@@ -75,6 +75,24 @@ class Helper
         return $statusArray[$status];
     }
 
+    public static function mes(string $mes){
+        switch($mes){
+            case "January":    $mes = "Jan";     break;
+            case "February":    $mes = "Fev";   break;
+            case "March":    $mes = "Mar";       break;
+            case "Abril":    $mes = "Abr";       break;
+            case "May":    $mes = "Mai";        break;
+            case "June":    $mes = "Jun";       break;
+            case "July":    $mes = "Jul";       break;
+            case "August":    $mes = "Ago";      break;
+            case "September":    $mes = "Set";    break;
+            case "October":    $mes = "Out";     break;
+            case "November":    $mes = "Nov";    break;
+            case "December":    $mes = "Dez";    break; 
+        }
+
+        return $mes;
+    }
     public static function retornaBadgeStatusInscrito(int $status, int $inscrito_id)
     {
         $statusBadges = array(
