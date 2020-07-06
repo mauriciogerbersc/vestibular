@@ -286,7 +286,7 @@ class AdminController extends Controller
     public function show($id)
     {
         $inscrito = Inscrito::find($id);
-        $status_candidato = StatusCandidato::all();
+        $status_candidato = StatusCandidato::where('status_int', '>', 2)->get();
         $payments = Payment::where('reference', '=', $id)
             ->orderBy('updated_at', 'desc')
             ->get();
