@@ -194,10 +194,10 @@ class AdminController extends Controller
 
 
         $cursos = Curso::where('status', '=', 1)->get();
-
+        $status_candidatos = StatusCandidato::all();
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
-        return view('admin.inscritos.index', compact('mensagem', 'alert_tipo', 'cursos'));
+        return view('admin.inscritos.index', compact('mensagem', 'alert_tipo', 'cursos','status_candidatos'));
     }
 
 
