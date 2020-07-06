@@ -59,6 +59,7 @@
                     <a href="#" id="alterar_status">Alterar</a>
                 </div>
                 <select class="custom-select statusCandidato" name="statusCandidato">
+                    <option value="--">Selecione uma opção</option>
                     @foreach($status_candidato as $status)
                     <option value="{{$status->status_int}}" {{ $status->status_int == $inscrito->status ? "selected" : ""}}>{{$status->status}}</option>
                     @endforeach
@@ -207,7 +208,13 @@
         });
 
         $('.statusCandidato').change(function() {
-            confirmarCorrecao($(this).val());
+     
+            if($(this).val() == '--'){
+                return false;
+            }else{
+                confirmarCorrecao($(this).val());
+            }
+         
         });
 
 
