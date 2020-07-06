@@ -56,11 +56,9 @@
                     <label>Status Candidato</label>
                     <select class="custom-select" name="statusCandidato" id="statusCandidato">
                         <option value="*">Todos</option>
-                        <option value="0">Aguardando Pagamento</option>
-                        <option value="1">Aguardando Redação</option>
-                        <option value="2">Aguardando Correção</option>
-                        <option value="4">Redação Corrigida</option>
-                        <option value="5">Matriculado</option>
+                        @foreach($status_candidatos as $status)
+                            <option value="{{$status->status_int}}">{{$status->status}}</option>
+                        @endforeach
                     </select>
                 </div>
 
