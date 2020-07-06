@@ -224,6 +224,7 @@ class AdminController extends Controller
         foreach ($todosCursos as $curso) {
             $cursosSelecionados[$curso->id] = $curso->id;
         }
+
         $cursoEscolhido = $cursosSelecionados;
         if (isset($request->cursoEscolhido)) {
             if ($request->cursoEscolhido != "*") {
@@ -232,9 +233,14 @@ class AdminController extends Controller
             }
         }
 
-        $status = StatusCandidato::select('status_int')->get();
+        $status_candidato = StatusCandidato::select('status_int')->get();
+        foreach ($status_candidato as $st) {
+            $statusSelecionado[$st->status_int] = $st->status_int;
+        }
+        $status = $statusSelecionado;
         if (isset($request->statusCandidato)) {
             if ($request->statusCandidato != "*") {
+                $status = array();
                 $status[$request->statusCandidato] = $request->statusCandidato;
             }
         }
