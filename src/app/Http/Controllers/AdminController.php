@@ -232,10 +232,9 @@ class AdminController extends Controller
             }
         }
 
-        $status = array(0, 1, 2);
+        $status = StatusCandidato::select('status_int')->get();
         if (isset($request->statusCandidato)) {
             if ($request->statusCandidato != "*") {
-                $status = array();
                 $status[$request->statusCandidato] = $request->statusCandidato;
             }
         }
