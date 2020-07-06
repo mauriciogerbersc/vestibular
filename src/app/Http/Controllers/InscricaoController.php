@@ -233,7 +233,7 @@ class InscricaoController extends Controller
     }
 
     public function testa(){
-        $cpf = trim("00905869052");
+        $cpf = trim("00522096280");
         $cpf = Hash::make($cpf);
         echo $cpf;
     }
@@ -331,7 +331,6 @@ class InscricaoController extends Controller
         if(!$inscrito){
             $request->session()->flash('mensagem', "Seu CPF não foi encontrado na base dados.");
             return redirect()->back();
-           // return redirect()->back()->withErrors(['error' => 'Seu CPF não foi encontrado na base dados.']);   
         }
 
         return view('inscricao.pagamento', compact('inscrito'));

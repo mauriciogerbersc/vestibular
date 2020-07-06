@@ -23,134 +23,220 @@
 <div class="content">
     <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
 
+        <form method="post" action="/admin/inscritos">
+            @csrf
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputForNome">Nome</label>
+                    <input type="text" class="form-control" id="nome" placeholder="Nome Candidato">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputForEmail">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Email">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputForCpf">CPF</label>
+                    <input type="text" class="form-control" id="cpf" placeholder="CPF">
+                </div>
 
-        <table id="example1" class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Situação</th>
-                    <th>Pagamento</th>
-                    <th>Inscrito</th>
-                    <th>Curso</th>
-                    <th>Documento</th>
-                    <th>Contato</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($inscritos as $key=>$inscrito)
-                <tr>
-                    <td>{{$key+1}}</td>
-                    <td>
-                        <span class="badge {!! Helper::retornaBadgeStatusInscrito($inscrito->status,$inscrito->id) !!} corrigido_{{$inscrito->id}}">
-                            {!! Helper::retornaStatusInscrito($inscrito->status,$inscrito->id) !!}</span>
-                    </td>
-                    <td>
-                        @php
-                        $transacao = Helper::tentouPagar($inscrito->id);
-                        @endphp
+            </div>
 
-                        @if(empty($transacao))
-                        <span class="badge badge-pill badge-dark">Não realizou pagamento.</span>
-                        @else
-                        @if($transacao == 3)
-                        <span class="badge badge-pill badge-success">Pagamento Efetuado</span>
-                        @else
-                        <span class="badge badge-pill badge-primary">Aguardando Baixa</span>
-                        @endif
+            <div class="form-row">
 
-                        @endif
-                    </td>
-                    <td>{{$inscrito->firstName}} {{$inscrito->lastName}}</td>
-                    <td><a href="cursos/{{$inscrito->curso->id}}/editar">{{$inscrito->curso->curso}}</a></td>
+                <div class="form-group col-md-6">
+                    <label for="selectCurso">Curso Escolhido</label>
+                    <select class="custom-select" name="cursoEscolhido" id="cursoEscolhido">
+                        <option value="*">Todos</option>
+                        @foreach($cursos as $curso)
+                        <option value="{{$curso->id}}">{{$curso->abreviacao}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Status Candidato</label>
+                    <select class="custom-select" name="statusCandidato" id="statusCandidato">
+                        <option value="*">Todos</option>
+                        <option value="0">Aguardando Pagamento</option>
+                        <option value="1">Aguardando Redação</option>
+                        <option value="2">Aguardando Correção</option>
+                        <option value="4">Redação Corrigida</option>
+                        <option value="5">Matriculado</option>
+                    </select>
+                </div>
 
-                    <td>{{$inscrito->nDocumento}}</td>
-                    <td>{{$inscrito->email}}
-                        <br>{{$inscrito->phone}}</td>
-                    <td class="d-flex">
 
-                        <div class="btn-group-vertical">
-                            <a href="/admin/inscrito/{{$inscrito->id}}" class="btn btn-primary btn-sm mb-1">Visualizar</a>
-                            @if($inscrito->historico!='')
-                            <a href="/baixar-arquivo/{{$inscrito->historico}}" target="_blank" class="btn btn-secondary mb-1">
-                                Histórico
-                            </a>
-                            @else
-                            <span class="btn btn-danger btn-sm mb-1 not-active" alt="Não foi enviado histórico escolar" title="Não foi enviado histórico escolar">Histórico</span>
-                            @endif
+            </div>
 
-                            @if($inscrito->status == 2)
-                            @if($inscrito->corrigido)
-                            <span class="btn btn-success btn-sm correcao not-active">Corrigido!</span>
-                            @else
-                            <button type="button" class="btn btn-dark btn-sm correcao corrigido_{{$inscrito->id}}" onclick="confirmarCorrecao({{$inscrito->id}});">Corrigido?</button>
-                            @endif
-                            @else
-                            <span class="btn btn-dark btn-sm mb-1 not-active" alt="Redação ainda não corrigida" title="Redação ainda não corrigida">Corrigido?</span>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+            <button type="submit" class="btn btn-primary" id="buscar">Buscar</button>
+        </form>
 
+
+        <hr>
+        <div class="text-center" id="loader">
+            <div class="spinner-border">...</div>
+        </div>
+
+        <div class="row">
+            <table id="example1" class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Situação</th>
+                        <th>Inscrito</th>
+                        <th>Curso</th>
+                        <th>Documento</th>
+                        <th>Contato</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-inscricoes" name="lista-inscricoes">
+
+                </tbody>
+            </table>
+
+        </div>
     </div>
-</div>
 
-@endsection
-
-
-@section('scripts')
-<script src="{{asset('assets/lib/datatables.net/js/jquery.dataTables.min.js')}}"></script>
-<script src="{{asset('assets/lib/datatables.net-dt/js/dataTables.dataTables.min.js')}}"></script>
-<script src="{{asset('assets/lib/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
-<script src="{{asset('assets/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js')}}"></script>
+    @endsection
 
 
-<script>
-    function confirmarCorrecao(inscrito_id) {
-        var id = inscrito_id;
-        var r = confirm("Confirma correção da prova?");
-        if (r == true) {
-            txt = "Confirmada correção da redação.";
-        } else {
-            txt = "Ok. Ação cancelada.";
+    @section('scripts')
+    <script src="{{asset('assets/lib/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('assets/lib/datatables.net-dt/js/dataTables.dataTables.min.js')}}"></script>
+    <script src="{{asset('assets/lib/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('assets/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js')}}"></script>
+
+
+    <script>
+        $("#loader").hide();
+
+        var url = "/admin/inscritos/lista";
+
+        $(document).ready(function() {
+            $("#buscar").click(function(e) {
+                e.preventDefault();
+                var formData = {
+                    nome: $('#nome').val(),
+                    cpf: $("#cpf").val(),
+                    email: $("#email").val(),
+                    statusFinanceiro: $("#statusFinanceiro option:selected").val(),
+                    statusCandidato: $("#statusCandidato option:selected").val(),
+                    cursoEscolhido: $("#cursoEscolhido option:selected").val()
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: formData,
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $("#loader").show();
+                        $("#example1").hide();
+                    },
+                    success: function(data) {
+                        var response = data;
+                        OnSuccess_(response);
+                    },
+                    complete: function(data) {
+                        $("#loader").hide();
+                        $("#example1").show();
+                    }
+                });
+            });
+
+        })
+
+        $("#loader").show();
+        $("#example1").hide();
+
+        $.get(url, function(data) {
+            console.log('carregando');
+        }).done(function(data) {
+            if (data) {
+                var response = data;
+                OnSuccess_(response);
+                $("#loader").hide();
+                $("#example1").show();
+            }
+        });
+
+        function OnSuccess_(response) {
+            $(document).ready(function() {
+                $('.table').DataTable({
+                    data: response,
+                    columnDefs: [
+                        { "width": "10%"},
+                        { "width": "30%"},
+                        { "width": "10%"},
+                        { "width": "10%"},
+                        { "width": "10%"},
+                        { "width": "10%"},
+                        { "width": "10%"}
+                    ],
+                    columns: [{
+                            "data": "id"
+                        },
+                        {
+                            "data": "status"
+                        },
+                        {
+                            "data": "nomeCompleto"
+                        },
+                        {
+                            "data": "curso"
+                        },
+                        {
+                            "data": "nDocumento"
+                        },
+                        {
+                            "data": "contato"
+                        },
+                        {
+                            "data": "viewContato"
+                        }
+                    ],
+                    language: {
+                        searchPlaceholder: 'Buscar...',
+                        sSearch: '',
+                        lengthMenu: '_MENU_ items/página',
+                    },
+                    destroy: true
+                });
+            });
         }
 
-        var url_correcao = '/admin/redacoes/' + inscrito_id + '/corrigida';
-        $.ajax({
-            url: url_correcao,
-            type: "GET",
-            dataType: 'json',
-            beforeSend: function() {
-                $("#loader").show();
-            },
-            success: function(response) {
-                console.log(response);
-                if (response) {
-                    $(".corrigido_" + inscrito_id).text("Corrigido!").removeClass('btn-dark').addClass('not-active').addClass('btn-success');
-                } else {
+
+        function confirmarCorrecao(inscrito_id) {
+            var id = inscrito_id;
+            var r = confirm("Confirma correção da prova?");
+            if (r == true) {
+                txt = "Confirmada correção da redação.";
+            } else {
+                txt = "Ok. Ação cancelada.";
+            }
+
+            var url_correcao = '/admin/redacoes/' + inscrito_id + '/corrigida';
+            $.ajax({
+                url: url_correcao,
+                type: "GET",
+                dataType: 'json',
+                beforeSend: function() {
+                    $("#loader").show();
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response) {
+                        $(".corrigido_" + inscrito_id).text("Corrigido!").removeClass('btn-dark').addClass('not-active').addClass('btn-success');
+                    } else {
+                        alert("O aluno ainda não realizou a redação.");
+                    }
+                },
+                error: function() {
                     alert("O aluno ainda não realizou a redação.");
                 }
-            },
-            error: function() {
-                alert("O aluno ainda não realizou a redação.");
-            }
-        });
+            });
 
-        console.log(txt + " inscrito_id " + id);
-    }
-
-    $(document).ready(function() {
-        $('.table').DataTable({
-            responsive: true,
-            language: {
-                searchPlaceholder: 'Search...',
-                sSearch: '',
-                lengthMenu: '_MENU_ items/page',
-            }
-        });
-    });
-</script>
-@endsection
+            console.log(txt + " inscrito_id " + id);
+        }
+    </script>
+    @endsection

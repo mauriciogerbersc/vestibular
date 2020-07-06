@@ -32,7 +32,8 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="text"
-                                    class="form-control cpf @error('password') is-invalid @enderror" name="password"
+                                    class="form-control cpf @error('password') is-invalid @enderror" 
+                                    value="{{ old('password') }}" name="password"
                                     required autocomplete="current-password">
 
                                 @error('password')

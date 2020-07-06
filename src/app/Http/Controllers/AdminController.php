@@ -10,6 +10,8 @@ use App\User;
 use App\Admin;
 use App\Curso;
 use App\Payment;
+use App\StatusCandidato;
+use App\Helpers\Helper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,7 +36,7 @@ class AdminController extends Controller
             ->orderBy('created_at', 'asc')
             ->take(10)
             ->get();
-            
+
         $aguardandoCorrecao      = Inscrito::where('firstName', '!=', 'mauricio')
             ->join('redacao_alunos as re', 're.inscrito_id', '=', 'inscritos.id')
             ->where('lastName', '!=', 'gerber')
@@ -172,29 +174,102 @@ class AdminController extends Controller
             ]);
     }
 
-    public function correcaoRedacao($inscrito_id)
+    public function alterarStatusCandidato($status_id, $inscrito_id)
     {
+        $candidato = Inscrito::where('id', '=', $inscrito_id)->first();
+        $candidato->status = $status_id;
+        $candidato->update();
 
-        $redacao = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)->first();
-        $redacao->corrigido = 1;
-        $redacao->update();
-
-        return $redacao;
+        if($status_id == 4){
+            $redacao = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)->first();
+            $redacao->corrigido = 1;
+            $redacao->update();
+        }
+     
+        return $candidato;
     }
 
     public function listarInscritos(Request $request)
     {
-        $inscritos = Inscrito::where('firstName', '!=', 'mauricio')
-            ->where('lastName', '!=', 'gerber')
+
+
+        $cursos = Curso::where('status', '=', 1)->get();
+
+        $mensagem   = $request->session()->get('mensagem');
+        $alert_tipo = $request->session()->get('alert_tipo');
+        return view('admin.inscritos.index', compact('mensagem', 'alert_tipo', 'cursos'));
+    }
+
+
+    public function listarInscritosPost(Request $request)
+    {
+
+
+        $nome = "";
+        if (isset($request->nome)) {
+            $nome = $request->nome;
+        }
+
+        $cpf = "";
+        if (isset($request->cpf)) {
+            $cpf = $request->cpf;
+        }
+
+        $email = "";
+        if (isset($request->email)) {
+            $email = $request->email;
+        }
+
+        $todosCursos = Curso::where('status', '=', 1)->select('id')->get();
+        foreach ($todosCursos as $curso) {
+            $cursosSelecionados[$curso->id] = $curso->id;
+        }
+        $cursoEscolhido = $cursosSelecionados;
+        if (isset($request->cursoEscolhido)) {
+            if ($request->cursoEscolhido != "*") {
+                $cursoEscolhido = array();
+                $cursoEscolhido[$request->cursoEscolhido] = $request->cursoEscolhido;
+            }
+        }
+
+        $status = array(0, 1, 2);
+        if (isset($request->statusCandidato)) {
+            if ($request->statusCandidato != "*") {
+                $status = array();
+                $status[$request->statusCandidato] = $request->statusCandidato;
+            }
+        }
+
+
+
+        $inscritos = Inscrito::where('firstName', 'LIKE', '%' . $nome . '%')
+            ->where('nDocumento', 'LIKE', '%' . $cpf . '%')
+            ->where('email', 'LIKE', '%' . $email . '%')
+            ->whereIn('curso_id', $cursoEscolhido)
+            ->whereIn('status', $status)
             ->leftJoin('redacao_alunos', 'redacao_alunos.inscrito_id', '=', 'inscritos.id')
             ->select('inscritos.*', 'redacao_alunos.corrigido')
             ->get();
 
-        $mensagem   = $request->session()->get('mensagem');
-        $alert_tipo = $request->session()->get('alert_tipo');
-        return view('admin.inscritos.index', compact('inscritos', 'mensagem', 'alert_tipo'));
-    }
+        //print_r($inscritos);
+        //echo $inscritos;
+        $inscricoes = array();
 
+        foreach ($inscritos as $inscrito) {
+            $inscricoes[] = array(
+                'status' => "<span class='badge " . Helper::retornaBadgeStatusInscrito($inscrito['status'], $inscrito['id']) . "'>" . Helper::retornaStatusInscrito($inscrito['status'], $inscrito['id']) . "</span>",
+                'id' => $inscrito['id'],
+                'nomeCompleto' => $inscrito['firstName'] . ' ' . $inscrito['lastName'],
+                'curso' => "<a href='/admin/cursos/{$inscrito['curso_id']}'>{$inscrito->curso->abreviacao}</a>",
+                'nDocumento' =>  $inscrito->nDocumento,
+                'contato' => $inscrito->email . '<br>' . $inscrito->phone,
+                'viewContato' => "<a href='/admin/inscrito/$inscrito->id' class='btn btn-primary btn-sm mb-1'>Visualizar</a>"
+            );
+        }
+
+
+        return response()->json($inscricoes, 201);
+    }
 
 
     /**
@@ -206,26 +281,27 @@ class AdminController extends Controller
     public function show($id)
     {
         $inscrito = Inscrito::find($id);
-
+        $status_candidato = StatusCandidato::all();
         $payments = Payment::where('reference', '=', $id)
             ->orderBy('updated_at', 'desc')
             ->get();
-        return view('admin.inscritos.inscrito', compact('inscrito', 'payments'));
+        return view('admin.inscritos.inscrito', compact('inscrito', 'payments','status_candidato'));
     }
 
 
-    public function inscritoXcurso(){
+    public function inscritoXcurso()
+    {
 
 
         $relacao = Curso::where('status', '=', 1)
-                        ->withCount(['inscritos'])
-                        ->get();
+            ->withCount(['inscritos'])
+            ->get();
 
-        foreach($relacao as $val){
+        foreach ($relacao as $val) {
             $relacaoRetorno[] = array(
-                    'curso' => $val['abreviacao'], 
-                    'total' => $val['inscritos_count'],
-                    'color' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+                'curso' => $val['abreviacao'],
+                'total' => $val['inscritos_count'],
+                'color' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
             );
         }
 
