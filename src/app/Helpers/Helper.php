@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Payment;
 use App\RedacaoAluno;
+use App\StatusCandidato;
 
 class Helper
 {
@@ -31,27 +32,19 @@ class Helper
     public static function retornaStatusInscrito(int $status, int $inscrito_id)
     {
 
-
-        $redacao = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)
-            ->where('corrigido', 1)
-            ->count();
-        if ($redacao > 0) {
-            $status = 4;
+        $status_candidato = StatusCandidato::all();
+        $statusArray = array();
+        foreach ($status_candidato as $val) {
+            $statusArray[$val->status_int] = $val->status;
         }
-
-        $statusArray = array(
-            0 => 'Aguardando Pagamento',
-            1 => 'Aguardando Redação',
-            2 => 'Aguardando Correção',
-            4 => 'Redação Corrigida'
-        );
 
         return $statusArray[$status];
     }
 
 
-    public static function retornaTipoTransacao(string $tipo){
-       
+    public static function retornaTipoTransacao(string $tipo)
+    {
+
         $statusArray = array(
             'b' => 'Boleto',
             'cc' => 'Cartão de Crédito'
@@ -61,20 +54,22 @@ class Helper
     }
 
 
-    public static function formatDate($date){
+    public static function formatDate($date)
+    {
         return date('d/m/Y H:i', strtotime($date));
     }
 
-    public static function retornaStatusTransacao(int $status){
+    public static function retornaStatusTransacao(int $status)
+    {
 
         $statusArray = array(
             1 => 'Aguardando pagamento',
             2 => 'Em análise',
             3 => 'Paga',
-            4=> 'Disponível',
-            5=> 'Em disputa',
-            6=> 'Devolvida',
-            7=> 'Cancelada'
+            4 => 'Disponível',
+            5 => 'Em disputa',
+            6 => 'Devolvida',
+            7 => 'Cancelada'
         );
 
         return $statusArray[$status];
@@ -82,17 +77,16 @@ class Helper
 
     public static function retornaBadgeStatusInscrito(int $status, int $inscrito_id)
     {
+        $statusBadges = array(
+            0 => 'badge-danger',
+            1 => 'badge-warning',
+            2 => 'badge-success',
+            4 => 'badge-info',
+            5 => 'badge-dark',
+            6 => 'badge-light'
+        );
 
-        $redacao = RedacaoAluno::where('inscrito_id', '=', $inscrito_id)
-            ->where('corrigido', 1)
-            ->count();
-        if ($redacao > 0) {
-            $status = 4;
-        }
-
-        $statusArray = array(0 => 'badge-danger', 1 => 'badge-warning', 2 => 'badge-success', 4 => 'badge-info');
-
-        return $statusArray[$status];
+        return $statusBadges[$status];
     }
 
 
@@ -100,7 +94,6 @@ class Helper
     {
 
         $reference = Payment::where('reference', '=', $id)
-
             ->orderBy('status_transacao', 'desc')->get();
 
         foreach ($reference as $key => $val) {
