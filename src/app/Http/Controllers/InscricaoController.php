@@ -233,7 +233,7 @@ class InscricaoController extends Controller
     }
 
     public function testa(){
-        $cpf = trim("00522096280");
+         $cpf = trim("03876295211");
         $cpf = Hash::make($cpf);
         echo $cpf;
     }

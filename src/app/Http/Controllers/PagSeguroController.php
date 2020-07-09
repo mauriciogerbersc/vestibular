@@ -24,10 +24,16 @@ class PagSeguroController extends Controller
     }
 
     public function verificarStatusTransacao(PagamentoPagSeguro $pagamentoPagSeguro){
-        $cod_referencia = 5;
+        $cod_referencia = 53;
         $retorno        = $pagamentoPagSeguro->verificarStatusTransacao($cod_referencia);
-
-        print_r($retorno);
+        if($retorno['success'] == 1){
+            foreach($retorno['retorno']->transactions as $transaction){
+                foreach($transaction as $trans){
+                   $conteudo = $this->checkIfChangeStatus($trans->code, $trans->status, $trans->reference);
+                }
+            }
+        }
+       
     }
 
 
@@ -36,7 +42,7 @@ class PagSeguroController extends Controller
         date_default_timezone_set('America/Sao_Paulo');
 
 
-        $inicialDate        =  date("Y-m-d", strtotime('-2 days'))."T00:00";
+        $inicialDate        =  date("Y-m-d", strtotime('-4 days'))."T00:00";
         //$inicialDate    = "2020-05-26T12:00";
         $hour_minute        =  date("H:m");
         //$hour_minute           = "21:30";
@@ -44,11 +50,11 @@ class PagSeguroController extends Controller
         
         //$finalDate      = "2020-05-26T21:30";
         $page               =  1;
-        $maxPageResults     =  40;
+        $maxPageResults     =  120;
 
        
         $retorno = $pagamentoPagSeguro->verificarTransacaoPorData($inicialDate, $finalDate, $page, $maxPageResults);
-  
+        print_r($retorno);exit;die;
         $conteudo = "";
         if($retorno['success'] == 1){
             foreach($retorno['retorno']->transactions as $transaction){
@@ -69,14 +75,15 @@ class PagSeguroController extends Controller
 
 
     public function checkIfChangeStatus($codigo, $status_transacao, $reference){
-    
+     
         $payment = Payment::where('codigo', '=', $codigo)->get();
-       
+        
         $arrToCheck = array();
         
         $string = "";
         
         foreach($payment as $key=>$val){
+ 
             $arrToCheck[$val['codigo']] = $val['status_transacao'];
          
             foreach($arrToCheck as $code=>$status){

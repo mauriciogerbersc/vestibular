@@ -29,37 +29,37 @@
 
         @include('admin.mensagem', ['mensagem' => $mensagem ?? '', 'alert_tipo' => $alert_tipo ?? ''])
         <table id="example1" class="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th class="wd-15p">Modalidade</th>
-                        <th class="wd-65p">Curso</th>
-                        <th class="wd-10p">Imagem</th>
-                        <th class="wd-10p">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($cursos as $key=>$curso)
-                    <tr>
-                        <td>{{$key+1}}</td>
-                        <td>{{$curso->tipo_curso}}</td>
-                        <td><a href="/admin/cursos/{{$curso->id}}/editar">{{$curso->curso}}</a></td>
-                        <td><img src="/files/{{$curso->imagem_curso}}" style="height:  60px !important;"></td>
-                        <td class="d-flex">
-                            <form method="post" action="/admin/cursos/{{$curso->id}}/desativar" onsubmit="return confirm('Tem certeza que deseja remover ?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="btn btn-danger btn-sm">
-                                    Desativar
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th class="wd-15p">Modalidade</th>
+                    <th class="wd-65p">Curso</th>
+                    <th class="wd-10p">Imagem</th>
+                    <th class="wd-10p">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($cursos as $key=>$curso)
+                <tr>
+                    <td>{{$key+1}}</td>
+                    <td>{{$curso->tipo_curso}}</td>
+                    <td><a href="/admin/cursos/{{$curso->id}}/editar">{{$curso->curso}}</a></td>
+                    <td><img src="/files/{{$curso->imagem_curso}}" style="height:  60px !important;"></td>
+                    <td class="d-flex">
+                        <form method="post" action="/admin/cursos/{{$curso->id}}/desativar" onsubmit="return confirm('Tem certeza que deseja remover ?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-danger btn-sm">
+                                Desativar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
 
-            </table>
-        
+        </table>
+
     </div>
 </div>
 @endsection

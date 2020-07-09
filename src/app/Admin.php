@@ -4,10 +4,13 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Admin extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable,LogsActivity;
+
+
 
     protected $guard = 'admin';
     /**
@@ -36,4 +39,8 @@ class Admin extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    protected static $logName = 'Admin';
+    protected static $logAttributes = ['id', 'grupo_usuario'];
 }

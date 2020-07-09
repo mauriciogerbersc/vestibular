@@ -28,7 +28,15 @@
       </li>
       <li class='nav-item @if($current=="redacoes")active @endif'><a href="/admin/redacoes" class="nav-link"> Redações Alunos</a></li>
       <li class='nav-item @if($current=="inscritos")active @endif'><a href="/admin/inscritos" class="nav-link"> Inscrições</a></li>
-      <li class='nav-item @if($current=="users")active @endif'><a href="/admin/usuarios" class="nav-link"> Usuários do Sistema</a></li>
+     
+      <li class='nav-item with-sub  @if($current=="users")active @endif'>
+        <a href="" class="nav-link"><i data-feather="package"></i> Usuários do Sistema</a>
+        <ul class="navbar-menu-sub">
+          <li class="nav-sub-item"><a href="/admin/usuarios" class="nav-sub-link"><i data-feather="calendar"></i>Usuários</a></li>
+          <li class="nav-sub-item"><a href="/admin/usuarios/create" class="nav-sub-link"><i data-feather="message-square"></i>Novo Usuário</a></li>
+        </ul>
+      </li>
+  
     </ul>
   </div><!-- navbar-menu-wrapper -->
   <div class="navbar-right">
