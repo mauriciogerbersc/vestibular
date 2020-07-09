@@ -24,8 +24,9 @@ class PagSeguroController extends Controller
     }
 
     public function verificarStatusTransacao(PagamentoPagSeguro $pagamentoPagSeguro){
-        $cod_referencia = 53;
+        $cod_referencia = 71;
         $retorno        = $pagamentoPagSeguro->verificarStatusTransacao($cod_referencia);
+       
         if($retorno['success'] == 1){
             foreach($retorno['retorno']->transactions as $transaction){
                 foreach($transaction as $trans){
