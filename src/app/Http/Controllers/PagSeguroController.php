@@ -43,7 +43,7 @@ class PagSeguroController extends Controller
         date_default_timezone_set('America/Sao_Paulo');
 
 
-        $inicialDate        =  date("Y-m-d", strtotime('-4 days'))."T00:00";
+        $inicialDate        =  date("Y-m-d", strtotime('-5 days'))."T00:00";
         //$inicialDate    = "2020-05-26T12:00";
         $hour_minute        =  date("H:m");
         //$hour_minute           = "21:30";
@@ -55,7 +55,7 @@ class PagSeguroController extends Controller
 
        
         $retorno = $pagamentoPagSeguro->verificarTransacaoPorData($inicialDate, $finalDate, $page, $maxPageResults);
-        print_r($retorno);exit;die;
+      
         $conteudo = "";
         if($retorno['success'] == 1){
             foreach($retorno['retorno']->transactions as $transaction){
