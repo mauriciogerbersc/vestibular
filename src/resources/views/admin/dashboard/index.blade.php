@@ -19,8 +19,8 @@
 
     <div class="row row-xs">
 
-
-    <div class="col-lg-4 col-md-6 mg-b-10">
+      <!-- Gráfico de inscritos x cursos matriculados -->
+      <div class="col-lg-4 col-md-6 mg-b-10">
         <div class="card">
           <div class="card-header">
             <h6 class="mg-b-0">Inscrições por Curso</h6>
@@ -50,7 +50,6 @@
       </div>
 
 
-
       <div class="col-lg-4 col-md-6 mg-b-10">
         <div class="card">
           <div class="card-header">
@@ -64,6 +63,28 @@
           </div><!-- card-footer -->
         </div><!-- card -->
       </div>
+
+
+      <!-- Gráfico de inscritos por estados -->
+      <div class="col-lg-12 col-md-21 mg-t-10 mg-b-10">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mg-b-0">Inscritos por Estados</h6>
+          </div>
+          <div class="card-body pd-lg-25">
+            <div class="ht-250 ht-lg-300"><canvas id="chartArea1"></canvas></div>
+          </div><!-- card-body -->
+         
+        </div>
+      </div>
+
+
+
+
+
+
+
+
       <div class="col-lg-6 col-xl-6">
         <div class="card">
           <div class="card-header">
@@ -143,7 +164,7 @@
 
 
 
-      
+
     </div>
   </div>
 </div>

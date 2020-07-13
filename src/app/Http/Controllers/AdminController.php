@@ -382,5 +382,21 @@ class AdminController extends Controller
         return response()->json($retorno, 201);
     }
 
+
+    public function inscritosUfs(){
+        $inscritos = Inscrito::selectRaw('uf, count(*) as total ')
+                    ->groupBy('uf')
+                    ->get();
+
+        foreach($inscritos as $ins){
+            $retorno[] = array(
+                'uf' => $ins['uf'],
+                'curso' => $ins['curso_id'],
+                'total' => $ins['total'],
+                'color' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            );
+        }
+        return response()->json($retorno, 201);
+    }
     
 }

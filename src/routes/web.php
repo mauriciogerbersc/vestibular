@@ -98,3 +98,4 @@ Route::post('/saveTime', 'VestibularController@saveTime')->name('save_time')->mi
 Route::get('/admin/inscritoxcurso', 'AdminController@inscritoXcurso')->name('chartInscritosCursos');
 Route::get('/admin/situacaocandidatos', 'AdminController@situacoesCandidatos')->name('chartSituacoesCandidatos');
 Route::get('/admin/inscricoesmeses', 'AdminController@inscricoesPorMeses');
+Route::get('/admin/inscricoesufs', 'AdminController@inscritosUfs');
