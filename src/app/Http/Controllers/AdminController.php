@@ -8,8 +8,10 @@ use App\Redacao;
 use App\Inscrito;
 use App\User;
 use App\Admin;
+use Gate;
 use App\Curso;
 use App\Payment;
+use App\Role;
 use App\StatusCandidato;
 use App\Helpers\Helper;
 use Illuminate\Support\Facades\DB;
@@ -51,6 +53,10 @@ class AdminController extends Controller
 
     public function userList(Request $request)
     {
+        
+        if(Gate::denies('manage-admin')){
+            return redirect(route('admin.dashboard'));
+        }
 
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
@@ -61,8 +67,13 @@ class AdminController extends Controller
     }
 
     public function userEdit(Request $request, $id)
-    {
+    {   
 
+        if(Gate::denies('edit-admin')){
+            return redirect(route('lista_usuarios'));
+        }
+
+        $roles = Role::all();
         $user = Admin::find($id);
 
         if (!$user) {
@@ -72,7 +83,7 @@ class AdminController extends Controller
             return redirect()->route('lista_usuarios');
         }
 
-        return view('admin.user.edit', compact('user'));
+        return view('admin.user.edit', compact('user', 'roles'));
     }
 
     public function userUpdate(Request $request, $id)
@@ -86,7 +97,6 @@ class AdminController extends Controller
 
             return redirect()->route('lista_usuarios');
         }
-
 
         $password = trim($request->input('old_password'));
 
@@ -105,6 +115,9 @@ class AdminController extends Controller
         $user->save();
         DB::commit();
 
+
+        $user->roles()->sync($request->roles);
+
         $request->session()->flash('mensagem', "O usuário <strong>{$user->name}</strong> foi editado com sucesso.");
         $request->session()->flash('alert_tipo', "alert-success");
 
@@ -112,8 +125,15 @@ class AdminController extends Controller
     }
 
     public function userCreate()
-    {
-        return view('admin.user.create');
+    {   
+
+        if(Gate::denies('create-admin')){
+            return redirect(route('lista_usuarios'));
+        }
+
+        $roles = Role::all();
+
+        return view('admin.user.create', compact('roles'));
     }
 
     public function userStore(Request $request)
@@ -142,6 +162,8 @@ class AdminController extends Controller
             'password'  => $password
         ]);
         DB::commit();
+
+        $user->roles()->sync($request->roles);
 
         $request->session()->flash('mensagem', "Usuário <strong>{$user->name}</strong> criado com sucesso.");
         $request->session()->flash('alert_tipo', "alert-success");
@@ -192,6 +214,9 @@ class AdminController extends Controller
     public function listarInscritos(Request $request)
     {
 
+        if(Gate::denies('manage-students')){
+            return redirect(route('admin.dashboard'));
+        }
 
         $cursos = Curso::where('status', '=', 1)->get();
         $status_candidatos = StatusCandidato::all();

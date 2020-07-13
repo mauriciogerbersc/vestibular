@@ -25,6 +25,13 @@
         <form method="post" enctype="multipart/form-data">
             @csrf
 
+            @foreach($roles as $role)
+            <div class="form-check-inline">
+                <input type="checkbox" name="roles[]"  @if($user->roles->contains($role->id)) checked=checked @endif  value="{{$role->id}}">
+                <label>{{$role->name}}</label>
+            </div>
+            @endforeach 
+
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="curso">Nome</label>

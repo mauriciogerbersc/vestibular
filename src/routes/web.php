@@ -19,8 +19,10 @@ Auth::routes();
 
 /** Rotas Públicas */
 Route::get('/', 'InscricaoController@index')->name('pagina_inicial');
+
 Route::get('/admin/login', 'Auth\AdminLoginController@index')->name('admin.login');
 Route::post('/admin/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
+
 Route::get('/inscricao/{curso}', 'InscricaoController@inscricao');
 Route::get('/inscricao/formulario/{slug}', 'InscricaoController@create');
 Route::post('/pagamento', 'InscricaoController@payment')->name('inscricaoPayment');

@@ -43,7 +43,7 @@
                 <tr>
                     <td>{{$admin->id}}</td>
                     <td>{{$admin->email}}</td>
-                    <td>{{$admin->grupo_usuario}}</td>
+                    <td>{{ implode(', ', $admin->roles()->get()->pluck('name')->toArray()) }}</td>
                     <td class="d-flex">
                         <a href="/admin/usuarios/{{$admin->id}}/edit" class="btn btn-info btn-sm mr-1">
                             Visualizar
