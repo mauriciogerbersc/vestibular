@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 Use App\Curso;
 use Helper;
+use Gate;
 
 class CursosController extends Controller
 {
@@ -24,6 +25,10 @@ class CursosController extends Controller
     public function index(Request $request)
     {   
         
+        if(Gate::denies('manage-courses')){
+            return redirect(route('admin.dashboard'));
+        }
+
         $cursos     = Curso::where('status', '=', 1)->get();
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
@@ -37,7 +42,12 @@ class CursosController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
+    {   
+
+        if(Gate::denies('create-courses')){
+            return redirect(route('admin.dashboard'));
+        }
+
         return view('admin.cursos.create');
     }
 
@@ -77,17 +87,6 @@ class CursosController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -95,6 +94,11 @@ class CursosController extends Controller
      */
     public function edit($id)
     {
+
+        if(Gate::denies('edit-courses')){
+            return redirect(route('admin.dashboard'));
+        }
+
         $curso = Curso::find($id);
         return view('admin.cursos.edit', compact('curso'));
     }

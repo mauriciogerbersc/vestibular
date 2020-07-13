@@ -30,6 +30,34 @@ class AuthServiceProvider extends ServiceProvider
             return $admin->hasAnyRoles(['admin','comercial','secretaria']);
         });
 
+        /* Definições de autorizações para /admin/cursos */
+        Gate::define('manage-courses', function($admin){
+            return $admin->hasAnyRoles(['admin']);
+        });
+
+        Gate::define('create-courses', function($admin){
+            return $admin->hasAnyRoles(['admin']);
+        });
+
+        Gate::define('edit-courses', function($admin){
+            return $admin->hasAnyRoles(['admin']);
+        });
+ 
+
+        /* Quem pode criar temas de redação */
+        Gate::define('list-themes', function($admin) {
+            return $admin->hasAnyRoles(['admin']);
+        });
+
+        Gate::define('create-themes', function($admin) {
+            return $admin->hasAnyRoles(['admin']);
+        });
+
+        Gate::define('edit-themes', function($admin) {
+            return $admin->hasAnyRoles(['admin']);
+        });
+
+        /* Definição para /admin/usuarios */
         Gate::define('manage-admin', function($admin){
             return $admin->hasRole('admin');
         });
@@ -40,6 +68,11 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('create-admin', function($admin){
             return $admin->hasRole('admin');
+        });
+
+        /* Definição para /admin/redacoes */
+        Gate::define('manage-redacoes', function($admin){
+            return $admin->hasAnyRoles(['admin','secretaria']);
         });
 
 

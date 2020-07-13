@@ -176,6 +176,11 @@ class AdminController extends Controller
 
     public function redacaoInscritos()
     {
+
+        if(Gate::denies('manage-redacoes')){
+            return redirect(route('admin.dashboard'));
+        }
+
         $redacoesAlunos = RedacaoAluno::where('enviou_redacao', '=', 1)->get();
         return view('admin.redacao.redacoes', compact('redacoesAlunos'));
     }
