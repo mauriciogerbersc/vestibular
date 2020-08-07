@@ -20,7 +20,9 @@ class PagSeguroController extends Controller
 
 
     public function email(EnvioDeEmail $enviarEmail){
-        $enviarEmail->enviaEmailTeste("mauricio.gerber@gmail.com");
+        $conteudo = "OI TESTE";
+        
+        $enviarEmail->enviaEmailTeste("mauricio.gerber@gmail.com",$conteudo);
     }
 
     public function verificarStatusTransacao(PagamentoPagSeguro $pagamentoPagSeguro){
@@ -43,7 +45,7 @@ class PagSeguroController extends Controller
         date_default_timezone_set('America/Sao_Paulo');
 
 
-        $inicialDate        =  date("Y-m-d", strtotime('-5 days'))."T00:00";
+        $inicialDate        =  date("Y-m-d", strtotime('-7 days'))."T00:00";
         //$inicialDate    = "2020-05-26T12:00";
         $hour_minute        =  date("H:m");
         //$hour_minute           = "21:30";
@@ -55,7 +57,7 @@ class PagSeguroController extends Controller
 
        
         $retorno = $pagamentoPagSeguro->verificarTransacaoPorData($inicialDate, $finalDate, $page, $maxPageResults);
-      
+       
         $conteudo = "";
         if($retorno['success'] == 1){
             foreach($retorno['retorno']->transactions as $transaction){
@@ -127,8 +129,8 @@ class PagSeguroController extends Controller
 
                                 $string             .= "Criou  a hash {$hash} para o candidato {$inscrito->firstName}\n\n";
                                 $curso              = Curso::find($inscrito->curso_id);
-                                $enviarEmail        = new EnvioDeEmail();
-                                $enviarEmail        = $enviarEmail->enviarEmailInscricao($inscrito->firstName, $inscrito->email, $curso->curso, $hash);
+                                #$enviarEmail        = new EnvioDeEmail();
+                                #$enviarEmail        = $enviarEmail->enviarEmailInscricao($inscrito->firstName, $inscrito->email, $curso->curso, $hash);
                                 $string             .= "Enviando email para o candidato {$inscrito->firstName}\n\n";
                                 /*Altero o status do inscrito para 1. o Valor 1 quer dizer que ele pagou e falta realizar a redação. */
                                 $procura_inscrito = Inscrito::find($inscrito->id);
