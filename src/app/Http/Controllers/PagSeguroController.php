@@ -21,7 +21,7 @@ class PagSeguroController extends Controller
 
     public function email(EnvioDeEmail $enviarEmail){
         $conteudo = "OI TESTE";
-        
+
         $enviarEmail->enviaEmailTeste("mauricio.gerber@gmail.com",$conteudo);
     }
 
@@ -129,8 +129,8 @@ class PagSeguroController extends Controller
 
                                 $string             .= "Criou  a hash {$hash} para o candidato {$inscrito->firstName}\n\n";
                                 $curso              = Curso::find($inscrito->curso_id);
-                                #$enviarEmail        = new EnvioDeEmail();
-                                #$enviarEmail        = $enviarEmail->enviarEmailInscricao($inscrito->firstName, $inscrito->email, $curso->curso, $hash);
+                                $enviarEmail        = new EnvioDeEmail();
+                                $enviarEmail        = $enviarEmail->enviarEmailInscricao($inscrito->firstName, $inscrito->email, $curso->curso, $hash);
                                 $string             .= "Enviando email para o candidato {$inscrito->firstName}\n\n";
                                 /*Altero o status do inscrito para 1. o Valor 1 quer dizer que ele pagou e falta realizar a redação. */
                                 $procura_inscrito = Inscrito::find($inscrito->id);
