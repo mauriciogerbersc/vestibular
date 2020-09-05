@@ -77,6 +77,11 @@ Route::get('/vestibular/redacao/tema', 'VestibularController@tema')->name('selec
 
 Route::get('/email/inscricao', 'InscricaoController@emailInscricao');
 
+/** Rodas do Indica amigo */
+Route::get('/indica-amigo', 'IndicaAmigoController@index')->name('indicaAmigo');
+Route::post('/indica-amigo', 'IndicaAmigoController@check')->name('checkStudent');
+Route::get('/indica-amigo/painel', 'IndicaAmigoController@show')->name('painel_amigo');
+Route::post('/indica-amigo/envia-convite', 'IndicaAmigoController@store')->name('envia_convite');
 
 /** Rotas para pagamento */
 Route::get('/boleto', 'PagSeguroController@payment');
