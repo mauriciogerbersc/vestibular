@@ -154,6 +154,7 @@ class PagamentoPagSeguro
         $dadosPagamento['token']                        = $this->token;
         $dadosPagamento['paymentMode']                  = 'default';
         $dadosPagamento['paymentMethod']                = $payment->paymentMethod;
+        $dadosPagamento['firstDueDate']                 = date("Y-m-d", strtotime("+ 1 day"));
         $dadosPagamento['receiverEmail']                = $this->email;
         $dadosPagamento['currency']                     = 'BRL';
         $dadosPagamento['extraAmount']                  = '0.00';
