@@ -11,6 +11,12 @@ class CriadorDeUsuario
     public function criarUsuario(string $name, string $email, int $cpf, int $id): User
     {
 
+        $user = User::where('email', '=', $email)->first();
+       
+        if($user){
+            return $user;
+        } 
+
         $cpf = trim($cpf);
         $cpf = bcrypt($cpf);
         DB::beginTransaction();
