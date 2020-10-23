@@ -64,6 +64,7 @@ Route::get('/admin/redacoes/{status_id}/{inscrito_id}/statusCandidato', 'AdminCo
 Route::get('/admin/inscritos', 'AdminController@listarInscritos')->name('lista_inscritos')->middleware('autenticadorAdmin');
 Route::get('/admin/inscritos/lista', 'AdminController@listarInscritosPost')->name('listar_inscritos_json')->middleware('autenticadorAdmin');
 Route::get('/admin/inscrito/{id}', 'AdminController@show')->name('visualizar_inscrito')->middleware('autenticadorAdmin');
+Route::get('/admin/enviarEmail/{id}', 'AdminController@enviarEmail');
 
 /* Rotas Vestibular privadas*/
 //Route::get('/vestibular/redacao', 'VestibularController@index')->name('acesso_inscrito');

@@ -7,12 +7,14 @@ use App\RedacaoAluno;
 use App\Redacao;
 use App\Inscrito;
 use App\User;
+use App\Curso;
 use App\Admin;
 use Gate;
-use App\Curso;
 use App\Payment;
+use App\Services\EnvioDeEmail;
 use App\Role;
 use App\StatusCandidato;
+use App\Services\CriadorDeHash;
 use App\Helpers\Helper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -230,11 +232,32 @@ class AdminController extends Controller
         return view('admin.inscritos.index', compact('mensagem', 'alert_tipo', 'cursos','status_candidatos'));
     }
 
+    public function enviarEmail(Request $request){
+        $inscrito = Inscrito::where('id', '=', $request->id)->first();
+        
+        // Gera um novo CPF para gerar senha.
+        $cpf = trim($inscrito->nDocumento);
+        $cpf = Hash::make($cpf);
 
+        // Update CPF para tabela usuários.
+        $usuario = User::where('inscrito_id', '=', $inscrito->id)->first();
+        $usuario->password = $cpf;
+        $usuario->update();
+
+        // Recupera hash para enviar email.
+        $criadorDeHash      = new CriadorDeHash();
+        $hax                = $criadorDeHash->criarHash($inscrito->id);
+        $hash               = $hax->hash;
+
+        $curso              = Curso::find($inscrito->curso_id);
+        $enviarEmail        = new EnvioDeEmail();
+        $enviarEmail        = $enviarEmail->enviarEmailInscricao($inscrito->firstName, $inscrito->email, $curso->curso, $hash);
+        
+        return true;
+    }
+    
     public function listarInscritosPost(Request $request)
     {
-
-
         $nome = "";
         if (isset($request->nome)) {
             $nome = $request->nome;
@@ -286,19 +309,21 @@ class AdminController extends Controller
             ->select('inscritos.*', 'redacao_alunos.corrigido')
             ->get();
 
-        //print_r($inscritos);
-        //echo $inscritos;
         $inscricoes = array();
-
+  
         foreach ($inscritos as $inscrito) {
+            $emailUsuarioSenha = '';
+            if($inscrito['status']==1){
+                $emailUsuarioSenha = "<br><a href='#' style='padding:5px 5px;' class='btn btn-warning btn-sm mb-1 email_$inscrito->id' onclick='enviarEmailUsuarioSenha($inscrito->id);'>Enviar Email</a>";
+            }
             $inscricoes[] = array(
-                'status' => "<span class='badge " . Helper::retornaBadgeStatusInscrito($inscrito['status'], $inscrito['id']) . "'>" . Helper::retornaStatusInscrito($inscrito['status'], $inscrito['id']) . "</span>",
+                'status' => "<span class='badge " . Helper::retornaBadgeStatusInscrito($inscrito['status'], $inscrito['id']) . "'>" . Helper::retornaStatusInscrito($inscrito['status'], $inscrito['id']) ."</span>",
                 'id' => $inscrito['id'],
                 'nomeCompleto' => $inscrito['firstName'] . ' ' . $inscrito['lastName'],
                 'curso' => "<a href='/admin/cursos/{$inscrito['curso_id']}'>{$inscrito->curso->abreviacao}</a>",
                 'nDocumento' =>  $inscrito->nDocumento,
                 'contato' => $inscrito->email . '<br>' . $inscrito->phone,
-                'viewContato' => "<a href='/admin/inscrito/$inscrito->id' class='btn btn-primary btn-sm mb-1'>Visualizar</a>"
+                'viewContato' => "<a href='/admin/inscrito/$inscrito->id' class='btn btn-primary btn-sm mb-1'>Visualizar</a> $emailUsuarioSenha"
             );
         }
 

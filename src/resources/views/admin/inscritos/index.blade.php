@@ -142,6 +142,7 @@
                 });
             });
 
+         
         })
 
         $("#loader").show();
@@ -164,12 +165,12 @@
                     data: response,
                     columnDefs: [
                         { "width": "10%"},
-                        { "width": "30%"},
+                        { "width": "20%"},
                         { "width": "10%"},
                         { "width": "10%"},
                         { "width": "10%"},
                         { "width": "10%"},
-                        { "width": "10%"}
+                        { "width": "20%"}
                     ],
                     columns: [{
                             "data": "id"
@@ -203,6 +204,43 @@
             });
         }
 
+        function enviarEmailUsuarioSenha(inscrito_id){
+            var id = inscrito_id;
+            var r = confirm("Confirma envio de usuário e senha para o aluno?");
+            if (r == true) {
+                txt = "Email enviado.";
+            } else {
+                txt = "Ok. Ação cancelada.";
+            }
+
+            var url_email = '/admin/enviarEmail/' + id;
+            $.ajax({
+                url: url_email,
+                type: "GET",
+                dataType: 'json',
+                beforeSend: function() {
+                    $("#loader").show();
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response) {
+                        $(".email_" + id).text("Enviado!").removeClass('btn-warning').addClass('not-active').addClass('btn-success');
+                        alert(txt);
+                    } else {
+                        alert(txt);
+                    }
+
+                    $("#loader").hide();
+                },
+                error: function() {
+                    alert(txt);
+                }
+            });
+
+            console.log(txt + " inscrito_id " + id);
+            $("#loader").hide();
+            return false;
+        }
 
         function confirmarCorrecao(inscrito_id) {
             var id = inscrito_id;
