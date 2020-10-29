@@ -34,14 +34,14 @@
             <div class="row">
                 <div class="col-md-12">
                     <h4 class="d-flex justify-content-between align-items-center mb-3">Detalhes do Pagamento</h4>
-                    <ul class="list-group mb-3">
+                    <ul class="list-group mb-3" id="formasDePagamento">
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
                           <div>
                             <h6 class="my-0">Taxa de Inscrição</h6>
                             <small class="text-muted">Inscrição para Vestibular AeroTD</small>
                           </div>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed" >
                             <div>
                                 <h6 class="my-0 mb-2">Forma de Pagamento</h6>
                                 <div class="ml-4">
@@ -73,7 +73,6 @@
             
             <div class="row">
                 
-           
                 <div class="col-md-12 order-md-1">
                     <!--  Dados para pagamento -->
                     <div id="cartao_credito">
@@ -216,9 +215,10 @@
 @section('scripts')
 
 <script src="{{asset('assets/js/jquery.mask.js')}}"></script>
-<script src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+<!--<script type="text/javascript" src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>-->
+<script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
 <script type="text/javascript" charset="utf-8">
-
+    $("#formasDePagamento").hide();
     $("#enviarFormulario").hide();
     gerarTokenPagamento();
 
@@ -231,79 +231,71 @@
                 $("#loader").show();
             },
             success: function(response){    
+                console.log(response.id);
                 PagSeguroDirectPayment.setSessionId(response.id);
             }, complete: function (response){
                 $("#loader").hide();
-                console.log(PagSeguroDirectPayment);
+                $("#formasDePagamento").show();
             }
         });
     }
 
+    $('.cartao_numero').keyup(function(){
+        pagseguroValidateCard(this, false);
+    });
+    
+    $('.cartao_numero').focusout(function(){
+        pagseguroValidateCard(this, true);
+    });
 
+    function pagseguroValidateCard (element, bypassLengthTest) {
+        $('#tokenCard').val('');
+        var cardNum = $(element).val().replace(/[^\d.]/g, '');
+        var card_invalid = 'Validamos os primeiros 6 números do seu cartão de crédito e está inválido. Por favor esvazie o campo e tente digitar de novo.';
+
+        if (cardNum.length == 6 || (bypassLengthTest && cardNum.length >= 6)) {
+            PagSeguroDirectPayment.getBrand({
+                cardBin: cardNum.substr(0, 6),
+                success: function(response) {
+                    if (typeof response.brand.name != 'undefined') {
+                        $('#bandeiraCartao').val(response.brand.name);
+                    }else{
+                        $('#msg').empty();
+                        alert(card_invalid);
+                    }
+                },
+                error: function(response) {
+                    console.log(card_invalid);
+                }
+            });
+        }
+    }
+ 
     function getTokenCard() {
-
         var result = $(".data-expiracao").val().split('/');
         var ano = result[1];
         var mes = result[0];
-        PagSeguroDirectPayment.createCardToken({
-            cardNumber:      $("#cc-number").val(), // Número do cartão de crédito
-            brand:           $("#bandeiraCartao").val(), // Bandeira do cartão
-            cvv:             $("#cc-cvv").val(), // CVV do cart�o
-            expirationMonth: mes, // M�s da expira��o do cart�o
-            expirationYear:  ano, // Ano da expira��o do cart�o, � necess�rio os 4 dígitos.
-            beforeSend: function(){
-                $("#loader").show();
+
+        var param = {
+            cardNumber: $("#cc-number").val(),
+            brand: $("#bandeiraCartao").val(),
+            cvv: $("#cc-cvv").val(),
+            expirationMonth: mes,
+            expirationYear: ano,
+            success: function(response){
+                console.log('suc ' + JSON.stringify(response));
             },
-            success: function(response) {
-                $("#loader").hide();
-                $("#tokenCard").val(response.card.token);
+            error: function(response){
+                console.log('err ' + JSON.stringify(response));
             },
-            error: function(response) {
-                console.log('erro ' + response)
-            },
-            complete: function(response) {
-                $("#loader").hide();
-                $("#tokenCard").val(response.card.token);
+            complete: function(response){
+                console.log('comp' + JSON.stringify(response));
+                $("#retornoTransacao").val(JSON.stringify(response));
+             
             }
-        });
-
-        var df      = new $.Deferred();
-        setTimeout(function(){
-            console.log('Token Card');
-        },3000);
-         
-        return df.promise();
+        }
+        PagSeguroDirectPayment.createCardToken(param);
     }
-
-    
-    $('#cc-number').on('keyup touchend', function () {
-       
-       //Receber o número do cartão digitado pelo usuário
-       var numCartao = $(this).val();
-   
-       //Contar quantos números o usuário digitou
-       var qntNumero = numCartao.length;
-
-       //Validar o cartão quando o usuário digitar 6 digitos do cartão
-       if (qntNumero == 6) {
-           
-           //Instanciar a API do PagSeguro para validar o cartão
-           PagSeguroDirectPayment.getBrand({
-               cardBin: numCartao,
-               success: function (retorno) {
-                   $('#msg').empty();
-                   //Enviar para o index a imagem da bandeira
-                   var imgBand = retorno.brand.name;
-                   $('#bandeiraCartao').val(imgBand);
-               },
-               error: function (retorno) {
-                   //Enviar para o index a mensagem de erro
-                   $('#msg').html("Cartão inválido");
-               }
-           });
-       }
-   });
-
 
     function senderHashReady() {
 
@@ -312,7 +304,6 @@
                 console.log(response.message);
                 return false;
             }
-            console.log(response);
             $("#hashCard").val(response.senderHash);
         });
 
@@ -327,6 +318,7 @@
 
     $(".cvv").on('blur touchend', function(){
         getTokenCard();
+        $("#enviarFormulario").show();
     });
 
     $("#enviarFormulario").one('click touchstart', function() {
@@ -408,7 +400,7 @@
                 $(".pagamento_cartao").attr('required', 'pagamento_cartao');
             }
 
-            $("#enviarFormulario").show();
+    
         });
         
          
