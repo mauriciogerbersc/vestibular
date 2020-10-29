@@ -112,7 +112,7 @@
                             </div>
 
                             <div class="col-md-3 mb-3">
-                                <label for="cc-expiration">Expiração</label>
+                                <label for="cc-expiration">Validade</label>
                                 <input type="text" class="form-control data-expiracao pagamento_cartao"
                                     id="cc-expiration" placeholder="">
                                 
@@ -272,47 +272,56 @@
     }
  
     function getTokenCard() {
+        $( '#validationSignup' ).html('');
         var result = $(".data-expiracao").val().split('/');
         var ano = result[1];
-        var mes = result[0];
+        var mes = result[0];    
 
-        var param = {
-            cardNumber: $("#cc-number").val(),
-            brand: $("#bandeiraCartao").val(),
-            cvv: $("#cc-cvv").val(),
-            expirationMonth: mes,
-            expirationYear: ano,
-            success: function(response){
-                console.log('suc ' + JSON.stringify(response));
-            },
-            error: function(response){
-                console.log('err ' + JSON.stringify(response));
-            },
-            complete: function(response){
-                console.log('comp' + JSON.stringify(response));
-                $("#retornoTransacao").val(JSON.stringify(response));
-             
+        var senderHash = PagSeguroDirectPayment.getSenderHash();
+        $('#hashCard').val(senderHash);
+     
+        if ($('#tokenCard').val().length == 0) {
+            var param = {
+                cardNumber: $("#cc-number").val(),
+                brand: $("#bandeiraCartao").val(),
+                cvv: $("#cc-cvv").val(),
+                expirationMonth: mes,
+                expirationYear: "20"+ano,
+                success: function(response){
+                    console.log('suc ' + JSON.stringify(response));
+                    $("#tokenCard").val(response.card.token)
+                },
+                error: function(response){
+                    errorsHtml = '<div class="alert alert-danger"><ul>';
+                    if(undefined!=response.errors["30400"]) {
+                        errorsHtml += '<li>Dados do cartão inválidos.</li>';
+                    }else if(undefined!=response.errors["10001"]){
+                        errorsHtml += '<li>Tamanho do cartão inválido.</li>';
+                    }else if(undefined!=response.errors["10006"]){
+                        errorsHtml += '<li>Tamanho do CVV inválido.</li>';
+                    }else if(undefined!=response.errors["30405"]){
+                        errorsHtml += '<li>Data de validade incorreta.</li>';
+                    }else if(undefined!=response.errors["30403"]){
+                        errorsHtml += '<li>Atualizar página.</li>';
+                    }else{
+                        errorsHtml += '<li>Verifique os dados do cartão digitado.</li>';
+                    }
+                    errorsHtml += '</ul></div>';
+                    
+                    $( '#validationSignup' ).html( errorsHtml ); 
+                    console.log('Falha ao obter o token do cartao.');
+                    console.log(response.errors);
+                
+                },
+                complete: function(response){
+                    console.log('comp' + JSON.stringify(response));
+                    $("#retornoTransacao").val(JSON.stringify(response));
+                
+                }
             }
+
+            PagSeguroDirectPayment.createCardToken(param);
         }
-        PagSeguroDirectPayment.createCardToken(param);
-    }
-
-    function senderHashReady() {
-
-        PagSeguroDirectPayment.onSenderHashReady(function (response){ 
-            if(response.status == 'error'){
-                console.log(response.message);
-                return false;
-            }
-            $("#hashCard").val(response.senderHash);
-        });
-
-        var df      = new $.Deferred();
-        setTimeout(function(){
-            console.log('Hash card');
-        },3000);
-        
-        return df.promise();
     }
 
 
@@ -387,8 +396,6 @@
         });
 
         $("input[type='radio']").on('click touchstart', function(){
-
-            senderHashReady();
             
             var forma_pagamento = $("input[name='formaPagamento']:checked").val();
             //alert(forma_pagamento);
@@ -400,7 +407,6 @@
                 $(".pagamento_cartao").attr('required', 'pagamento_cartao');
             }
 
-    
         });
         
          
