@@ -37,7 +37,7 @@
     <div class="container">
         <div class="py-3 text-center">
             <img class="d-block mx-auto mb-4"
-                src="https://aerotd.com.br/wp-content/uploads/2016/12/aerotd-faculdade-color-rgb-722x259-e1481571820435.png"
+                src="https://cdn.shortpixel.ai/client/to_avif,q_glossy,ret_img/https://aerotd.com.br/wp-content/uploads/2020/10/aerotd-faculdade-color-rgb-280x100.png"
                 alt="" width="" height="72">
         </div>
     </div>
