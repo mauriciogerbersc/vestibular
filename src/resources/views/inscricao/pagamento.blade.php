@@ -398,10 +398,11 @@
         $("input[type='radio']").on('click touchstart', function(){
             
             var forma_pagamento = $("input[name='formaPagamento']:checked").val();
-            //alert(forma_pagamento);
+            console.log(forma_pagamento);
             if(forma_pagamento=='b'){
                 $("#cartao_credito").css('display', 'none');
                 $(".pagamento_cartao").removeAttr('required');
+                $("#enviarFormulario").show();
             }else{
                 $("#cartao_credito").css('display', '');
                 $(".pagamento_cartao").attr('required', 'pagamento_cartao');
