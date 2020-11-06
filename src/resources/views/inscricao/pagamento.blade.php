@@ -233,9 +233,12 @@
             success: function(response){    
                 console.log(response.id);
                 PagSeguroDirectPayment.setSessionId(response.id);
+               
             }, complete: function (response){
                 $("#loader").hide();
                 $("#formasDePagamento").show();
+                var senderHash = PagSeguroDirectPayment.getSenderHash();
+                $('#hashCard').val(senderHash);
             }
         });
     }
