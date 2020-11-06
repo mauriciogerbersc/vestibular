@@ -12,11 +12,11 @@ class CriadorDeHash
     {
 
         $hasHash = Hash::where('inscrito_id', '=', $inscrito_id)->first();
-
-        if($hasHash->id != ''){
-            return $hasHash;
+       
+        if(!empty($hasHas)){
+           return $hasHash;
         }
-
+      
         $hashids             = new Hashids('this is my salt', 20, 'abcdefgh123456789');
         $hashGerada          = $hashids->encode($inscrito_id);
 
