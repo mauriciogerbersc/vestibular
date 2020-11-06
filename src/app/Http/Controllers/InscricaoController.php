@@ -82,19 +82,20 @@ class InscricaoController extends Controller
         
         // Recupera dados do inscrito para finalizar pagametno
         $dadosInscrito = Inscrito::find($request->inscrito_id);
-
+     
         // Definindo telefones para formato PagSeguro;
         $telefone = preg_split("/\(|\)/", $dadosInscrito->phone);
         $ddd = $telefone[1];
         $phone = str_replace("-","",trim($telefone[2]));
         
 
-        $procuraHash = HashGenerate::where('inscrito_id', '=', $request->inscrito_id)->first();
+        $procuraHash = HashGenerate::where('inscrito_id', '=', $dadosInscrito->id)->first();
+       
         if($procuraHash){
             $hashInscrito       = $procuraHash->hash;
         }else{
             $criadorDeHash      = new CriadorDeHash();
-            $hash               = $criadorDeHash->criarHash($request->inscrito_id);
+            $hash               = $criadorDeHash->criarHash($dadosInscrito->id);
             $hashInscrito       = $hash->hash;       
         }
      
@@ -233,7 +234,7 @@ class InscricaoController extends Controller
     }
 
     public function testa(){
-         $cpf = trim("03876295211");
+        $cpf = trim("03876295211");
         $cpf = Hash::make($cpf);
         echo $cpf;
     }
