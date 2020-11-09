@@ -13,6 +13,7 @@ use Gate;
 use App\Payment;
 use App\Services\EnvioDeEmail;
 use App\Role;
+use App\ProcessoSeletivo;
 use App\StatusCandidato;
 use App\Services\CriadorDeHash;
 use App\Helpers\Helper;
@@ -227,9 +228,10 @@ class AdminController extends Controller
 
         $cursos = Curso::where('status', '=', 1)->get();
         $status_candidatos = StatusCandidato::all();
+        $processos_seletivos = ProcessoSeletivo::all();
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
-        return view('admin.inscritos.index', compact('mensagem', 'alert_tipo', 'cursos','status_candidatos'));
+        return view('admin.inscritos.index', compact('mensagem', 'alert_tipo', 'cursos','status_candidatos','processos_seletivos'));
     }
 
     public function enviarEmail(Request $request){
@@ -273,6 +275,11 @@ class AdminController extends Controller
             $email = $request->email;
         }
 
+        $processoSeletivo = "";
+        if (isset($request->processoSeletivo)){
+            $processoSeletivo = $request->processoSeletivo;
+        }
+
         $todosCursos = Curso::where('status', '=', 1)->select('id')->get();
         foreach ($todosCursos as $curso) {
             $cursosSelecionados[$curso->id] = $curso->id;
@@ -298,8 +305,7 @@ class AdminController extends Controller
             }
         }
 
-
-
+        
         $inscritos = Inscrito::where('firstName', 'LIKE', '%' . $nome . '%')
             ->where('nDocumento', 'LIKE', '%' . $cpf . '%')
             ->where('email', 'LIKE', '%' . $email . '%')
@@ -308,6 +314,20 @@ class AdminController extends Controller
             ->leftJoin('redacao_alunos', 'redacao_alunos.inscrito_id', '=', 'inscritos.id')
             ->select('inscritos.*', 'redacao_alunos.corrigido')
             ->get();
+
+        if(!empty($processoSeletivo)){
+            $inscritos = Inscrito::where('firstName', 'LIKE', '%' . $nome . '%')
+            ->where('nDocumento', 'LIKE', '%' . $cpf . '%')
+            ->where('email', 'LIKE', '%' . $email . '%')
+            ->where('processo_id', '=', $processoSeletivo)
+            ->whereIn('curso_id', $cursoEscolhido)
+            ->whereIn('status', $status)
+            ->leftJoin('redacao_alunos', 'redacao_alunos.inscrito_id', '=', 'inscritos.id')
+            ->join('processo_seletivo_users', 'processo_seletivo_users.inscrito_id', '=', 'inscritos.id')
+            ->select('inscritos.*', 'redacao_alunos.corrigido')
+            ->get();
+        }
+    
 
         $inscricoes = array();
   

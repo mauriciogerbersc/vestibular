@@ -1,3 +1,4 @@
+@if(Auth::user())
 <header class="navbar navbar-header navbar-header-fixed">
   <a href="/admin" id="mainMenuOpen" class="burger-menu"><i data-feather="menu"></i></a>
   <div class="navbar-brand">
@@ -19,6 +20,7 @@
           <li class="nav-sub-item"><a href="{{ route('criar_curso') }}" class="nav-sub-link"><i data-feather="message-square"></i>Criar Curso</a></li>
         </ul>
       </li>
+
       <li class='nav-item with-sub  @if($current=="temas")active @endif'>
         <a href="" class="nav-link"><i data-feather="package"></i> Temas</a>
         <ul class="navbar-menu-sub">
@@ -26,16 +28,26 @@
           <li class="nav-sub-item"><a href="{{ route('criar_tema') }}" class="nav-sub-link"><i data-feather="message-square"></i>Criar Tema</a></li>
         </ul>
       </li>
+
       <li class='nav-item @if($current=="redacoes")active @endif'><a href="/admin/redacoes" class="nav-link"> Redações Alunos</a></li>
-      <li class='nav-item @if($current=="inscritos")active @endif'><a href="/admin/inscritos" class="nav-link"> Inscrições</a></li>
+
+      <li class='nav-item with-sub  @if($current=="inscritos")active @endif'>
+        <a href="" class="nav-link"><i data-feather="package"></i> Inscrições</a>
+        <ul class="navbar-menu-sub">
+            <li class="nav-sub-item"><a href="/admin/inscritos" class="nav-sub-link">Inscrições Gerais</a></li>
+        </ul>
+      </li>
      
       <li class='nav-item with-sub  @if($current=="users")active @endif'>
-        <a href="" class="nav-link"><i data-feather="package"></i> Usuários do Sistema</a>
+        <a href="" class="nav-link"><i data-feather="package"></i> Administrativo</a>
         <ul class="navbar-menu-sub">
+          <li class="nav-sub-item"><a href="/admin/processoSeletivo" class="nav-sub-link"><i data-feather="calendar"></i>Processos Seletivos</a></li>
           <li class="nav-sub-item"><a href="/admin/usuarios" class="nav-sub-link"><i data-feather="calendar"></i>Usuários</a></li>
           <li class="nav-sub-item"><a href="/admin/usuarios/create" class="nav-sub-link"><i data-feather="message-square"></i>Novo Usuário</a></li>
         </ul>
       </li>
+
+      
   
     </ul>
   </div><!-- navbar-menu-wrapper -->
@@ -49,9 +61,8 @@
       </a><!-- dropdown-link -->
       <div class="dropdown-menu dropdown-menu-right tx-13">
         <div class="avatar avatar-lg mg-b-15"><img src="https://via.placeholder.com/500" class="rounded-circle" alt=""></div>
-        <h6 class="tx-semibold mg-b-5">{{ Auth::user()->name }}</h6>
-        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                      document.getElementById('logout-form').submit();">
+        <h6 class="tx-semibold mg-b-5">{{ Auth::user()->name ?? '' }}</h6>
+        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
           {{ __('Sair do Sistema') }}
         </a>
 
@@ -65,3 +76,4 @@
   </div><!-- navbar-right -->
 
 </header><!-- navbar -->
+@endif

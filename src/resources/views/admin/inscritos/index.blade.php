@@ -43,7 +43,7 @@
 
             <div class="form-row">
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="selectCurso">Curso Escolhido</label>
                     <select class="custom-select" name="cursoEscolhido" id="cursoEscolhido">
                         <option value="*">Todos</option>
@@ -52,7 +52,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label>Status Candidato</label>
                     <select class="custom-select" name="statusCandidato" id="statusCandidato">
                         <option value="*">Todos</option>
@@ -62,6 +62,16 @@
                     </select>
                 </div>
 
+
+                <div class="form-group col-md-4">
+                    <label>Filtrar Processo</label>
+                    <select class="custom-select" name="processoSeletivo" id="processoSeletivo">
+                        <option value="*">Todos</option>
+                        @foreach($processos_seletivos as $processo)
+                            <option value="{{$processo->id}}">{{$processo->nomeProcesso}}</option>
+                        @endforeach
+                    </select>
+                </div>
 
             </div>
 
@@ -78,7 +88,7 @@
             <table id="example1" class="table">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>COD</th>
                         <th>Situação</th>
                         <th>Inscrito</th>
                         <th>Curso</th>
@@ -119,7 +129,8 @@
                     email: $("#email").val(),
                     statusFinanceiro: $("#statusFinanceiro option:selected").val(),
                     statusCandidato: $("#statusCandidato option:selected").val(),
-                    cursoEscolhido: $("#cursoEscolhido option:selected").val()
+                    cursoEscolhido: $("#cursoEscolhido option:selected").val(),
+                    processoSeletivo: $("#processoSeletivo option:selected").val()
                 }
 
                 $.ajax({
