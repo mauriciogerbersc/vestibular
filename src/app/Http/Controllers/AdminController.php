@@ -315,7 +315,7 @@ class AdminController extends Controller
             ->select('inscritos.*', 'redacao_alunos.corrigido')
             ->get();
 
-        if(!empty($processoSeletivo)){
+        if(!empty($processoSeletivo) && ($processoSeletivo != '*')){
             $inscritos = Inscrito::where('firstName', 'LIKE', '%' . $nome . '%')
             ->where('nDocumento', 'LIKE', '%' . $cpf . '%')
             ->where('email', 'LIKE', '%' . $email . '%')
