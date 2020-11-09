@@ -30,13 +30,7 @@
       </li>
 
       <li class='nav-item @if($current=="redacoes")active @endif'><a href="/admin/redacoes" class="nav-link"> Redações Alunos</a></li>
-
-      <li class='nav-item with-sub  @if($current=="inscritos")active @endif'>
-        <a href="" class="nav-link"><i data-feather="package"></i> Inscrições</a>
-        <ul class="navbar-menu-sub">
-            <li class="nav-sub-item"><a href="/admin/inscritos" class="nav-sub-link">Inscrições Gerais</a></li>
-        </ul>
-      </li>
+      <li class='nav-item @if($current=="inscritos")active @endif'><a href="/admin/inscrito" class="nav-link"> Inscrições Gerais</a></li>
      
       <li class='nav-item with-sub  @if($current=="users")active @endif'>
         <a href="" class="nav-link"><i data-feather="package"></i> Administrativo</a>
