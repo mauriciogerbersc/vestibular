@@ -414,9 +414,9 @@ class AdminController extends Controller
     public function inscricoesPorMeses(){
         $inscritos = Inscrito::selectRaw('year(created_at) year, monthname(created_at) month, count(*) data')
                 ->groupBy('year', 'month')
-                ->orderBy('month', 'desc')
+                ->orderByRaw('min(created_at) asc')
                 ->get();
-
+  
         foreach($inscritos as $ins){
             $retorno[] = array(
                 'mes' => Helper::mes($ins['month']),
