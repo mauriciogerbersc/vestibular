@@ -30,10 +30,16 @@ class newLaravelTips extends Mailable
      * @return $this
      */
     public function build()
-    {
+    {   
         $this->subject($this->user->titulo);
         $this->to($this->user->email,$this->user->name);
         
+        if(isset($this->user->tipo)){
+            return $this->markdown('mail.emailIndicacao', [
+                'user' => $this->user
+            ]);
+        }
+
         if(isset($this->user->hash)){
             return $this->markdown('mail.emailInscricaoConfirmacao', [
                 'user' => $this->user

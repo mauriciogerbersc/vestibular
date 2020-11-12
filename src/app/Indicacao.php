@@ -9,4 +9,5 @@ class Indicacao extends Model
     protected $table = 'indicacaos';
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
 }

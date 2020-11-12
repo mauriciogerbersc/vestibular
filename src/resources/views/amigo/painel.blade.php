@@ -30,34 +30,47 @@
                         <a href="" class="nav-link d-flex align-items-center active">Convites <span class="badge">{{$total_indicacoes}}</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link">Inscritos <span class="badge">0</span></a>
+                        <a href="" class="nav-link">Inscritos <span class="badge">{{$total_inscricoes}}</span></a>
                     </li>
                     <li class="nav-item d-none d-sm-block">
                         <a href="" class="nav-link">Matriculados <span class="badge">0</span></a>
                     </li>
                 </ul>
 
+                <ul class="list-inline d-flex mg-t-20 mg-sm-t-10 mg-md-t-0 mg-b-0">
+                  <li class="list-inline-item d-flex align-items-center">
+                    <span class="d-block wd-10 ht-10 bg-df-1 rounded mg-r-5"></span>
+                    <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Convite enviado</span>
+                  </li>
+                  <li class="list-inline-item d-flex align-items-center mg-l-5">
+                    <span class="d-block wd-10 ht-10 bg-df-2 rounded mg-r-5"></span>
+                    <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Inscrito</span>
+                  </li>
+                  <li class="list-inline-item d-flex align-items-center mg-l-5">
+                    <span class="d-block wd-10 ht-10 bg-df-3 rounded mg-r-5"></span>
+                    <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Matriculado</span>
+                  </li>
+                </ul>
+
+                <br>
+
                 <div class="row row-xs mg-b-25">
                     @foreach($indicacoes as $indicacao)
-
-                   
-                 
-                   
-                    <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
-                        <div class="card card-profile">
-                            <img src="https://via.placeholder.com/500" class="card-img-top" alt="">
-                            <div class="card-body tx-13">
-                                <div>
-                                    <h5>{{$indicacao->name_indicado}}</h5>
-                                    <p>{{$indicacao->email_indicado}}</p>
-                                    <div class="mg-b-25">
-                                    <span class="tx-12 tx-color-03"><strong>Data Envio:</strong> {{$indicacao->created_at->format('d/m/Y')}}</span><br>
-                                        <span class="tx-12 tx-color-03"><strong>Código Convite:</strong> {{$indicacao->hash}}</span>
+                      
+                        <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3 ">
+                            <div class="card card-profile   {!! Helper::retornaStatusIndicado($indicacao->email_indicado) !!} ">
+                                <div class="card-body tx-13">
+                                    <div style="margin-top:0; align-items:NONE !IMPORTANT;">
+                                        <h5 class="tx-white">{{$indicacao->name_indicado}}</h5>
+                                        <p class="tx-color-01">{{$indicacao->email_indicado}}</p>
+                                        <div class="mg-b-25">
+                                        <span class="tx-12 tx-color-01"><strong>Data Envio:</strong> {{$indicacao->created_at->format('d/m/Y')}}</span><br>
+                                            <span class="tx-12 tx-color-01"><strong>Código Convite:</strong> {{$indicacao->hash}}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div><!-- card -->
-                    </div><!-- col -->
+                            </div><!-- card -->
+                        </div><!-- col -->
                     @endforeach
                 </div><!-- row -->
             </div><!-- col -->
@@ -65,7 +78,7 @@
                 <div class="d-flex align-items-center justify-content-between mg-b-20">
                     <h6 class="tx-uppercase tx-semibold mg-b-0">Enviar novo Convite</h6>
                 </div>
-                <form method="POST" action="/indica-amigo/envia-convite">
+                <form method="POST" action="/indicacao/envia">
                     @csrf
                     <ul class="list-unstyled media-list mg-b-15">
                         <li class="align-items-center">
@@ -105,10 +118,10 @@
                     <h6 class="tx-uppercase tx-semibold mg-b-0">Compartilhe Também</h6>
                 </div>
                 <div class="d-flex tx-20 mg-t-10">
-                    <div class=""><a class="share-popup" href="https://api.whatsapp.com/send?phone=&text=Acesse+matriculas.aerotd.com.br+e+use+meu+código+e+tenha+desconto+no+valor+da+sua+mensalidade.+Código: {{$hashGerada}}" target="_blank"><i class="fab fa-whatsapp"></i></a></div>
-                    <div class="pd-l-10"><a class="share-popup" href="https://www.facebook.com/sharer/sharer.php?u=matriculas.aerotd.com.br&quote=Use+meu+código+e+tenha+desconto+no+valor+da+sua+mensalidade.+Código: {{$hashGerada}}" data-descriptions="alsadlasd" target="_blank"><i class="fab fa-facebook"></i></a></div>
-                    <div class="pd-l-10"><a class="share-popup" href="https://twitter.com/share?url=matriculas.aerotd.com.br&&via=AeroTD&text=Use+meu+código+e+tenha+desconto+no+valor+da+sua+mensalidade.+Código: {{$hashGerada}}" target="_blank"><i class="fab fa-twitter"></i></a></div>
-                    <div class="pd-l-10"><a class="share-popup"  href="https://www.linkedin.com/shareArticle?mini=true&url=matriculas.aerotd.com.br&summary=teste&title=teste"><i class="fab fa-linkedin"></i></a></div>
+                    <div class=""><a class="share-popup" href="https://api.whatsapp.com/send?phone=&text=Acesse+{{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}+e+realize+sua+inscrição+com+20%+de+desconto" target="_blank"><i class="fab fa-whatsapp"></i></a></div>
+                    <div class="pd-l-10"><a class="share-popup" href="https://www.facebook.com/sharer/sharer.php?u=matriculas.aerotd.com.br&quote=Acesse+{{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}+e+realize+sua+inscrição+com+20%+de+desconto" data-descriptions="alsadlasd" target="_blank"><i class="fab fa-facebook"></i></a></div>
+                    <div class="pd-l-10"><a class="share-popup" href="https://twitter.com/share?url=matriculas.aerotd.com.br&&via=AeroTD&text=Acesse+{{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}+e+realize+sua+inscrição+com+20%+de+desconto" target="_blank"><i class="fab fa-twitter"></i></a></div>
+                    <div class="pd-l-10"><a class="share-popup"  href="https://www.linkedin.com/shareArticle?mini=true&url=matriculas.aerotd.com.br&summary=Acesse+{{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}+e+realize+sua+inscrição+com+20%+de+desconto&title=teste"><i class="fab fa-linkedin"></i></a></div>
                 </div>
 
                 <!-- Go to www.addthis.com/dashboard to customize your tools -->

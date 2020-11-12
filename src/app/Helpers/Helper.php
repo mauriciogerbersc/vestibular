@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Payment;
 use App\RedacaoAluno;
 use App\StatusCandidato;
+use Illuminate\Support\Facades\DB;
 
 class Helper
 {
@@ -27,6 +28,20 @@ class Helper
 
         // -- Returns the slug
         return strtolower(strtr($string, $table));
+    }
+
+
+    public static function retornaStatusIndicado($email){
+        $users = DB::connection('mysql2')
+                    ->select("SELECT ds_contato, cd_pessoa FROM unimestre.contatos_pessoas
+                                WHERE cd_contato  = 4
+                                AND ds_contato = '$email'");
+        $bg = "bg-df-1";
+        if($users){
+            $bg = "bg-df-2";
+        }
+
+        return $bg;
     }
 
     public static function retornaStatusInscrito(int $status, int $inscrito_id)

@@ -98,7 +98,6 @@ class InscricaoController extends Controller
             $hash               = $criadorDeHash->criarHash($dadosInscrito->id);
             $hashInscrito       = $hash->hash;       
         }
-     
       
         if ($request->formaPagamento == 'b') {
             $payment = new stdClass();

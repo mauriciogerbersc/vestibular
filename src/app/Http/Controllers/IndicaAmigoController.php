@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Indicacao;
 use Hashids\Hashids;
+use App\Services\EnvioDeEmail;
 
 class IndicaAmigoController extends Controller
 {
@@ -66,18 +67,16 @@ class IndicaAmigoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, EnvioDeEmail $enviarEmail)
     {   
         $rules = [
             'name_indicado' => 'required',
-            'email_indicado' => 'required',
-            'celular_indicado' => 'required',
+            'email_indicado' => 'required'
         ];
         
         $messages = [
             'name_indicado.required' => 'O campo Nome é obrigatório',
-            'email_indicado.required' => 'O campo email é obrigatório',
-            'celular_indicado.required' => 'O campo celular é obrigatório'
+            'email_indicado.required' => 'O campo email é obrigatório'
         ];
         
         $validator = $request->validate($rules, $messages);
@@ -131,6 +130,8 @@ class IndicaAmigoController extends Controller
         }
     
         // Envia convite por email
+        $tipo = 'indicacao';
+        $enviarEmail->enviarEmailIndicacao($tipo, $request->name_indicado, $request->email_indicado, $hashGerada);
 
         // Redireciona para o painel.
         $request->session()->flash('mensagem', "Convite enviado com sucesso.");
@@ -155,11 +156,25 @@ class IndicaAmigoController extends Controller
       
         $indicacoes = Indicacao::where('cd_pessoa_unimestre', '=', $cd_pessoa_unimestre)->get();
         
+        // Quantidade de indicados que se inscreveram.
+        $total_inscricoes = 0;
+        foreach($indicacoes as $indicacao){
+            $users = DB::connection('mysql2')->select("SELECT ds_contato, cd_pessoa FROM unimestre.contatos_pessoas
+            where cd_contato  = 4
+            and ds_contato = '$indicacao->email_indicado'");
+           
+           if($users){
+               $total_inscricoes++;
+           }
+        }
+        
+        // Retorna total de indicações feitas pelo aluno
         $total_indicacoes = Indicacao::where('cd_pessoa_unimestre', '=', $cd_pessoa_unimestre)->count();
+
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
     
-        return view('amigo.painel', compact('mensagem', 'alert_tipo', 'indicacoes', 'total_indicacoes', 'hashGerada'));
+        return view('amigo.painel', compact('mensagem', 'alert_tipo', 'indicacoes', 'total_indicacoes', 'total_inscricoes', 'hashGerada'));
     }
 
 

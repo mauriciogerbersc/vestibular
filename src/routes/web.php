@@ -92,6 +92,9 @@ Route::get('/pagseguro/transacoesPorData', 'PagSeguroController@verificarTransac
 Route::post('/pagseguro/paymentMethod', 'PagSeguroController@paymentMethod')->name('payment');
 
 
+/** Rota pra cadastro de processo seletivo */
+Route::get('/admin/processoSeletivo', 'ProcessoSeletivoController@index');
+
 Route::get('/testaemail', 'PagSeguroController@email');
 
 Route::get('/testaSenha', 'InscricaoController@testa');
