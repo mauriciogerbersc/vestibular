@@ -23,12 +23,7 @@ class InscricaoController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:admin')->except(['index', 'inscricao', 'create', 'store', 'confirmacao', 'payment', 'checkCadastro', 'testa']);
-    }
-
-    public function confirmacao()
-    {
-        return "Oi";
+        $this->middleware('auth:admin')->except(['index', 'inscricao', 'create', 'store', 'confirmacao', 'payment', 'checkCadastro', 'testa', 'inscritosMatriculados','retornaSeMatriculado']);
     }
 
     /* Método que trata de enviar o email com confirma��o de inscri��o para o aluno */
@@ -59,7 +54,45 @@ class InscricaoController extends Controller
 
         return view('inscricao.curso', compact('curso'));
     }
+  
 
+    private function retornaSeMatriculado($cpf){
+        $users = DB::connection('mysql2')->select("SELECT  1 FROM pessoas WHERE ds_cpf = '".$cpf."' AND (ds_login is not NULL OR ds_login != '')"); 
+       
+       if($users)
+           return true;
+
+
+    }
+
+    public function inscritosMatriculados(){
+
+        /* 
+            5 = Aprovado Processo Seletivo
+            6 = Aprovado ENEM
+        */
+        $status_permitidos = array(5,6);
+        $inscritos = Inscrito::whereIn('status', $status_permitidos)->get();
+        print_r($inscritos);exit;
+
+        $status_matriculado = 7;
+
+        $i = 0;
+        foreach($inscritos as $inscrito){
+            if($this->retornaSeMatriculado($inscrito->nDocumento))
+            {
+                echo "<strong>ID:</strong> {$inscrito->id}. <strong>CPF:</strong> {$inscrito->nDocumento}. ja esta matriculado. Atualizando status... <br>";
+                DB::beginTransaction();
+                    Inscrito::find($inscrito->id);
+                    $inscrito->status = $status_matriculado;
+                    $inscrito->save();
+                DB::commit();
+            }
+        }
+        
+
+ 
+    }
 
     /**
      * Exibe o formul�rio de inscri��o para o curso desejado 

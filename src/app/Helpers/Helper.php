@@ -116,7 +116,8 @@ class Helper
             2 => 'badge-success',
             4 => 'badge-info',
             5 => 'badge-dark',
-            6 => 'badge-light'
+            6 => 'badge-light',
+            7 => 'badge-primary'
         );
 
         return $statusBadges[$status];

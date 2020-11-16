@@ -27,7 +27,7 @@ Route::get('/inscricao/{curso}', 'InscricaoController@inscricao');
 Route::get('/inscricao/formulario/{slug}', 'InscricaoController@create');
 Route::post('/pagamento', 'InscricaoController@payment')->name('inscricaoPayment');
 Route::post('/checkCadastro', 'InscricaoController@checkCadastro')->name('temCadastro');
-
+Route::get('/inscritosMatriculados', 'InscricaoController@inscritosMatriculados');
 
 Route::post('/inscricao/pagamento', 'InscricaoController@store')->name('inscricao_pagamento');
 Route::get('/hash', 'InscricaoController@generateHash');
@@ -62,6 +62,7 @@ Route::get('/admin/redacoes', 'AdminController@redacaoInscritos')->middleware('a
 Route::get('/admin/redacoes/download/{id}', 'AdminController@redacaoDownload')->name('force_download')->middleware('autenticadorAdmin');
 Route::get('/admin/redacoes/{status_id}/{inscrito_id}/statusCandidato', 'AdminController@alterarStatusCandidato')->middleware('autenticadorAdmin');
 Route::get('/admin/inscritos', 'AdminController@listarInscritos')->name('lista_inscritos')->middleware('autenticadorAdmin');
+
 Route::get('/admin/inscritos/lista', 'AdminController@listarInscritosPost')->name('listar_inscritos_json')->middleware('autenticadorAdmin');
 Route::get('/admin/inscrito/{id}', 'AdminController@show')->name('visualizar_inscrito')->middleware('autenticadorAdmin');
 Route::get('/admin/enviarEmail/{id}', 'AdminController@enviarEmail');
