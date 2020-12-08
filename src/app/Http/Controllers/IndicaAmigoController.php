@@ -17,10 +17,10 @@ class IndicaAmigoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {   
+    {
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
-    
+
         return view('amigo.index', compact('mensagem', 'alert_tipo'));
     }
 
@@ -30,26 +30,26 @@ class IndicaAmigoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function check(Request $request)
-    {   
+    {
 
         // Validações de formulário.
         $rules = [
             'cpf' => 'required',
         ];
-        
+
         $messages = [
             'cpf.required' => 'O campo CPF é obrigatório',
         ];
-        
+
         $validator = $request->validate($rules, $messages);
 
         $users = DB::connection('mysql2')
-                    ->select("SELECT pessoas.cd_pessoa as cd_pessoa, pessoas.ds_login as user, pessoas.nm_pessoa as name, nm_mae, GET_CONTATO_PESSOA(pessoas.cd_pessoa,4) AS email 
+            ->select("SELECT pessoas.cd_pessoa as cd_pessoa, pessoas.ds_login as user, pessoas.nm_pessoa as name, nm_mae, GET_CONTATO_PESSOA(pessoas.cd_pessoa,4) AS email 
                             FROM pessoas 
-                            WHERE ds_cpf = '".$request->cpf."'");
-        
-        if(!$users){
-            $request->session()->flash('mensagem', "CPF não encontrado.");
+                            WHERE ds_cpf = '" . $request->cpf . "'");
+
+        if (!$users) {
+            $request->session()->flash('mensagem', "CPF não encontrado.<br> Entre em contato com o suporte. <br><br><strong>AeroTD</strong> (48) 3223 5191");
             $request->session()->flash('alert_tipo', "alert-danger");
             return redirect()->back()->withInputs($request->cpf);
         }
@@ -68,35 +68,35 @@ class IndicaAmigoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, EnvioDeEmail $enviarEmail)
-    {   
+    {
         $rules = [
             'name_indicado' => 'required',
             'email_indicado' => 'required'
         ];
-        
+
         $messages = [
             'name_indicado.required' => 'O campo Nome é obrigatório',
             'email_indicado.required' => 'O campo email é obrigatório'
         ];
-        
+
         $validator = $request->validate($rules, $messages);
 
         // Verifico se existe e-mail  do indicado no banco do Unimestre
         $users = DB::connection('mysql2')
-                        ->select("SELECT ds_contato, cd_pessoa FROM unimestre.contatos_pessoas
+            ->select("SELECT ds_contato, cd_pessoa FROM unimestre.contatos_pessoas
                         where cd_contato  = 4
                         and ds_contato = '$request->email_indicado'");
 
-        if($users){
+        if ($users) {
             $request->session()->flash('mensagem', "Convite não enviado.<br> Este email já existe na base de dados.");
             $request->session()->flash('alert_tipo', "alert-danger");
             return redirect()->back()->withInputs($request->email_indicado);
         }
 
         // Verifico se existe e-mail do indicado no banco da Indicação
-        $indicacao = Indicacao::where('email_indicado', '=',$request->email_indicado)->first();
-        
-        if($indicacao){
+        $indicacao = Indicacao::where('email_indicado', '=', $request->email_indicado)->first();
+
+        if ($indicacao) {
             $request->session()->flash('mensagem', "Convite não enviado.<br> Este email já existe na base de dados.");
             $request->session()->flash('alert_tipo', "alert-danger");
             return redirect()->back()->withInputs($request->email_indicado);
@@ -106,7 +106,7 @@ class IndicaAmigoController extends Controller
         $hashids             = new Hashids('this is my salt', 20, 'abcdefgh123456789');
         $hashGerada          = $hashids->encode($request->session()->get('cd_pessoa'));
 
-        if(empty($hashGerada)){
+        if (empty($hashGerada)) {
             $request->session()->flash('mensagem', "Erro ao gerar código para convite. Tente novamente");
             $request->session()->flash('alert_tipo', "alert-danger");
             return redirect()->back();
@@ -123,12 +123,12 @@ class IndicaAmigoController extends Controller
         ]);
         DB::commit();
 
-        if(!$indicacao){
+        if (!$indicacao) {
             $request->session()->flash('mensagem', "Erro ao gerar convite. Tente novamente");
             $request->session()->flash('alert_tipo', "alert-danger");
             return redirect()->back();
         }
-    
+
         // Envia convite por email
         $tipo = 'indicacao';
         $enviarEmail->enviarEmailIndicacao($tipo, $request->name_indicado, $request->email_indicado, $hashGerada);
@@ -146,36 +146,42 @@ class IndicaAmigoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request)
-    {   
+    {
+        if (empty($request->session()->has('name'))) {
+            return redirect()->route('indicaAmigo');
+        }
 
-        
         $hashids             = new Hashids('this is my salt', 20, 'abcdefgh123456789');
         $hashGerada          = $hashids->encode($request->session()->get('cd_pessoa'));
-       
+
         $cd_pessoa_unimestre = $request->session()->get('cd_pessoa');
-      
+
         $indicacoes = Indicacao::where('cd_pessoa_unimestre', '=', $cd_pessoa_unimestre)->get();
-        
+
         // Quantidade de indicados que se inscreveram.
         $total_inscricoes = 0;
-        foreach($indicacoes as $indicacao){
+        foreach ($indicacoes as $indicacao) {
             $users = DB::connection('mysql2')->select("SELECT ds_contato, cd_pessoa FROM unimestre.contatos_pessoas
             where cd_contato  = 4
             and ds_contato = '$indicacao->email_indicado'");
-           
-           if($users){
-               $total_inscricoes++;
-           }
+
+            if ($users) {
+                $total_inscricoes++;
+            }
         }
-        
+
         // Retorna total de indicações feitas pelo aluno
         $total_indicacoes = Indicacao::where('cd_pessoa_unimestre', '=', $cd_pessoa_unimestre)->count();
 
         $mensagem   = $request->session()->get('mensagem');
         $alert_tipo = $request->session()->get('alert_tipo');
-    
+
         return view('amigo.painel', compact('mensagem', 'alert_tipo', 'indicacoes', 'total_indicacoes', 'total_inscricoes', 'hashGerada'));
     }
 
+    public function out(Request $request){
+        $request->session()->flush();
 
+        return redirect()->route('indicaAmigo');
+    }
 }

@@ -84,6 +84,7 @@ Route::get('/indicacao', 'IndicaAmigoController@index')->name('indicaAmigo');
 Route::post('/indicacao', 'IndicaAmigoController@check')->name('checkStudent');
 Route::get('/indicacao/painel', 'IndicaAmigoController@show')->name('painel_amigo');
 Route::post('/indicacao/envia', 'IndicaAmigoController@store')->name('envia_convite');
+Route::get('/indicacao/sair', 'IndicaAmigoController@out')->name('sair_indicacao');
 
 /** Rotas para pagamento */
 Route::get('/boleto', 'PagSeguroController@payment');
