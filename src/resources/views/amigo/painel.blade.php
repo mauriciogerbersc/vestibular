@@ -11,6 +11,13 @@
         transition: transform .15s ease;
         position: relative;
     }
+
+    .btn-group button {
+        border-radius: 7px;
+        background-image: linear-gradient(to bottom, hsla(0, 0%, 0%, 0), hsla(0, 0%, 0%, 0.2));
+
+    }
+
 </style>
 @endsection
 
@@ -38,54 +45,52 @@
     <div class="container pd-x-0 pd-lg-x-5 pd-xl-x-0">
         <div class="row">
             <div class="col-lg-9">
-                <ul class="nav nav-line nav-line-profile mg-b-30">
-                    <li class="nav-item">
-                        <a href="" class="nav-link d-flex align-items-center active">Convites <span class="badge">{{$total_indicacoes}}</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link">Inscritos <span class="badge">{{$total_inscricoes}}</span></a>
-                    </li>
-                    <li class="nav-item d-none d-sm-block">
-                        <a href="" class="nav-link">Matriculados <span class="badge">0</span></a>
-                    </li>
-                </ul>
 
-                <ul class="list-inline d-flex mg-t-20 mg-sm-t-10 mg-md-t-0 mg-b-0">
+                <div class="btn-group filters-button-group btn-group " role="group">
+                    <button type="button" class="btn is-checked bg-df-1 tx-white" data-filter="*">Convites Enviados <span class="badge badge-danger">{{$total_indicacoes}}</span></button>
+                    <button type="button" class="btn bg-df-2 tx-white" data-filter=".inscritos">Inscritos <span class="badge badge-danger">{{$total_inscricoes}}</span> </button>
+                    <button type="button" class="btn bg-df-3 tx-white" data-filter=".matriculados">Matriculados <span class="badge badge-danger">0</span></button>
+
+                </div>
+
+                <!--
+                <ul class="list-inline d-flex mg-t-20 mg-sm-t-10 mg-md-t-0 mg-b-0 filters-button-group">
                     <li class="list-inline-item d-flex align-items-center">
                         <span class="d-block wd-10 ht-10 bg-df-1 rounded mg-r-5"></span>
-                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Convite enviado</span>
+                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Convite enviado </span>
                     </li>
                     <li class="list-inline-item d-flex align-items-center mg-l-5">
                         <span class="d-block wd-10 ht-10 bg-df-2 rounded mg-r-5"></span>
-                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Inscrito</span>
+                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Inscrito </span>
                     </li>
                     <li class="list-inline-item d-flex align-items-center mg-l-5">
                         <span class="d-block wd-10 ht-10 bg-df-3 rounded mg-r-5"></span>
-                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Matriculado</span>
+                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Matriculado <span class="badge">0</span></span>
                     </li>
                 </ul>
+-->
 
-                <br>
 
-                <div class="row row-xs mg-b-25">
+                <div class="grid mg-t-20">
                     @foreach($indicacoes as $indicacao)
-
-                    <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3 ">
-                        <div class="card card-profile   {!! Helper::retornaStatusIndicado($indicacao->email_indicado) !!} ">
-                            <div class="card-body tx-13">
-                                <div style="margin-top:0; align-items:NONE !IMPORTANT;">
-                                    <h5 class="tx-white">{{$indicacao->name_indicado}}</h5>
-                                    <p class="tx-color-01">{{$indicacao->email_indicado}}</p>
-                                    <div class="mg-b-25">
-                                        <span class="tx-12 tx-color-01"><strong>Data Envio:</strong> {{$indicacao->created_at->format('d/m/Y')}}</span><br>
-                                        <span class="tx-12 tx-color-01"><strong>Código Convite:</strong> {{$indicacao->hash}}</span>
-                                    </div>
-                                </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 element-item mg-b-10 {!! Helper::retornaClasseIndicado($indicacao->email_indicado) !!}">
+                        <div class="card tx-white {!! Helper::retornaStatusIndicado($indicacao->email_indicado) !!}">
+                            <div class="card-header tx-semibold">
+                                {{$indicacao->name_indicado}}<br>
+                                {{$indicacao->email_indicado}}
                             </div>
-                        </div><!-- card -->
-                    </div><!-- col -->
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <strong>Data Envio:</strong> {{$indicacao->created_at->format('d/m/Y')}}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
                     @endforeach
-                </div><!-- row -->
+                </div>
+
             </div><!-- col -->
 
             <div class="col-lg-3 bg-gray-100 pd-t-15 pd-b-10">
@@ -195,7 +200,62 @@
 @section('scripts')
 
 <script src="{{asset('assets/js/simple-lightbox.jquery.min.js')}}"></script>
+<script src="https://isotope.metafizzy.co/js/isotope-docs.min.js?6"></script>
 <script>
+    // init Isotope
+    var iso = new Isotope('.grid', {
+        itemSelector: '.element-item',
+        layoutMode: 'fitRows'
+    });
+
+    // filter functions
+    var filterFns = {
+        // show if number is greater than 50
+        numberGreaterThan50: function(itemElem) {
+            var number = itemElem.querySelector('.number').textContent;
+            return parseInt(number, 10) > 50;
+        },
+        // show if name ends with -ium
+        ium: function(itemElem) {
+            var name = itemElem.querySelector('.name').textContent;
+            return name.match(/ium$/);
+        }
+    };
+
+    // bind filter button click
+    var filtersElem = document.querySelector('.filters-button-group');
+    filtersElem.addEventListener('click', function(event) {
+        // only work with buttons
+        if (!matchesSelector(event.target, 'button')) {
+            return;
+        }
+        var filterValue = event.target.getAttribute('data-filter');
+        // use matching filter function
+        filterValue = filterFns[filterValue] || filterValue;
+        iso.arrange({
+            filter: filterValue
+        });
+    });
+
+    // change is-checked class on buttons
+    var buttonGroups = document.querySelectorAll('.btn-group');
+    for (var i = 0, len = buttonGroups.length; i < len; i++) {
+        var buttonGroup = buttonGroups[i];
+        radioButtonGroup(buttonGroup);
+    }
+
+    function radioButtonGroup(buttonGroup) {
+        buttonGroup.addEventListener('click', function(event) {
+            // only work with buttons
+            if (!matchesSelector(event.target, 'button')) {
+                return;
+            }
+            buttonGroup.querySelector('.is-checked').classList.remove('is-checked');
+            event.target.classList.add('is-checked');
+        });
+    }
+
+
     (function() {
         var $gallery = new SimpleLightbox('.gallery a', {});
     })();

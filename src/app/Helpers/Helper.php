@@ -31,19 +31,34 @@ class Helper
     }
 
 
-    public static function retornaStatusIndicado($email){
+    public static function retornaStatusIndicado($email)
+    {
         $users = DB::connection('mysql2')
-                    ->select("SELECT ds_contato, cd_pessoa FROM unimestre.contatos_pessoas
+            ->select("SELECT ds_contato, cd_pessoa FROM unimestre.contatos_pessoas
                                 WHERE cd_contato  = 4
                                 AND ds_contato = '$email'");
         $bg = "bg-df-1";
-        if($users){
+        if ($users) {
             $bg = "bg-df-2";
         }
 
         return $bg;
     }
 
+
+    public static function retornaClasseIndicado($email)
+    {
+        $users = DB::connection('mysql2')
+            ->select("SELECT ds_contato, cd_pessoa FROM unimestre.contatos_pessoas
+                                WHERE cd_contato  = 4
+                                AND ds_contato = '$email'");
+        $bg = "matriculados";
+        if ($users) {
+            $bg = "inscritos";
+        }
+
+        return $bg;
+    }
     public static function retornaStatusInscrito(int $status, int $inscrito_id)
     {
 
@@ -90,20 +105,45 @@ class Helper
         return $statusArray[$status];
     }
 
-    public static function mes(string $mes){
-        switch($mes){
-            case "January":    $mes = "Jan";     break;
-            case "February":    $mes = "Fev";   break;
-            case "March":    $mes = "Mar";       break;
-            case "Abril":    $mes = "Abr";       break;
-            case "May":    $mes = "Mai";        break;
-            case "June":    $mes = "Jun";       break;
-            case "July":    $mes = "Jul";       break;
-            case "August":    $mes = "Ago";      break;
-            case "September":    $mes = "Set";    break;
-            case "October":    $mes = "Out";     break;
-            case "November":    $mes = "Nov";    break;
-            case "December":    $mes = "Dez";    break; 
+    public static function mes(string $mes)
+    {
+        switch ($mes) {
+            case "January":
+                $mes = "Jan";
+                break;
+            case "February":
+                $mes = "Fev";
+                break;
+            case "March":
+                $mes = "Mar";
+                break;
+            case "Abril":
+                $mes = "Abr";
+                break;
+            case "May":
+                $mes = "Mai";
+                break;
+            case "June":
+                $mes = "Jun";
+                break;
+            case "July":
+                $mes = "Jul";
+                break;
+            case "August":
+                $mes = "Ago";
+                break;
+            case "September":
+                $mes = "Set";
+                break;
+            case "October":
+                $mes = "Out";
+                break;
+            case "November":
+                $mes = "Nov";
+                break;
+            case "December":
+                $mes = "Dez";
+                break;
         }
 
         return $mes;

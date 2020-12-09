@@ -157,7 +157,7 @@ class IndicaAmigoController extends Controller
         $cd_pessoa_unimestre = $request->session()->get('cd_pessoa');
 
         $indicacoes = Indicacao::where('cd_pessoa_unimestre', '=', $cd_pessoa_unimestre)->get();
-
+     
         // Quantidade de indicados que se inscreveram.
         $total_inscricoes = 0;
         foreach ($indicacoes as $indicacao) {
