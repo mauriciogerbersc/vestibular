@@ -35,7 +35,7 @@
                 <ul class="list-group mb-3">
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
-                            <h6 class="my-0">Formulário cadastrado</h6>
+                            <h6 class="my-0">Pagamento</h6>
                             <small class="text-muted">Caso já tenha cadastro, informe o seu CPF abaixo.</small>
                         </div>
                     </li> 
@@ -141,19 +141,19 @@
 
                                     <div class="col-md-4 mb-3">
                                         <label for="bairro">Bairro</label>
-                                        <input type="text" value="{{ old('bairro') }}" class="form-control  @error('bairro') is-invalid @enderror" id="bairro" name="bairro">
+                                        <input type="text" value="{{ old('bairro') }}" readonly class="remover-readonly form-control  @error('bairro') is-invalid @enderror" id="bairro" name="bairro">
                                         
                                     </div>
 
                                     <div class="col-md-3 mb-3">
                                         <label for="cidade">Cidade</label>
-                                        <input type="text" value="{{ old('cidade') }}" class="form-control  @error('cidade') is-invalid @enderror" id="cidade" name="cidade">
+                                        <input type="text" value="{{ old('cidade') }}" readonly class="remover-readonly form-control  @error('cidade') is-invalid @enderror" id="cidade" name="cidade">
                                         
                                     </div>
 
                                     <div class="col-md-2 mb-2">
                                         <label for="uf">UF</label>
-                                        <input type="text" value="{{ old('uf') }}" class="form-control  @error('uf') is-invalid @enderror" id="uf" name="uf">
+                                        <input type="text" value="{{ old('uf') }}" readonly class="remover-readonly  form-control  @error('uf') is-invalid @enderror" id="uf" name="uf">
                                         
                                     </div>
 
@@ -162,17 +162,17 @@
                                 <div class="row">
                                     <div class="col-md-5 mb-3">
                                         <label for="endereco">Endereço</label>
-                                        <input type="text" value="{{ old('endereco') }}" class="form-control  @error('endereco') is-invalid @enderror" id="endereco" name="endereco">
+                                        <input type="text" value="{{ old('endereco') }}" readonly class="remover-readonly  form-control  @error('endereco') is-invalid @enderror" id="endereco" name="endereco">
                                         
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <label for="numero">Número</label>
-                                        <input type="text" value="{{ old('numero') }}" class="form-control  @error('numero') is-invalid @enderror" id="numero" name="numero">
+                                        <input type="text" value="{{ old('numero') }}"  readonly class="remover-readonly  form-control  @error('numero') is-invalid @enderror" id="numero" name="numero">
                                         
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="complemento">Complemento</label>
-                                        <input type="text" value="{{ old('complemento') }}" class="form-control " id="complemento" name="complemento">
+                                        <input type="text" value="{{ old('complemento') }}"  readonly class="remover-readonly  form-control " id="complemento" name="complemento">
                                         
                                     </div>
 
@@ -283,17 +283,19 @@ upload.addEventListener("change", function(e) {
                                 $("#cidade").val(dados.localidade);
                                 $("#uf").val(dados.uf);
                                 $("#bairro").val(dados.bairro);
+
+                                $(".remover-readonly ").attr("readonly",false);
                             } //end if.
                             else {
                                 //CEP pesquisado n�o foi encontrado.
                                 limpa_formulario_cep();
-                                alert("CEP n�o encontrado.");
+                                alert("CEP não encontrado.");
                             }
                         });
                     } else {
                         //cep � inv�lido.
                         limpa_formulario_cep();
-                        alert("Formato de CEP inv�lido.");
+                        alert("Formato de CEP inválido.");
                     }
                 } else {
                     //cep sem valor, limpa formul�rio.
