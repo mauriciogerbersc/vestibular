@@ -17,7 +17,6 @@
         background-image: linear-gradient(to bottom, hsla(0, 0%, 0%, 0), hsla(0, 0%, 0%, 0.2));
 
     }
-
 </style>
 @endsection
 
@@ -50,26 +49,7 @@
                     <button type="button" class="btn is-checked bg-df-1 tx-white" data-filter="*">Convites Enviados <span class="badge badge-danger">{{$total_indicacoes}}</span></button>
                     <button type="button" class="btn bg-df-2 tx-white" data-filter=".inscritos">Inscritos <span class="badge badge-danger">{{$total_inscricoes}}</span> </button>
                     <button type="button" class="btn bg-df-3 tx-white" data-filter=".matriculados">Matriculados <span class="badge badge-danger">0</span></button>
-
                 </div>
-
-                <!--
-                <ul class="list-inline d-flex mg-t-20 mg-sm-t-10 mg-md-t-0 mg-b-0 filters-button-group">
-                    <li class="list-inline-item d-flex align-items-center">
-                        <span class="d-block wd-10 ht-10 bg-df-1 rounded mg-r-5"></span>
-                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Convite enviado </span>
-                    </li>
-                    <li class="list-inline-item d-flex align-items-center mg-l-5">
-                        <span class="d-block wd-10 ht-10 bg-df-2 rounded mg-r-5"></span>
-                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Inscrito </span>
-                    </li>
-                    <li class="list-inline-item d-flex align-items-center mg-l-5">
-                        <span class="d-block wd-10 ht-10 bg-df-3 rounded mg-r-5"></span>
-                        <span class="tx-sans tx-uppercase tx-10 tx-medium tx-color-03">Matriculado <span class="badge">0</span></span>
-                    </li>
-                </ul>
--->
-
 
                 <div class="grid mg-t-20">
                     @foreach($indicacoes as $indicacao)
@@ -142,10 +122,10 @@
 
 
                     <div class="d-flex justify-content-center tx-20 mg-t-10">
-                        <div class=""><a class="share-popup" href="https://api.whatsapp.com/send?phone=&text=Acesse+{{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}+e+realize+sua+inscrição+com+20%+de+desconto" target="_blank"><i class="fab fa-whatsapp" style="font-size:24px"></i></a></div>
-                        <div class="pd-l-10"><a class="share-popup" href="https://www.facebook.com/sharer/sharer.php?u=matriculas.aerotd.com.br&quote=Acesse+{{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}+e+realize+sua+inscrição+com+20%+de+desconto" data-descriptions="alsadlasd" target="_blank"><i class="fab fa-facebook" style="font-size:24px"></i></a></div>
-                        <div class="pd-l-10"><a class="share-popup" href="https://twitter.com/share?url=matriculas.aerotd.com.br&via=AeroTD&text=Acesse+{{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}+e+realize+sua+inscrição+com+20%+de+desconto" target="_blank"><i class="fab fa-twitter" style="font-size:24px"></i></a></div>
-                        <div class="pd-l-10"><a class="share-popup" href="https://www.linkedin.com/shareArticle?mini=true&url=matriculas.aerotd.com.br&summary=Acesse+{{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}+e+realize+sua+inscrição+com+20%+de+desconto&title=teste"><i class="fab fa-linkedin" style="font-size:24px"></i></a></div>
+                        <div class=""><a class="share-popup" href="https://api.whatsapp.com/send?phone=&text=Oi, tudo bem? \n\n Sou+aluno+da+AEROTD.+Achei+a+Faculdade+de+altíssimo+nível+e+as+experiências+que+estou+vivendo+são+incríveis+e+acho+que+você+também+vai+gostar!+Estou+indicando+você+para+ganhar+desconto+em+um+dos+cursos+da+AEROTD.+Acesse+o+site+para+conferir+os+cursos+e+se+inscrever!" target="_blank"><i class="fab fa-whatsapp" style="font-size:24px"></i></a></div>
+                        <div class="pd-l-10"><a class="share-popup" href="#" id="shareBtn"><i class="fab fa-facebook" style="font-size:24px"></i></a></div>
+                        <div class="pd-l-10"><a class="share-popup" href="http://www.twitter.com/intent/tweet?url={{$_ENV['APP_MATRICULA']}}?hash={{$hashGerada}}&text=Para quem não sabe e sou aluno da AEROTD. Achei o curso de altíssimo nível e acho que você também vai gostar! Esta eu indico! Acesse o link para ganhar desconto!" target="_blank"><i class="fab fa-twitter" style="font-size:24px"></i></a></div>
+                        <div class="pd-l-10"><a class="share-popup" href="https://www.linkedin.com/sharing/share-offsite/?url=matriculas.aerotd.com.br?hash={{$hashGerada}}&title=Pessoal!!!+Para+quem+não+sabe+eu+sou+aluno+da+AEROTD.+Achei+a+Faculdade+de+altíssimo+nível+e+as+experiências+que+estou+vivendo+são+incríveis+e+acho+que+você+também+vai+gostar!+Esta+faculdade+eu+indico!!!&title=Pessoal!!!+Para+quem+não+sabe+eu+sou+aluno+da+AEROTD.+Achei+a+Faculdade+de+altíssimo+nível+e+as+experiências+que+estou+vivendo+são+incríveis+e+acho+que+você+também+vai+gostar!+Esta+faculdade+eu+indico!!!"><i class="fab fa-linkedin" style="font-size:24px"></i></a></div>
                     </div>
                 </div>
                 <hr>
@@ -162,14 +142,14 @@
 
                     </div>
                 </div>
-                <!-- Go to www.addthis.com/dashboard to customize your tools -->
+
                 <hr>
 
                 <div class="col-sm-6 col-md-5 col-lg mg-t-20">
                     <div class="d-flex align-items-center justify-content-between mg-b-15">
                         <h6 class="tx-13 tx-uppercase tx-semibold mg-b-0">Peças para Indicação</h6>
                     </div>
-
+                    <a href="https://twitter.com/intent/tweet?status=asdasdasdasdasd" target="_blank" onclick="window.open(this.href,'window','width=640,height=480,resizable,scrollbars') ;return false;">Twitter Button!</a>
                     <div class="row row-xxs gallery">
                         <div class="col-6">
                             <a href="{{asset('assets/images/indica/imagem1.jpeg')}}" class="d-block ht-110"><img src="{{asset('assets/images/indica/imagem1.jpeg')}}" class="img-fit-cover" alt=""></a>
@@ -202,6 +182,17 @@
 <script src="{{asset('assets/js/simple-lightbox.jquery.min.js')}}"></script>
 <script src="https://isotope.metafizzy.co/js/isotope-docs.min.js?6"></script>
 <script>
+    document.getElementById('shareBtn').onclick = function() {
+        FB.ui({
+            display: 'popup',
+            method: 'share',
+            href: 'https://matriculas.aerotd.com.br?hash="<?php $hashGerada; ?>',
+            title: 'Venha fazer parte da AeroTD',
+            caption: "https://aerotd.com.br/wp-content/uploads/2020/10/aerotd-faculdade-color-rgb-280x100.png",
+            quote: 'Pessoal!!!\n\nPara quem não sabe eu sou aluno do curso de (variável) da AEROTD.\nAchei a Faculdade de altíssimo nível e as experiências que estou vivendo são incríveis e acho que você também vai gostar!\n\nEsta faculdade eu indico!!!\nAcesse o link para ganhar desconto!',
+            thumbnail: "https://aerotd.com.br/wp-content/uploads/2020/10/aerotd-faculdade-color-rgb-280x100.png"
+        }, function(response) {});
+    }
     // init Isotope
     var iso = new Isotope('.grid', {
         itemSelector: '.element-item',
